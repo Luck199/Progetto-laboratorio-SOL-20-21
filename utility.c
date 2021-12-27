@@ -13,8 +13,23 @@
 #include "utility.h"
 #include "gestioneFile.h"
 
+
+#include <limits.h>
+
+#include "apiServer.h"
+#include "utility.h"
+#include "gestioneFile.h"
+
+#define DIM 100
+#define UNIX_PATH_MAX 108
+
+
+int clientTotali=0;
 int thread_workers;
+int threadInAttesa=0;
+int segnale_globale=0;
 int dim_memoria;
+int broadcast=0;
 char name_socket[100];
 int num_max_file;
 int ricevutoSIGHUP=0;
@@ -26,7 +41,7 @@ int segnaleChiusuraHup = 0;
 
 int pipeGestioneWorkers[2];
 
-
+int fdInCoda=0;
 int clientConnessi=0;
 pthread_mutex_t lockClientConnessi = PTHREAD_MUTEX_INITIALIZER;//lock per la gestione del numero di client connessi
 pthread_mutex_t lockCodaComandi = PTHREAD_MUTEX_INITIALIZER;//lock per la scrittura sulla coda dei fileDescriptor
@@ -34,6 +49,9 @@ pthread_mutex_t lockPipeWorker = PTHREAD_MUTEX_INITIALIZER;//lock per la scrittu
 pthread_mutex_t lockScritturaLog = PTHREAD_MUTEX_INITIALIZER;//lock per la scrittura sul file di log
 
 pthread_cond_t allClientExitCond = PTHREAD_COND_INITIALIZER;//condition variable per chiusura server con segnale SIGHUP
+
+pthread_cond_t CVFileDescriptor = PTHREAD_COND_INITIALIZER;//condition VAriable
+pthread_mutex_t lockSegnali=PTHREAD_MUTEX_INITIALIZER;
 struct struttura_workers *workers;
 
 
@@ -109,7 +127,7 @@ void decrementaNumClient()
 		pthread_exit(&err);
 	}
 	clientConnessi--;
-	//////printf("SERVER-> Sono connessi %d client\n",clientConnessi);
+	printf("SERVER-> Sconnesso Client! Sono connessi %d client\n",clientConnessi);
 	////printf("numero fd presenti in coda: %d, numero client connessi: %d\n",contatoreCodaFd,clientConnessi);
 
 	//Verifico se non sono presenti client connessi
@@ -117,7 +135,7 @@ void decrementaNumClient()
 	//invio una signal per svegliare il thread main che può terminare
 	if ((clientConnessi == 0) && (segnaleChiusuraHup == 1))
 	{
-		//////printf("fatta signal\n");
+		//printf("fatta signal\n");
 		pthread_cond_signal(&allClientExitCond);
 	}
 	pthread_mutex_unlock(&lockClientConnessi);
@@ -133,9 +151,9 @@ void incrementaNumClient()
 		perror("lock numero clienti in supermercato");
 		pthread_exit(&err);
 	}
-
+	clientTotali++;
 	clientConnessi++;
-	//////printf("SERVER-> Sono connessi %d client\n",clientConnessi);
+	printf("SERVER-> Sono connessi %d client\n",clientConnessi);
 	////printf("numero fd presenti in coda: %d, numero client connessi: %d\n",contatoreCodaFd,clientConnessi);
 	pthread_mutex_unlock(&lockClientConnessi);
 }
@@ -266,7 +284,7 @@ void accediCodaComandi()
 		perror("lock coda comandi\n");
 		pthread_exit(&err);
 	}
-	//////printf("SERVER-> Assunto lock coda comandi\n");
+	//printf("SERVER-> Assunto lock coda comandi\n");
 }
 
 //Funzione che permette di rilasciare il lock relativa alla struttura dati contenente le casse.
@@ -278,7 +296,7 @@ void lasciaCodaComandi()
 		perror("unlock coda comandi\n");
 		pthread_exit(&err);
 	}
-	//////printf("SERVER-> Rilasciato lock coda comandi\n");
+	//printf("SERVER-> Rilasciato lock coda comandi\n");
 }
 
 void accediPipeWorker()
@@ -310,22 +328,67 @@ void lasciaPipeWorker()
 
 void enqueueCodaFileDescriptor(struct codaInteri *codaFileDescriptor, int fileDescriptorPointer)
 {
-
+	accediCodaComandi();
 	enqueue_Interi(codaFileDescriptor,fileDescriptorPointer);
 	contatoreCodaFd++;
-	//StampaLista_Interi(codaFileDescriptor);
+	//printf("contatoreCodaFd: %d\n",contatoreCodaFd);
+	pthread_cond_signal(&CVFileDescriptor);
+	StampaLista_Interi(codaFileDescriptor);
 	lasciaCodaComandi();
 }
 
 
 int dequeueCodaFileDescriptor(struct codaInteri *codaFileDescriptor)
 {
-	int esitoOperazione;
-	accediCodaComandi();
-	esitoOperazione=dequeue_Interi(codaFileDescriptor);
-	contatoreCodaFd--;
-	//StampaLista_Interi(codaFileDescriptor);
-	lasciaCodaComandi();
-	return esitoOperazione;
+	int fdDaElaborare;
+	//accediCodaComandi();
+
+	fdDaElaborare=dequeue_Interi(codaFileDescriptor);
+	//printf("fd pescato:%d\n",fdDaElaborare);
+	if(fdDaElaborare!=-1)
+	{
+		contatoreCodaFd--;
+		//printf("contatoreCodaFd: %d\n",contatoreCodaFd);
+	}
+
+	StampaLista_Interi(codaFileDescriptor);
+	//lasciaCodaComandi();
+
+	return fdDaElaborare;
 }
+
+
+void accediSegnali()
+{
+	int err;
+	if 	( ( err=pthread_mutex_lock(&lockSegnali)) != 0 )
+	{
+		perror("lock coda comandi\n");
+		pthread_exit(&err);
+	}
+	//printf("SERVER-> Assunto lock segnali\n");
+}
+
+
+void lasciaSegnali()
+{
+	int err;
+	if 	( ( err=pthread_mutex_unlock(&lockSegnali)) != 0 )
+	{
+		perror("lock coda comandi\n");
+		pthread_exit(&err);
+	}
+	//printf("SERVER-> Lasciato lock segnali\n");
+}
+
+int getSegnale()
+{
+	int result=0;
+	accediSegnali();
+	result=segnale_globale;
+
+	lasciaSegnali();
+	return result;
+}
+
 

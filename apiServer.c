@@ -19,6 +19,7 @@
 #define DIM 100
 #define UNIX_PATH_MAX 108
 
+char actualpath [PATH_MAX+1];
 
 
 
@@ -43,7 +44,7 @@
 
 
 int fd_socket = -1;
-char actualpath [PATH_MAX+1];
+
 
 int statoFileDescriptor()
 {
@@ -58,6 +59,8 @@ int statoFileDescriptor()
 	}
 }
 
+
+
 //funzione che riceve il path relativo di un file e, se termina con successo, ritorna il path assoluto
 //altrimenti stampa l' errore riscontrato e ritorna NULL
 
@@ -69,66 +72,70 @@ int statoFileDescriptor()
 
 char* relativoToAssoluto(const char *fd)
 {
-	//*fd = "who.txt";
+
 
 	char *ptr;
 	ptr = realpath(fd, actualpath);
 	if((ptr== NULL) && (errno==EACCES))
 	{
-		//printf("Errore: l'autorizzazione di lettura o ricerca è stata negata per un componente del prefisso del percorso.\n");
+		////printf("Errore: l'autorizzazione di lettura o ricerca è stata negata per un componente del prefisso del percorso.\n");
 		return NULL;
 	}
 
 	else if((ptr== NULL) && (errno==EINVAL))
 	{
-		//printf("Errore: il path risulta NULL.\n");
+		////printf("Errore: il path risulta NULL.\n");
 		return NULL;
 	}
 
 	else if((ptr== NULL) && (errno==EIO))
 	{
-		//printf("Errore: si è verificato un errore di I/O durante la lettura dal filesystem.\n");
+		////printf("Errore: si è verificato un errore di I/O durante la lettura dal filesystem.\n");
 		return NULL;
 	}
 
 	else if((ptr== NULL) && (errno==ELOOP))
 	{
-		//printf("Errore: Sono stati rilevati troppi collegamenti simbolici nella traduzione del percorso.\n");
+		////printf("Errore: Sono stati rilevati troppi collegamenti simbolici nella traduzione del percorso.\n");
 		return NULL;
 	}
 
 	else if((ptr== NULL) && (errno==ENAMETOOLONG))
 	{
-		//printf("Un componente di un percorso ha superato i caratteri NAME_MAX o un intero percorso ha superato i caratteri PATH_MAX. \n");
+		////printf("Un componente di un percorso ha superato i caratteri NAME_MAX o un intero percorso ha superato i caratteri PATH_MAX. \n");
 		return NULL;
 	}
 
 	else if((ptr== NULL) && (errno==ENOENT))
 	{
-		//printf("Errore: il file non risulta presente in questa directory.\n");
+		////printf("Errore: il file non risulta presente in questa directory.\n");
 		return NULL;
 	}
 
 	else if((ptr== NULL) && (errno==ENOMEM))
 	{
-		//printf("Errore: fuori dalla memoria.\n");
+		////printf("Errore: fuori dalla memoria.\n");
 		return NULL;
 	}
 
 	else if((ptr== NULL) && (errno==ENOTDIR))
 	{
-		//printf("Errore: un componente del path prefisso non è una directory\n");
+		////printf("Errore: un componente del path prefisso non è una directory\n");
 		return NULL;
 	}
 	else
 	{
-		//printf("%s\n",actualpath);
+		////printf("%s\n",actualpath);
 	}
+
 	return actualpath;
 }
 
 
-char bufferRicezione[200];
+
+
+
+
 
 int statoFd=0;
 //Api per interagire con il file server
@@ -137,6 +144,7 @@ int statoFd=0;
 int openConnection(const char *sockname, int msec, const struct timespec abstime)
 {
 
+	char bufferRicezione[200]="";
 	//creo il socket e gestisco gli eventuali errori
 	fd_socket = socket(AF_UNIX, SOCK_STREAM, 0);
 
@@ -179,7 +187,7 @@ int openConnection(const char *sockname, int msec, const struct timespec abstime
 
 			if(nanosleep(&request,&remaining)<0)
 			{
-				//printf("errore nanosleep\n");
+				////printf("errore nanosleep\n");
 			}
 		}
 		else
@@ -188,14 +196,73 @@ int openConnection(const char *sockname, int msec, const struct timespec abstime
 		}
 	}
 	int readReturnValue=read(fd_socket,bufferRicezione,sizeof(bufferRicezione));
+
+
 	if(readReturnValue > 0)
 	{
-		//printf("CLIENT-> risposta server: %s\n",bufferRicezione);
+		if(strncmp(bufferRicezione,"CLOSE_FILE: riscontrato errore",50)==0)
+		{
+			errno=EBADF;
+			perror("File descriptor non valido\n");
+		}
+		else
+		{
+			//printf("CLIENT-> risposta server: %s\n",bufferRicezione);
+		}
 	}
+	else
+	{
+		//la read ha riscontrato qualche errore, verifico quale esso sia grazie ad errno
+		if ((readReturnValue == -1) && (errno == EAGAIN))
+		{
+			perror("CLIENT-> Errore: Il file descriptor fd fa riferimento a un file diverso da un socket ed è stato contrassegnato come non bloccante (O_NONBLOCK)\n");
+			return -1;
+		}
+
+		if ((readReturnValue == -1) && (errno == EBADF))
+		{
+			perror("CLIENT-> Errore: fd non è un file descriptor valido o non è aperto per la lettura.\n");
+			return -1;
+		}
+		if ((readReturnValue == -1) && (errno == EIO))
+		{
+			perror("CLIENT-> Errore input/output");
+			return -1;
+		}
+//		if ((readReturnValue == -1) && ((errno == EAGAIN) || (errno ==EWOULDBLOCK)))
+//		{
+//			//perror("CLIENT-> Errore: scrittura in spazio di archiviazione non disponibile!\n");
+//			return -1;
+//		}
+		if ((readReturnValue == -1) && (errno == EFAULT))
+		{
+			perror("CLIENT-> Errore: bufferRicezione è al di fuori del tuo spazio di indirizzi accessibile.");
+			return -1;
+		}
+		if ((readReturnValue == -1) && (errno == EINTR))
+		{
+			perror("CLIENT-> Errore: la chiamata è stata interrotta da un segnale prima che venissero letti i dati");
+			return -1;
+		}
+		if ((readReturnValue == -1) && (errno == EINVAL))
+		{
+			perror("CLIENT-> Errore: fd è attaccato a un oggetto che non è adatto per la lettura;"
+					" oppure il file è stato aperto con il flag O_DIRECT, "
+					"e l'indirizzo specificato in buf, il valore "
+					"specificato in sizeof(bufferRicezione) o l'offset del file non è adeguatamente allineato.");
+			return -1;
+		}
+		if ((readReturnValue == -1) && (errno == EISDIR))
+		{
+			perror("CLIENT-> Errore: il file descriptor fd fa riferimento ad una directory");
+			return -1;
+		}
+	}
+
 	return 0;
 }
 
-
+//gestito errno
 int closeConnection(const char* sockname)
 {
 	int closeReturnValue = close(fd_socket);
@@ -223,40 +290,61 @@ int closeConnection(const char* sockname)
 
 
 
-//il client chaima la funzione passandogli solo il path name, sarà poi la procedura che lo concatenerà
+//il client chiama la funzione passandogli solo il path name, sarà poi la procedura che lo concatenerà
 //con la stringa OPEN_FILE
 int openFile(const char* pathname, int flags)
 {
+	char bufferRicezione[200]="";
 	char daInviare[200]="OPEN_FILE;";
 
+	if (flags < 0 || flags > 2)
+	{
+		errno = EINVAL;
+	    return -1;
+	}
 	statoFd=statoFileDescriptor();
 	if(statoFd < 0)
 	{
 		return -1;
 	}
 	pathname=relativoToAssoluto(pathname);
-
-
-
-
 	strcat(daInviare,pathname);
 	char flags_array[3];
-	 sprintf(flags_array, ";%d", flags);
+	sprintf(flags_array, ";%d", flags);
 	strcat(daInviare,flags_array);
-	//printf("Sono in openFile -> la stringa finale da inviare risulta : %s\n\n\n\n ",daInviare);
-	//printf("pathname che invia client con openFile: %s\n",pathname);
-	//printf("messaggio che invio: %s\n",daInviare);
+
+	printf("CLIENT-> faccio openfile!\n");
 	write(fd_socket,daInviare,200);
 	int readReturnValue=read(fd_socket,bufferRicezione,sizeof(bufferRicezione));
+
 	if(readReturnValue > 0)
 	{
-		//printf("CLIENT-> risposta server: %s\n",bufferRicezione);
+		if(strncmp(bufferRicezione,"OPEN_FILE: riscontrato errore",50)==0)
+		{
+			errno=EBADF;
+			perror("File descriptor non valido\n");
+			return -1;
+		}
+		else
+		{
+			//printf("CLIENT-> risposta server: %s\n",bufferRicezione);
+		}
 	}
-	return 1;
+
+
+
+
+
+
+
+
+
+	return 0;
 }
 
 int readFile(const char* pathname, void** buf, size_t* size)
 {
+	char bufferRicezione[200]="";
 	statoFd=statoFileDescriptor();
 	if(statoFd < 0)
 	{
@@ -269,80 +357,185 @@ int readFile(const char* pathname, void** buf, size_t* size)
 	int readReturnValue=read(fd_socket,bufferRicezione,sizeof(bufferRicezione));
 	if(readReturnValue > 0)
 	{
-		//printf("CLIENT-> risposta server: %s\n",bufferRicezione);
+		////printf("CLIENT-> risposta server: %s\n",bufferRicezione);
 	}
-	return 1;
+	return 0;
 }
 
 int readNFiles(int N, const char* dirname)
 {
+	char bufferRicezione[200]="";
 	write(fd_socket,dirname,40);
 	int readReturnValue=read(fd_socket,bufferRicezione,sizeof(bufferRicezione));
 	if(readReturnValue > 0)
 	{
-		//printf("CLIENT-> risposta server: %s\n",bufferRicezione);
+		////printf("CLIENT-> risposta server: %s\n",bufferRicezione);
 	}
-	return 1;
+	return 0;
 }
 
 
 int writeFile(const char* pathname, const char* dirname)
 {
-	write(fd_socket,dirname,40);
+	char bufferRicezione[200]="";
+	char daInviare[200]="WRITE_FILE;";
+	statoFd=statoFileDescriptor();
+	if(statoFd < 0)
+	{
+		return -1;
+	}
+	//pathname=relativoToAssoluto(pathname);
+
+
+	//strcat(daInviare,pathname);
+
+	write(fd_socket,daInviare,150);
 	int readReturnValue=read(fd_socket,bufferRicezione,sizeof(bufferRicezione));
 	if(readReturnValue > 0)
 	{
-		//printf("CLIENT-> risposta server: %s\n",bufferRicezione);
+		////printf("CLIENT-> risposta server: %s\n",bufferRicezione);
 	}
-	return 1;
+	return 0;
 }
 
 int appendToFile(const char* pathname, void* buf, size_t size, const char* dirname)
 {
+	char bufferRicezione[200]="";
 	write(fd_socket,dirname,40);
 	int readReturnValue=read(fd_socket,bufferRicezione,sizeof(bufferRicezione));
 	if(readReturnValue > 0)
 	{
-		//printf("CLIENT-> risposta server: %s\n",bufferRicezione);
+		////printf("CLIENT-> risposta server: %s\n",bufferRicezione);
 	}
 	return 1;
 }
 
 int lockFile(const char* pathname)
 {
-	write(fd_socket,pathname,40);
-	int readReturnValue=read(fd_socket,bufferRicezione,sizeof(bufferRicezione));
+	int readReturnValue=0;
+	char bufferRicezione[200]="";
+	char daInviare[200]="LOCK_FILE;";
+	statoFd=statoFileDescriptor();
+	if(statoFd < 0)
+	{
+		return -1;
+	}
+	pathname=relativoToAssoluto(pathname);
+	strcat(daInviare,pathname);
+
+
+
+
+
+
+
+
+	write(fd_socket,daInviare,200);
+	readReturnValue=read(fd_socket,bufferRicezione,sizeof(bufferRicezione));
 	if(readReturnValue > 0)
 	{
-		//printf("CLIENT-> risposta server: %s\n",bufferRicezione);
+		//printf("CLIENT-> risposta server per file %s: %s\n",pathname,bufferRicezione);
 	}
-	return 1;
+	return 0;
 }
 
 int unlockFile(const char* pathname)
 {
-	write(fd_socket,pathname,40);
-	int readReturnValue=read(fd_socket,bufferRicezione,sizeof(bufferRicezione));
+	char bufferRicezione[200]="";
+	int readReturnValue=0;
+	char daInviare[200]="UNLOCK_FILE;";
+	statoFd=statoFileDescriptor();
+
+	if(statoFd < 0)
+	{
+		return -1;
+	}
+	pathname=relativoToAssoluto(pathname);
+
+	strcat(daInviare,pathname);
+
+
+
+	write(fd_socket,daInviare,200);
+	readReturnValue=read(fd_socket,bufferRicezione,sizeof(bufferRicezione));
 	if(readReturnValue > 0)
 	{
 		//printf("CLIENT-> risposta server: %s\n",bufferRicezione);
 	}
-	return 1;
+	return 0;
 }
 
 int closeFile(const char* pathname)
 {
+	char bufferRicezione[200]="";
 	write(fd_socket,pathname,40);
 	int readReturnValue=read(fd_socket,bufferRicezione,sizeof(bufferRicezione));
 	if(readReturnValue > 0)
 	{
-		//printf("CLIENT-> risposta server: %s\n",bufferRicezione);
+		if(strncmp(bufferRicezione,"CLOSE_FILE: riscontrato errore",50))
+		{
+			errno=EBADF;
+			perror("File descriptor non valido\n");
+		}
+		else
+		{
+			//printf("CLIENT-> risposta server: %s\n",bufferRicezione);
+		}
+	}
+	else
+	{
+		//la read ha riscontrato qualche errore, verifico quale esso sia grazie ad errno
+		if ((readReturnValue == -1) && (errno == EAGAIN))
+		{
+			perror("CLIENT-> Errore: Il file descriptor fd fa riferimento a un file diverso da un socket ed è stato contrassegnato come non bloccante (O_NONBLOCK)\n");
+			return -1;
+		}
+
+		if ((readReturnValue == -1) && (errno == EBADF))
+		{
+			perror("CLIENT-> Errore: fd non è un file descriptor valido o non è aperto per la lettura.\n");
+			return -1;
+		}
+		if ((readReturnValue == -1) && (errno == EIO))
+		{
+			perror("CLIENT-> Errore input/output");
+			return -1;
+		}
+//		if ((readReturnValue == -1) && ((errno == EAGAIN) || (errno ==EWOULDBLOCK)))
+//		{
+//			//perror("CLIENT-> Errore: scrittura in spazio di archiviazione non disponibile!\n");
+//			return -1;
+//		}
+		if ((readReturnValue == -1) && (errno == EFAULT))
+		{
+			perror("CLIENT-> Errore: bufferRicezione è al di fuori del tuo spazio di indirizzi accessibile.");
+			return -1;
+		}
+		if ((readReturnValue == -1) && (errno == EINTR))
+		{
+			perror("CLIENT-> Errore: la chiamata è stata interrotta da un segnale prima che venissero letti i dati");
+			return -1;
+		}
+		if ((readReturnValue == -1) && (errno == EINVAL))
+		{
+			perror("CLIENT-> Errore: fd è attaccato a un oggetto che non è adatto per la lettura;"
+					" oppure il file è stato aperto con il flag O_DIRECT, "
+					"e l'indirizzo specificato in buf, il valore "
+					"specificato in sizeof(bufferRicezione) o l'offset del file non è adeguatamente allineato.");
+			return -1;
+		}
+		if ((readReturnValue == -1) && (errno == EISDIR))
+		{
+			perror("CLIENT-> Errore: il file descriptor fd fa riferimento ad una directory");
+			return -1;
+		}
 	}
 	return 1;
 }
 
 int removeFile(const char* pathname)
 {
+	char bufferRicezione[200]="";
 	write(fd_socket,pathname,40);
 	int readReturnValue=read(fd_socket,bufferRicezione,sizeof(bufferRicezione));
 	if(readReturnValue > 0)
@@ -351,7 +544,6 @@ int removeFile(const char* pathname)
 	}
 	return 1;
 }
-
 
 
 

@@ -1,0 +1,1899 @@
+Funzione fopen per file di log riuscita correttamente. 
+pipe per gestione dei segnali creata correttamente. 
+pipe per la gestione dei thread workers creata correttamente. 
+thread che si occuperà di gestire i segnali creato in maniera corretta. 
+La creazione dei thread workers è riuscita correttamente 
+socket creato correttamente. 
+Funzione bind eseguita in maniera corretta. 
+Funzione listen eseguita in maniera corretta. 
+Funzione select eseguita in maniera corretta 
+Funzione accept eseguita in maniera corretta. 
+CIAO! SONO UN THREAD WORKER! 
+CIAO! SONO UN THREAD WORKER! 
+CIAO! SONO UN THREAD WORKER! 
+Si è connesso un nuovo client, adesso il totale ammonta a: 1 
+Funzione select eseguita in maniera corretta 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 2 
+Ricevuta una richiesta dal client: 9 
+Funzione select eseguita in maniera corretta 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 10 
+Funzione select eseguita in maniera corretta 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 4 
+Ricevuta una richiesta dal client: 11 
+CIAO! SONO UN THREAD WORKER! 
+Funzione select eseguita in maniera corretta 
+CIAO! SONO UN THREAD WORKER! 
+Funzione accept eseguita in maniera corretta. 
+CLOSE: eseguita operazione 
+Si è connesso un nuovo client, adesso il totale ammonta a: 5 
+Ricevuta una richiesta dal client: 12 
+Un client si è disconnesso, adesso il totale ammonta a: 5 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 5 
+Ricevuta una richiesta dal client: 13 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 5 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 4 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 9 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 10 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 11 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 9 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 10 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+CLOSE: eseguita operazione 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 11 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 9 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 10 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 11 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 9 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 10 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 11 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 9 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 10 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 11 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 9 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+CLOSE: eseguita operazione 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 10 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 11 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 9 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 10 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 11 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 9 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+CLOSE: eseguita operazione 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 10 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 11 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 9 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 10 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 11 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 9 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 10 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 11 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 9 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 10 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 11 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 9 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 10 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 11 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 9 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 10 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+CLOSE: eseguita operazione 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 11 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Ricevuta una richiesta dal client: 9 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+CLOSE: eseguita operazione 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 10 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 11 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 9 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 10 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+CLOSE: eseguita operazione 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 11 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+CLOSE: eseguita operazione 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 9 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 10 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 11 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+CLOSE: eseguita operazione 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 9 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 10 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 11 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 9 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+CLOSE: eseguita operazione 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 10 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 11 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 9 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+CLOSE: eseguita operazione 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 10 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 11 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+CLOSE: eseguita operazione 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 9 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 10 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 11 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 9 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+CLOSE: eseguita operazione 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 10 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 11 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 9 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 10 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 11 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 9 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 10 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 11 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 9 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 10 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 11 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 9 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Ricevuta una richiesta dal client: 10 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 11 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 9 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 10 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 11 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 9 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 10 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 11 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+CLOSE: eseguita operazione 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 9 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+CLOSE: eseguita operazione 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 10 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 11 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 9 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 10 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 11 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 9 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 10 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 11 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 9 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 10 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+CLOSE: eseguita operazione 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 11 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 9 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 10 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 11 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 9 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 10 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 11 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 9 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 10 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 11 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 9 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 10 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 11 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 9 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 10 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Ricevuta una richiesta dal client: 11 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 9 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 10 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 11 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 9 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+CLOSE: eseguita operazione 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 10 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 11 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 9 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 10 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 11 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 9 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 10 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 11 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 9 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 10 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 11 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 9 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 10 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+CLOSE: eseguita operazione 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 11 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 9 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 10 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 11 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 9 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 10 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+CLOSE: eseguita operazione 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 11 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+CLOSE: eseguita operazione 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 9 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 10 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 11 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 9 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 10 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 11 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 9 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 10 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 11 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 9 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 10 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 11 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 9 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 10 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 11 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 9 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 10 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 11 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 9 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 10 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 11 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 9 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 10 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 11 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 9 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 10 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+CLOSE: eseguita operazione 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 11 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 9 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 10 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 11 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 9 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 10 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 11 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 9 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 10 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 11 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 9 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 10 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 11 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 9 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 10 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 11 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 9 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 10 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 11 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 9 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 10 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 11 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 9 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 10 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 11 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+CLOSE: eseguita operazione 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 9 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 10 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 11 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 9 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+CLOSE: eseguita operazione 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 10 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+CLOSE: eseguita operazione 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 9 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 11 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 10 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+CLOSE: eseguita operazione 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 9 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 11 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 10 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 9 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 11 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 10 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 9 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Ricevuta una richiesta dal client: 11 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 10 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 9 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 11 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 10 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 9 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 11 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+CLOSE: eseguita operazione 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 10 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+CLOSE: eseguita operazione 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 9 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 11 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 10 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 9 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+CLOSE: eseguita operazione 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 11 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+CLOSE: eseguita operazione 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 10 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+CLOSE: eseguita operazione 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 9 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 11 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 10 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 9 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 11 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 10 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+CLOSE: eseguita operazione 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 9 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 11 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 10 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 9 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 11 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Funzione select eseguita in maniera corretta 
+Un client si è disconnesso, adesso il totale ammonta a: 2 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 2 
+Ricevuta una richiesta dal client: 10 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 9 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+CLOSE: eseguita operazione 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 11 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 10 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 9 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 11 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 10 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 9 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 11 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Ricevuta una richiesta dal client: 10 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 9 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 11 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 10 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 9 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 11 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 10 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 9 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 2 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 2 
+Ricevuta una richiesta dal client: 11 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 9 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 10 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 11 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 9 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 10 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+CLOSE: eseguita operazione 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 11 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 9 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 10 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 11 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 9 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 10 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 11 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+CLOSE: eseguita operazione 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 9 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+CLOSE: eseguita operazione 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 10 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 11 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+CLOSE: eseguita operazione 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 9 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 10 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 11 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 9 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 10 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione accept eseguita in maniera corretta. 
+Si è connesso un nuovo client, adesso il totale ammonta a: 3 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 3 
+Ricevuta una richiesta dal client: 11 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Ricevuta una richiesta dal client: 9 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 2 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+CLOSE: eseguita operazione 
+Un client si è disconnesso, adesso il totale ammonta a: 1 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta. 
+Arrivato segnale SIGQUIT o segnale SIGINT 
+Funzione select eseguita in maniera corretta 
+Lettura dalla pipe per la gestione dei segnali avvenuta in maniera corretta. 
+Thread attesi correttamente tramite funzione pthread_join. 
+Funzione di chiusura del socket riuscita correttamente. 

@@ -42,7 +42,7 @@ clean:
 	-rm *.o
 	-rm log.txt
 	-rm sockfile
-	echo "tutto pulito"
+	echo tutto pulito
 	 
 test1:	
 	make all

@@ -20,6 +20,8 @@
 #define N 100
 #define O_CREATE 0
 #define O_LOCK 1
+#define CREATELOCK 2
+
 
 
 void enqueueString(struct struttura_coda *coda,char * stringa);
@@ -172,7 +174,7 @@ int parser(struct struttura_coda *comandi)
 			{
 				if(abilitaStampe==1)
 				{
-					////printf("CLIENT-> Sintassi comando errata! Arresto in corso!");
+					//printf("CLIENT-> Sintassi comando errata! Arresto in corso!");
 				}
 				continue;
 			}
@@ -184,14 +186,16 @@ int parser(struct struttura_coda *comandi)
 			(void)unlink(nomesocket);
 			ritardo();
 			openConnectionReturnValue=openConnection(nomesocket,100,abstime);
-			if(openConnectionReturnValue==-1)
+			if(openConnectionReturnValue == -1)
 			{
 					perror("CLIENT-> Errore nell' apertura della connessione\n");
 					return -1;
 			}
-
-			strncpy(daInviare,"debiti.txt",150);
-			openFile(daInviare,O_CREATE);
+			//strncpy(daInviare,"WRITE_FILE;",150);
+			ritardo();
+			//openFile("debiti.txt",CREATELOCK);
+//			openFile("file1.txt",CREATELOCK);
+//			openFile("file2.txt",CREATELOCK);
 			continue;
 		}
 		if(strcmp(stringa,"-w")==0)
@@ -222,7 +226,7 @@ int parser(struct struttura_coda *comandi)
 					perror("CLIENT-> Parametro opzione -w errato\n");
 					return -1;
 				}
-				ritardoFraRichieste = a;
+				numFile = a;
 				if(abilitaStampe==1)
 				{
 					////printf("CLIENT-> numero file: %d\n",numFile);
@@ -231,13 +235,14 @@ int parser(struct struttura_coda *comandi)
 			else
 			{
 				lettopiuuno=1;
-				ritardoFraRichieste = 0;
+				numFile = 0;
 				if(abilitaStampe==1)
 				{
 					////printf("CLIENT-> numero file: %d\n",numFile);
 				}
 			}
-			strncpy(daInviare,"WRITE_FILE;ti/puzza/il/culo.txt\n",150);
+			printf("richiedo -w nella cartella %s, di %d file.\n",dirname,numFile);
+			//strncpy(daInviare,"WRITE_FILE;",150);
 			ritardo();
 			writeFile(daInviare,daInviare);
 			continue;
@@ -377,9 +382,15 @@ int parser(struct struttura_coda *comandi)
 		{
 			stringa=dequeue(comandi);
 			char* token = strtok(stringa, ",");
+
+			//openFile("debiti.txt",CREATELOCK);
+
+
 			while (token != NULL)
 			{
-				//////printf("%s\n", token);
+				ritardo();
+				printf("voglio lockare il file: %s\n", token);
+				lockFile(token);
 				enqueueString(files,token);
 				token = strtok(NULL, ",");
 			}
@@ -389,9 +400,10 @@ int parser(struct struttura_coda *comandi)
 			}
 			ritardo();
 			//printf("CLIENT-> INVIO RICHIESTA LOCK\n");
+
 			strncpy(daInviare,"LOCK_FILE;ti/puzza/il/culo.txt\n",150);
 
-			lockFile(daInviare);
+//			lockFile(daInviare);
 			continue;
 		}
 		if(strcmp(stringa,"-u")==0)
@@ -400,7 +412,9 @@ int parser(struct struttura_coda *comandi)
 			char* token = strtok(stringa, ",");
 			while (token != NULL)
 			{
-				//////printf("%s\n", token);
+				printf("%s\n", token);
+				ritardo();
+				unlockFile(token);
 				enqueueString(files,token);
 				token = strtok(NULL, ",");
 			}
@@ -412,7 +426,7 @@ int parser(struct struttura_coda *comandi)
 			//printf("CLIENT-> INVIO RICHIESTA UNLOCK\n");
 			strncpy(daInviare,"UNLOCK_FILE;ti/puzza/il/culo.txt\n",150);
 
-			unlockFile(daInviare);
+			//unlockFile(daInviare);
 			continue;
 		}
 

@@ -282,17 +282,25 @@ int enqueue_Interi(struct codaInteri* head, int fileDescriptor)
     else
     {
     	struct codaInteri *nodoCorrente=head;
-        while(nodoCorrente->next != NULL)
-        {
-			nodoCorrente=nodoCorrente->next;
-		}
-        ////printf("MALLOC Nodo Coda\n");
-        struct codaInteri* nodo_successivo = malloc(sizeof(struct codaInteri));
-        nodo_successivo->fileDescriptor = fileDescriptor;
-        nodo_successivo->next = NULL;
-		nodoCorrente->next=nodo_successivo;
-		nodo_successivo->prec = nodoCorrente;
-		////printf("Aggiunto alla coda cliente %d\n", cliente->idCliente);
+    	if(nodoCorrente->fileDescriptor==-1)
+    	{
+    		nodoCorrente->fileDescriptor=fileDescriptor;
+    	}
+    	else
+    	{
+    		while(nodoCorrente->next != NULL)
+    		{
+    			nodoCorrente=nodoCorrente->next;
+    		}
+    		////printf("MALLOC Nodo Coda\n");
+    		struct codaInteri* nodo_successivo = malloc(sizeof(struct codaInteri));
+    		nodo_successivo->fileDescriptor = fileDescriptor;
+    		nodo_successivo->next = NULL;
+    		nodoCorrente->next=nodo_successivo;
+    		nodo_successivo->prec = nodoCorrente;
+
+    	}
+        		////printf("Aggiunto alla coda cliente %d\n", cliente->idCliente);
 		return 1;
     }
 }
@@ -303,7 +311,7 @@ int dequeue_Interi(struct codaInteri* head)
 	if (!is_valid_list_Interi(head))
 	{
 		perror("Errore! head == NULL");
-		exit(1);
+		return -1;
 	}
 	if(is_empty_list_Interi(head))
 	{
@@ -407,6 +415,7 @@ int rimuovi_Interi(struct codaInteri* head, int idCliente)
 
 void StampaLista_Interi(struct codaInteri* head)
 {
+	printf("\n\n");
 	struct codaInteri *temp = head;
 	if (!is_valid_list_Interi(head)){
 		// tirare errore se head = null
@@ -416,17 +425,17 @@ void StampaLista_Interi(struct codaInteri* head)
 
     if(is_empty_list_Interi(head))
     {
-		//printf("Lista vuota\n");
+		printf("Lista vuota\n");
 	}
 	else
 	{
-		//printf("Lista:");
+		printf("Lista:");
 		while (temp != NULL)
 		{
-		  //printf(" %d", temp->fileDescriptor);
+		  printf(" %d", temp->fileDescriptor);
 		  temp = temp->next;
 		}
-		//printf("\n");
+		printf("\n\n");
 	}
 }
 

@@ -1,14 +1,17 @@
 #ifndef _utility_
 #define _utility_
 
+extern int clientTotali;
 extern int contatoreCodaFd;
 extern int thread_workers;
+extern int fdInCoda;
 extern int dim_memoria;
 extern char name_socket[100];
 extern int num_max_file;
 extern int ricevutoSIGHUP;
 extern int ricevutoSIGINTORQUIT;
 extern int clientConnessi;
+extern int threadInAttesa;
 extern FILE *logFile;
 extern struct codaInteri *codaFileDescriptor;
 //masterWorkersPipe è una pipe che utilizzano thread main e thread worker per comunicare:
@@ -16,7 +19,8 @@ extern struct codaInteri *codaFileDescriptor;
 //su 1 i thread workers scrivono tali fileDescriptor
 extern int pipeGestioneWorkers[2];
 extern int segnaleChiusuraHup;
-
+extern int segnale_globale;
+extern int broadcast;
 
 void letturaFile(char *config, char *nomeFilelog);
 void decrementaNumClient();
@@ -29,6 +33,9 @@ int dequeueCodaFileDescriptor(struct codaInteri *codaFileDescriptor);
 void accediPipeWorker();
 void lasciaPipeWorker();
 void scriviSuLog(char * stringa, int count, ...);
+void accediSegnali();
+void lasciaSegnali();
+int getSegnale();//ottenere il numero del segnale in mutua esclusione
 
 ssize_t readn(int fd, void *v_ptr, size_t n);
 ssize_t writen(int fd, void *v_ptr, size_t n);
@@ -46,6 +53,8 @@ extern struct info_file
 {
     char *path;
     long data;
+    short O_LOCK;
+    short O_CREATE;
     //char *data;
     size_t dimensione;
 
@@ -65,7 +74,9 @@ extern struct info_file
 }*array_file;
 
 extern struct info_file *array_file;
-
+extern pthread_mutex_t lockCodaComandi;
 extern pthread_mutex_t lockClientConnessi;
+extern pthread_mutex_t lockSegnali;
 extern pthread_cond_t allClientExitCond;
+extern pthread_cond_t CVFileDescriptor ;
 #endif

@@ -1,11 +1,18 @@
 #!/bin/bash
+
 ./client "-p -f sockfile " &
 ./client "-p -f sockfile " &
 
 
-#./server config.txt &
-valgrind --track-origins=yes --leak-check=full --show-leak-kinds=all -s ./server config.txt &
+
+
+#./client "-p -f sockfile " &./client "-p -f sockfile " &
+
+
+
+#valgrind  --leak-check=full ./server config.txt &
+./server config.txt &
 PID_SERVER=$!
 sleep 3
-kill -SIGHUP $PID_SERVER
+kill -SIGINT $PID_SERVER
 #wait $PID_SERVER

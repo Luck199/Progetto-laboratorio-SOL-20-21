@@ -27,10 +27,12 @@ int verificaInserimento(int dimFile);//funzione che verifica se è presente spaz
 void applicaFifo();//funzione che applica l' algoritmo di rimpiazzo fifo nell' array dei file
 void assumiLockFileLettura(int indiceFile);
 void lasciaLockFileLettura(int indiceFile);
-void assumiLockFileScrittura(int indiceFile);
-void lasciaLockFileScrittura(int indiceFile);
+void assumiLockFileScrittura(int indiceFile, int fdDaElaborare);
+int lasciaLockFileScrittura(int indiceFile,int fdDaElaborare);
 int openFileServer(char *path, int flag, int fdDaElaborare);//funzione open file lato server, implementa la reale funzione di aprire un file,superati i vari controlli
 int closeFileServer(char *path,int fdDaElaborare);
+int lockFileServer(char *path, int fdDaElaborare);
+int unlockFileServer(char *path, int fdDaElaborare);
 
 extern int memoriaDisponibile;//memoria disponibile nell' array
 extern int numFileDisponibili;//numero di file che posso ancora inserire nell' array
