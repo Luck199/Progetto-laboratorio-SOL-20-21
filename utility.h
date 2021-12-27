@@ -50,6 +50,7 @@ extern struct info_file
     size_t dimensione;
 
     FILE * puntatoreFile;
+    int identificatoreClient;
 //    OwnerId currentlyLockedBy; // OwnerId (client id), 0 if no owner
 //    OwnerId ownerCanWrite;     // OwnerId (client id), 0 if no owner
 //    List_T waitingLockers;     // OwnerIds (client ids)
@@ -59,7 +60,7 @@ extern struct info_file
     size_t scrittoriAttivi;
 
     pthread_mutex_t lockFile;
-//    pthread_mutex_t ordering;
+    pthread_cond_t fileConditionVariable;
 //    pthread_cond_t go;
 }*array_file;
 

@@ -598,7 +598,7 @@ int main(int argc, char **argv)
 	fclose(logFile);
 	free(codaFileDescriptor);
 	deallocaStrutturaFile();
-	//printf("SERVER-> finito Server, i client connessi risultano: %d\n",clientConnessi);
+	printf("SERVER-> finito Server, i client connessi risultano: %d\n",clientConnessi);
 	return 0;
 }
 
@@ -609,8 +609,8 @@ void inizializzaScritturaLog(char *nomeLogFile)
 	if((logFile = fopen(nomeLogFile, "w")) == NULL)
 	{
 		perror("SERVER-> Error fopen");
-		strncpy(stringaToLog,"La funzione fopen per file di log ha riscontrato un errore.",MAXLUNGHEZZA);
-		scriviSuLog(stringaToLog,0);
+//		strncpy(stringaToLog,"La funzione fopen per file di log ha riscontrato un errore.",MAXLUNGHEZZA);
+//		scriviSuLog(stringaToLog,0);
 		exit(EXIT_FAILURE);
 	}
 	strncpy(stringaToLog,"Funzione fopen per file di log riuscita correttamente.",MAXLUNGHEZZA);

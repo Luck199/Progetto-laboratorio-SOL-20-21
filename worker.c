@@ -85,7 +85,7 @@ void* vitaWorker(void*  idWorker)
 	while (stopWorker == 0)
 	{
 
-		sleep(2);//temporaneo, fino a che non metto una condizione di attesa che un client abbia richiesto qualcosa
+		sleep(1);//temporaneo, fino a che non metto una condizione di attesa che un client abbia richiesto qualcosa
 		if(chiudiConnessione == 1 || primaVolta==0)
 		{
 			primaVolta=1;
@@ -197,7 +197,7 @@ void* vitaWorker(void*  idWorker)
 					path=strtok(NULL, s);
 					flag_array=strtok(NULL, s);
 					flag=atoi(flag_array);
-					printf("\n\n il worker fa la open file sul file : %s, utilizzando il flag %d \n\n",path,flag);
+					//printf("\n\n il worker fa la open file sul file : %s, utilizzando il flag %d \n\n",path,flag);
 
 
 //					aggiungiFileReturnValue=aggiungiFile(token);
@@ -208,7 +208,10 @@ void* vitaWorker(void*  idWorker)
 //						scriviSuLog(stringaToLog,0);
 //					}
 
-					openFileReturnValue=openFileServer(path,flag);
+					accediStrutturaFile();
+					openFileReturnValue=openFileServer(path,flag,fdDaElaborare);
+					lasciaStrutturaFile();
+
 					if(openFileReturnValue != 1)
 					{
 						write(fdDaElaborare,"OPEN_FILE: riscontrato errore\n",31);
@@ -216,20 +219,33 @@ void* vitaWorker(void*  idWorker)
 						scriviSuLog(stringaToLog,0);
 					}
 
-					openFileReturnValue=openFileServer(path,flag);
-					if(openFileReturnValue != 1)
-					{
-						write(fdDaElaborare,"OPEN_FILE: riscontrato errore\n",31);
-						strncpy(stringaToLog,"OPEN_FILE: riscontrato errore",30);
-						scriviSuLog(stringaToLog,0);
-					}
-
+//					openFileReturnValue=openFileServer(path,flag);
+//					if(openFileReturnValue != 1)
+//					{
+//						write(fdDaElaborare,"OPEN_FILE: riscontrato errore\n",31);
+//						strncpy(stringaToLog,"OPEN_FILE: riscontrato errore",30);
+//						scriviSuLog(stringaToLog,0);
+//					}
+//
 					else
 					{
 						write(fdDaElaborare,"OPEN_FILE eseguita correttamente!\n",35);
 						strncpy(stringaToLog,"OPEN_FILE: eseguita operazione",31);
 						scriviSuLog(stringaToLog,0);
 					}
+
+
+
+
+					accediStrutturaFile();
+					closeFileServer(path,fdDaElaborare);
+					lasciaStrutturaFile();
+
+
+
+
+
+
 					strncpy(stringaToLog,"Richiesta Servita dal thread",32);
 					scriviSuLog(stringaToLog,1,indiceWorker);
 
@@ -303,12 +319,57 @@ void* vitaWorker(void*  idWorker)
 				if(strcmp(bufferRicezione,"CLOSE_FILE")==0)
 				{
 					//printf("Arrivata operazione CLOSE_FILE\n");
-					write(fdDaElaborare,"CLOSE_FILE eseguita correttamente!\n",36);
-					strncpy(stringaToLog,"CLOSE_FILE: eseguita operazione",32);
-					scriviSuLog(stringaToLog,0);
-					operazioneEseguita=1;
-					strncpy(stringaToLog,"Richiesta Servita dal thread",32);
-					scriviSuLog(stringaToLog,1,indiceWorker);
+
+
+
+//					int closeFileReturnValue=0;
+//					char *path;
+//					char *flag_array;
+//					int flag;
+//					//printf("Arrivata operazione OPEN_FILE\n");
+//
+//					path=strtok(NULL, s);
+//					flag_array=strtok(NULL, s);
+//					flag=atoi(flag_array);
+//					printf("\n\n il worker fa la open file sul file : %s, utilizzando il flag %d \n\n",path,flag);
+//
+//
+//					closeFileReturnValue=aggiungiFile(path);
+//					if(closeFileReturnValue != 1)
+//					{
+//						write(fdDaElaborare,"OPEN_FILE: riscontrato errore\n",31);
+//						strncpy(stringaToLog,"OPEN_FILE: riscontrato errore",30);
+//						scriviSuLog(stringaToLog,0);
+//					}
+//
+//					else
+//					{
+//						write(fdDaElaborare,"CLOSE_FILE eseguita correttamente!\n",36);
+//						strncpy(stringaToLog,"CLOSE_FILE: eseguita operazione",32);
+//						scriviSuLog(stringaToLog,0);
+//						operazioneEseguita=1;
+//						strncpy(stringaToLog,"Richiesta Servita dal thread",32);
+//						scriviSuLog(stringaToLog,1,indiceWorker);
+//					}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 				}
 				if(strcmp(bufferRicezione,"REMOVE_FILE")==0)
 				{

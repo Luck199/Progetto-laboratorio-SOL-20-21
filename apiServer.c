@@ -243,7 +243,7 @@ int openFile(const char* pathname, int flags)
 	char flags_array[3];
 	 sprintf(flags_array, ";%d", flags);
 	strcat(daInviare,flags_array);
-	printf("Sono in openFile -> la stringa finale da inviare risulta : %s\n\n\n\n ",daInviare);
+	//printf("Sono in openFile -> la stringa finale da inviare risulta : %s\n\n\n\n ",daInviare);
 	//printf("pathname che invia client con openFile: %s\n",pathname);
 	//printf("messaggio che invio: %s\n",daInviare);
 	write(fd_socket,daInviare,200);

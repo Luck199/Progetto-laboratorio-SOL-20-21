@@ -29,8 +29,8 @@ void assumiLockFileLettura(int indiceFile);
 void lasciaLockFileLettura(int indiceFile);
 void assumiLockFileScrittura(int indiceFile);
 void lasciaLockFileScrittura(int indiceFile);
-int openFileServer(char *path, int flag);//funzione open file lato server, implementa la reale funzione di aprire un file,superati i vari controlli
-
+int openFileServer(char *path, int flag, int fdDaElaborare);//funzione open file lato server, implementa la reale funzione di aprire un file,superati i vari controlli
+int closeFileServer(char *path,int fdDaElaborare);
 
 extern int memoriaDisponibile;//memoria disponibile nell' array
 extern int numFileDisponibili;//numero di file che posso ancora inserire nell' array

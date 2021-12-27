@@ -191,7 +191,7 @@ int parser(struct struttura_coda *comandi)
 			}
 
 			strncpy(daInviare,"debiti.txt",150);
-			openFile(daInviare,O_LOCK);
+			openFile(daInviare,O_CREATE);
 			continue;
 		}
 		if(strcmp(stringa,"-w")==0)
