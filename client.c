@@ -183,7 +183,7 @@ int parser(struct struttura_coda *comandi)
 			{
 				////printf("CLIENT-> Letto nome nomesocket: %s\n",nomesocket);
 			}
-			(void)unlink(nomesocket);
+//			(void)unlink(nomesocket);
 			ritardo();
 			openConnectionReturnValue=openConnection(nomesocket,100,abstime);
 			if(openConnectionReturnValue == -1)
@@ -193,9 +193,11 @@ int parser(struct struttura_coda *comandi)
 			}
 			//strncpy(daInviare,"WRITE_FILE;",150);
 			ritardo();
-			//openFile("debiti.txt",CREATELOCK);
-//			openFile("file1.txt",CREATELOCK);
-//			openFile("file2.txt",CREATELOCK);
+			//openFile("debiti.txt",O_CREATE);
+			openFile("file1.txt",CREATELOCK);
+//			lockFile("file1.txt");
+//			closeFile("file1.txt");
+			//openFile("file2.txt",O_LOCK);
 			continue;
 		}
 		if(strcmp(stringa,"-w")==0)

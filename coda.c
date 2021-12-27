@@ -268,7 +268,7 @@ int enqueue_Interi(struct codaInteri* head, int fileDescriptor)
 	if (!is_valid_list_Interi(head))
 	{
 		perror("Errore, testa della lista uguale a null");
-		return 0;
+		return -5;
 	}
 
 	if(is_empty_list_Interi(head))
@@ -306,16 +306,18 @@ int enqueue_Interi(struct codaInteri* head, int fileDescriptor)
 }
 
 
-int dequeue_Interi(struct codaInteri* head)
+int dequeue_Interi(struct codaInteri* head, int *errore)
 {
 	if (!is_valid_list_Interi(head))
 	{
 		perror("Errore! head == NULL");
+		*errore=1;
 		return -1;
 	}
 	if(is_empty_list_Interi(head))
 	{
-		return -1;
+		return -5;
+		*errore=1;
 	}
 	else
 	{
@@ -353,7 +355,7 @@ int rimuovi_Interi(struct codaInteri* head, int idCliente)
 {
 	struct codaInteri* temp;
 	struct codaInteri* nodo_da_rimuovere = NULL;
-
+int prova=0;
 	if (!is_valid_list_Interi(head))
 	{
 		perror("Errore! head == NULL");
@@ -384,7 +386,7 @@ int rimuovi_Interi(struct codaInteri* head, int idCliente)
         	if (nodo_da_rimuovere == head)
         	{ /* se il nodo da rimuovere � il primo della lista in pratica � come fare una dequeue */
         		////printf("rimuovo nodo in testa\n");
-        		dequeue_Interi(head);
+        		dequeue_Interi(head,&prova);
         		return idCliente;
         		////printf("Il cliente con id: %d si è spostato di cassa\n", nodo_da_rimuovere->cliente->idCliente);
         	}

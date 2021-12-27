@@ -207,7 +207,7 @@ int openConnection(const char *sockname, int msec, const struct timespec abstime
 		}
 		else
 		{
-			//printf("CLIENT-> risposta server: %s\n",bufferRicezione);
+			printf("CLIENT-> risposta server: %s\n",bufferRicezione);
 		}
 	}
 	else
@@ -294,6 +294,7 @@ int closeConnection(const char* sockname)
 //con la stringa OPEN_FILE
 int openFile(const char* pathname, int flags)
 {
+	printf("CLIENT-> faccio open File\n");
 	char bufferRicezione[200]="";
 	char daInviare[200]="OPEN_FILE;";
 
@@ -313,7 +314,6 @@ int openFile(const char* pathname, int flags)
 	sprintf(flags_array, ";%d", flags);
 	strcat(daInviare,flags_array);
 
-	printf("CLIENT-> faccio openfile!\n");
 	write(fd_socket,daInviare,200);
 	int readReturnValue=read(fd_socket,bufferRicezione,sizeof(bufferRicezione));
 
@@ -327,7 +327,7 @@ int openFile(const char* pathname, int flags)
 		}
 		else
 		{
-			//printf("CLIENT-> risposta server: %s\n",bufferRicezione);
+//			printf("CLIENT-> risposta server: %s\n",bufferRicezione);
 		}
 	}
 
@@ -377,31 +377,41 @@ int readNFiles(int N, const char* dirname)
 
 int writeFile(const char* pathname, const char* dirname)
 {
-	char bufferRicezione[200]="";
 	char daInviare[200]="WRITE_FILE;";
+	char bufferRicezione[200]="";
 	statoFd=statoFileDescriptor();
 	if(statoFd < 0)
 	{
 		return -1;
 	}
-	//pathname=relativoToAssoluto(pathname);
+	pathname=relativoToAssoluto(pathname);
+	strcat(daInviare,pathname);
+	printf("invio: %s \n",daInviare);
 
-
-	//strcat(daInviare,pathname);
-
-	write(fd_socket,daInviare,150);
+	write(fd_socket,daInviare,200);
 	int readReturnValue=read(fd_socket,bufferRicezione,sizeof(bufferRicezione));
 	if(readReturnValue > 0)
 	{
-		////printf("CLIENT-> risposta server: %s\n",bufferRicezione);
+		printf("CLIENT-> risposta server: %s\n",bufferRicezione);
 	}
 	return 0;
 }
 
 int appendToFile(const char* pathname, void* buf, size_t size, const char* dirname)
 {
+	char daInviare[200]="APPEND_TO_FILE;";
 	char bufferRicezione[200]="";
-	write(fd_socket,dirname,40);
+	statoFd=statoFileDescriptor();
+	if(statoFd < 0)
+	{
+		return -1;
+	}
+
+	pathname=relativoToAssoluto(pathname);
+	strcat(daInviare,pathname);
+	printf("invio: %s \n",daInviare);
+
+	write(fd_socket,daInviare,200);
 	int readReturnValue=read(fd_socket,bufferRicezione,sizeof(bufferRicezione));
 	if(readReturnValue > 0)
 	{
@@ -424,17 +434,11 @@ int lockFile(const char* pathname)
 	strcat(daInviare,pathname);
 
 
-
-
-
-
-
-
 	write(fd_socket,daInviare,200);
 	readReturnValue=read(fd_socket,bufferRicezione,sizeof(bufferRicezione));
 	if(readReturnValue > 0)
 	{
-		//printf("CLIENT-> risposta server per file %s: %s\n",pathname,bufferRicezione);
+		printf("CLIENT-> risposta server per file %s: %s\n",pathname,bufferRicezione);
 	}
 	return 0;
 }
@@ -451,24 +455,33 @@ int unlockFile(const char* pathname)
 		return -1;
 	}
 	pathname=relativoToAssoluto(pathname);
-
 	strcat(daInviare,pathname);
-
-
-
 	write(fd_socket,daInviare,200);
 	readReturnValue=read(fd_socket,bufferRicezione,sizeof(bufferRicezione));
 	if(readReturnValue > 0)
 	{
-		//printf("CLIENT-> risposta server: %s\n",bufferRicezione);
+		printf("CLIENT-> risposta server: %s\n",bufferRicezione);
 	}
 	return 0;
 }
 
 int closeFile(const char* pathname)
 {
+	char daInviare[200]="CLOSE_FILE;";
 	char bufferRicezione[200]="";
-	write(fd_socket,pathname,40);
+	statoFd=statoFileDescriptor();
+	if(statoFd < 0)
+	{
+		return -1;
+	}
+
+	pathname=relativoToAssoluto(pathname);
+	strcat(daInviare,pathname);
+printf("\n\ninvio: %s \n",daInviare);
+
+
+
+	write(fd_socket,daInviare,200);
 	int readReturnValue=read(fd_socket,bufferRicezione,sizeof(bufferRicezione));
 	if(readReturnValue > 0)
 	{
@@ -479,7 +492,7 @@ int closeFile(const char* pathname)
 		}
 		else
 		{
-			//printf("CLIENT-> risposta server: %s\n",bufferRicezione);
+			printf("CLIENT-> risposta server: %s\n",bufferRicezione);
 		}
 	}
 	else
@@ -501,11 +514,11 @@ int closeFile(const char* pathname)
 			perror("CLIENT-> Errore input/output");
 			return -1;
 		}
-//		if ((readReturnValue == -1) && ((errno == EAGAIN) || (errno ==EWOULDBLOCK)))
-//		{
-//			//perror("CLIENT-> Errore: scrittura in spazio di archiviazione non disponibile!\n");
-//			return -1;
-//		}
+		if ((readReturnValue == -1) && ((errno == EAGAIN) || (errno ==EWOULDBLOCK)))
+		{
+			//perror("CLIENT-> Errore: scrittura in spazio di archiviazione non disponibile!\n");
+			return -1;
+		}
 		if ((readReturnValue == -1) && (errno == EFAULT))
 		{
 			perror("CLIENT-> Errore: bufferRicezione è al di fuori del tuo spazio di indirizzi accessibile.");
@@ -536,11 +549,28 @@ int closeFile(const char* pathname)
 int removeFile(const char* pathname)
 {
 	char bufferRicezione[200]="";
-	write(fd_socket,pathname,40);
+
+	char daInviare[200]="REMOVE_FILE;";
+	statoFd=statoFileDescriptor();
+	if(statoFd < 0)
+	{
+		return -1;
+	}
+
+	pathname=relativoToAssoluto(pathname);
+	strcat(daInviare,pathname);
+	printf("invio: %s \n",daInviare);
+	write(fd_socket,daInviare,200);
+
+
 	int readReturnValue=read(fd_socket,bufferRicezione,sizeof(bufferRicezione));
 	if(readReturnValue > 0)
 	{
-		//printf("CLIENT-> risposta server: %s\n",bufferRicezione);
+		printf("CLIENT-> risposta server: %s\n",bufferRicezione);
+	}
+	else
+	{
+		return -1;
 	}
 	return 1;
 }

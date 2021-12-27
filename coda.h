@@ -27,7 +27,7 @@ extern int size(struct struttura_coda *head);
 extern int is_empty_list_Interi(struct codaInteri* head);
 extern int is_valid_list_Interi(struct codaInteri* head);
 extern int enqueue_Interi(struct codaInteri* head, int fileDescriptor);
-extern int dequeue_Interi(struct codaInteri* head);
+extern int dequeue_Interi(struct codaInteri* head, int *errore);
 extern int rimuovi_Interi(struct codaInteri* head, int idCliente);
 extern void StampaLista_Interi(struct codaInteri* head);
 extern int size_Interi(struct codaInteri* head);
