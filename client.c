@@ -193,10 +193,14 @@ int parser(struct struttura_coda *comandi)
 			}
 			//strncpy(daInviare,"WRITE_FILE;",150);
 			ritardo();
-			//openFile("debiti.txt",O_CREATE);
+//			openFile("file1.txt",O_CREATE);
 			openFile("file1.txt",CREATELOCK);
+			closeFile("file1.txt");
+
+			char buffer[400]="Ale'! ale'! ale' milan ale'! forza lotta vincerai, non ti lasceremo mai.\n";
+
+			appendToFile("file1.txt",buffer,sizeof(buffer),"cartella");
 //			lockFile("file1.txt");
-//			closeFile("file1.txt");
 			//openFile("file2.txt",O_LOCK);
 			continue;
 		}
@@ -427,7 +431,7 @@ int parser(struct struttura_coda *comandi)
 			ritardo();
 			//printf("CLIENT-> INVIO RICHIESTA UNLOCK\n");
 			strncpy(daInviare,"UNLOCK_FILE;ti/puzza/il/culo.txt\n",150);
-
+			closeFile("debiti.txt");
 			//unlockFile(daInviare);
 			continue;
 		}
@@ -438,7 +442,9 @@ int parser(struct struttura_coda *comandi)
 			char* token = strtok(stringa, ",");
 			while (token != NULL)
 			{
-				//////printf("%s\n", token);
+				printf("%s\n", token);
+
+				removeFile(token);
 				enqueueString(files,token);
 				token = strtok(NULL, ",");
 			}
@@ -446,7 +452,8 @@ int parser(struct struttura_coda *comandi)
 			//printf("CLIENT-> INVIO RICHIESTA REMOVE_FILE\n");
 			strncpy(daInviare,"REMOVE_FILE;ti/puzza/il/culo.txt\n",150);
 
-			removeFile(daInviare);
+
+			//removeFile(daInviare);
 			continue;
 		}
 

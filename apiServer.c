@@ -409,13 +409,20 @@ int appendToFile(const char* pathname, void* buf, size_t size, const char* dirna
 
 	pathname=relativoToAssoluto(pathname);
 	strcat(daInviare,pathname);
+	strcat(daInviare,";");
+	strcat(daInviare,buf);
+	char size_array[10];
+	sprintf(size_array, "%ld", size);
+	strcat(daInviare,";");
+	strcat(daInviare,size_array);
+	strcat(daInviare,";");
+	strcat(daInviare,dirname);
 	printf("invio: %s \n",daInviare);
-
 	write(fd_socket,daInviare,200);
 	int readReturnValue=read(fd_socket,bufferRicezione,sizeof(bufferRicezione));
 	if(readReturnValue > 0)
 	{
-		////printf("CLIENT-> risposta server: %s\n",bufferRicezione);
+		printf("CLIENT-> risposta server: %s\n",bufferRicezione);
 	}
 	return 1;
 }
@@ -477,7 +484,6 @@ int closeFile(const char* pathname)
 
 	pathname=relativoToAssoluto(pathname);
 	strcat(daInviare,pathname);
-printf("\n\ninvio: %s \n",daInviare);
 
 
 
@@ -487,8 +493,10 @@ printf("\n\ninvio: %s \n",daInviare);
 	{
 		if(strncmp(bufferRicezione,"CLOSE_FILE: riscontrato errore",50))
 		{
-			errno=EBADF;
-			perror("File descriptor non valido\n");
+//			errno=EBADF;
+//			perror("File descriptor non valido\n");
+			printf("CLIENT-> risposta server: %s\n",bufferRicezione);
+
 		}
 		else
 		{
