@@ -316,7 +316,7 @@ int dequeue_Interi(struct codaInteri* head, int *errore)
 	}
 	if(is_empty_list_Interi(head))
 	{
-		return -5;
+		return -1;
 		*errore=1;
 	}
 	else
