@@ -14,6 +14,8 @@
 #include <stdarg.h>
 #include <sys/time.h>
 
+#include "comunicazioneClientServer.h"
+
 #include "gestioneFile.h"
 #include "utility.h"
 
@@ -127,7 +129,7 @@ void visualizzaArrayFile()
 	}
 }
 
-int aggiungiFile(char * path, char * buf, size_t sizeFile)
+int aggiungiFile(char * path, char * buf, size_t sizeFile, int fdDaElaborare)
 {
 
 	int posDiRitorno=0;
@@ -142,7 +144,7 @@ int aggiungiFile(char * path, char * buf, size_t sizeFile)
 	}
 	else
 	{
-		int verificaInserimentoReturnValue=verificaInserimento(sizeFile);
+		int verificaInserimentoReturnValue=verificaInserimento(sizeFile,  fdDaElaborare);
 		if(verificaInserimentoReturnValue != 1)
 		{
 			perror("Errore nell' inserimento del nuovo file\n");
@@ -187,7 +189,7 @@ int aggiungiFile(char * path, char * buf, size_t sizeFile)
 
 }
 
-int verificaInserimento(int dimFile)
+int verificaInserimento(int dimFile, int fdDaElaborare)
 {
 	if((memoriaDisponibile >= dimFile) && (numFileDisponibili>0))
 	{
@@ -198,29 +200,40 @@ int verificaInserimento(int dimFile)
 		//siamo in un caso di capacity misses
 		//////printf("applico fifo!!\n");
 
+		char * espelliPath=NULL;
+		char * espelliDati=NULL;
 		while(memoriaDisponibile < dimFile && numFileDisponibili<=0)
 		{
-			applicaFifo();
-			numVolteAlgoritmoRimpiazzo++;
+			applicaFifo(fdDaElaborare);
+
 		}
 		visualizzaArrayFile();
 		return 1;
 	}
 }
 
-void applicaFifo()
+void applicaFifo(int fdDaElaborare)
 {
 	//grazie alla politica fifo, so che una volta eliminato il file più vecchio, il quale
 	//indice è presente nella variabile filePiuVecchio, il file presente nell' array alla sua destra ( in modulo ) sarà sempre il più vecchio
 	int i=filePiuVecchio,trovato=0;
 	size_t daLiberare=0;
+	char * espelliPath=NULL;
+	char * espelliDati=NULL;
+	size_t dimEspulso=0;
+
 	while(trovato != 1)
 	{
 		if(array_file[i].O_LOCK==0)//(array_file[i].lettoriAttivi == 0) &&  (array_file[i].scrittoriAttivi == 0))
 		{
-			//elimino il file in questa posizione, perchè è quello che è da più tempo nell' array e in questo momento non è in stato di lock
+			espelliPath=malloc(sizeof(char)*(strlen(array_file[i].path)+1));
+			espelliDati=malloc(sizeof(char)*array_file[i].dimensione);
 
-			printf("elimino il file %s\n",array_file[i].path);
+			//elimino il file in questa posizione, perchè è quello che è da più tempo nell' array e in questo momento non è in stato di lock
+			strcpy(espelliPath,array_file[i].path);
+			memcpy(espelliDati,array_file[i].byteFile,array_file[i].dimensione);
+			dimEspulso=array_file[i].dimensione;
+			//printf("elimino il file %s\n",array_file[i].path);
 			strncpy(array_file[i].path,"vuota",6);
 			array_file[i].data=0;//(char*)malloc(sizeof(char)*MAXSTRING);
 			daLiberare=array_file[i].dimensione;
@@ -240,12 +253,21 @@ void applicaFifo()
 			i=(i+1)%num_max_file;
 		}
 	}
+	printf("rimuovo il file %s \n che contiene %s\n",espelliPath,espelliDati);
 
+	size_t a=strlen(espelliPath);
+	sendData(fdDaElaborare,&a,sizeof(size_t));
+	sendData(fdDaElaborare,&espelliPath,a);
+
+//	size_t b=sizeof(espelliDati);
+//	sendData(fdDaElaborare,&dimEspulso,sizeof(size_t));
+//	sendData(fdDaElaborare,&espelliDati,b);
 
 	numFileDisponibili+=1;
 	memoriaDisponibile=memoriaDisponibile+daLiberare;
-
-
+	numVolteAlgoritmoRimpiazzo++;
+	free(espelliPath);
+	free(espelliDati);
 }
 
 void assumiLockFileLettura(int indiceFile)
@@ -288,7 +310,7 @@ void assumiLockFileScrittura(int indiceFile,int fdDaElaborare)
 		entrato=0;
 		//accediStrutturaFile();
 	}
-	if(strcmp(array_file[indiceFile].path,"vuoto")==0)
+	if(strcmp(array_file[indiceFile].path,"vuota")==0)
 	{
 		printf("si vuole lockare un file che non esiste più!\n");
 		return;
@@ -375,7 +397,7 @@ int openFileServer(char *path, int flag, int fdDaElaborare)
 	if(indiceFile == -1)
 	{
 		char * bufNuovoFile="vuota";//il buffer del nuovo file sarà chiaramente vuoto
-		indiceFile=aggiungiFile(path,bufNuovoFile,0);
+		indiceFile=aggiungiFile(path,bufNuovoFile,0, fdDaElaborare);
 	}
 
 
@@ -470,7 +492,7 @@ int unlockFileServer(char *path, int fdDaElaborare)
 int applicaRemove(char *path)
 {
 	int trovato=0,i=0,daLiberare=0;
-	printf("\n\n\n\n\n\n\n\n\neliminato file\n\n\n\n\n\n\n\n\n");
+	printf("eliminato file\n");
 
 	while(trovato != 1)
 	{
@@ -596,7 +618,7 @@ int appendToFileServer(char* path,char* buf, size_t size, char* dirname, int fdD
 }
 
 
-char* readFileServer(char* path, char * buffer2,size_t *dimFile,int fdDaElaborare)
+int readFileServer(char* path, char * buffer2,size_t *dimFile,int fdDaElaborare)
 {
 	int indiceFile=0;
 	indiceFile=cercaFile(path);
@@ -609,43 +631,46 @@ char* readFileServer(char* path, char * buffer2,size_t *dimFile,int fdDaElaborar
 	if( (indiceFile == -1))
 	{
 		printf("si vuole leggere un file non presente, errore!\n");
-		return "errore";
+//		return "errore";
+		return -1;
 	}
 
 
 	if(array_file[indiceFile].O_LOCK == 0 || array_file[indiceFile].identificatoreClient != fdDaElaborare)
 	{
 		printf("non puoi leggere un file che non hai lockato! \n");
-		return "errore";
+		//return "errore";
+		return -1;
 	}
 
 	*dimFile=array_file[indiceFile].dimensione;
 
 
-	void *writeTo = buffer2;
-
-	   // if (alloc)
-
-	      // in this situation dest is considered as the address
-	      // of a pointer that we have to set to the read data
-	    	char **destPtr = buffer2;
-
-	      // malloc enough space
-	      *destPtr = malloc(sizeof(**destPtr) * (*dimFile));
-
-	      // we have to write into the allocated space
-	      writeTo = *destPtr;
-
-
-
+//	void *writeTo = buffer2;
+//
+//	   // if (alloc)
+//
+//	      // in this situation dest is considered as the address
+//	      // of a pointer that we have to set to the read data
+//	    	char **destPtr = buffer2;
+//
+//	      // malloc enough space
+//	      *destPtr = malloc(sizeof(**destPtr) * (*dimFile));
+//
+//	      // we have to write into the allocated space
+//	      writeTo = *destPtr;
+//
 
 
-	buffer2=malloc(sizeof(char)*array_file[indiceFile].dimensione);
 
-	memcpy(writeTo,array_file[indiceFile].byteFile,array_file[indiceFile].dimensione);
+
+	//buffer2=malloc(sizeof(char)*array_file[indiceFile].dimensione);
+
+//	memcpy(writeTo,array_file[indiceFile].byteFile,array_file[indiceFile].dimensione);
 	//strcpy(path,array_file[indiceFile].path);
-	printf("buffer2: %s\n",buffer2);
-	return array_file[indiceFile].byteFile;
+	//printf("buffer2: %s\n",buffer2);
+	//return array_file[indiceFile].byteFile;
+	return indiceFile;
 }
 
 int readNFileServer(int N,  int fdDaElaborare)
@@ -688,6 +713,7 @@ int writeFileServer(char* path, char  * dati, size_t sizeFile, int fdDaElaborare
 		return -1;
 	}
 
+
 	if(array_file[indiceFile].dimensione<sizeFile)
 	{
 		if((array_file[indiceFile].dimensione+sizeFile)>dim_memoria)
@@ -698,18 +724,26 @@ int writeFileServer(char* path, char  * dati, size_t sizeFile, int fdDaElaborare
 		//è necessario riallocare memoria
 		array_file[indiceFile].byteFile=realloc(array_file[indiceFile].byteFile, (array_file[indiceFile].dimensione+sizeFile)*sizeof(char));
 	}
+	char * espelliPath=NULL;
+	char * espelliDati=NULL;
+	if(memoriaDisponibile<sizeFile || numFilePresenti == num_max_file)
+	{
+		applicaFifo(fdDaElaborare);
+	}
+
+	//printf("sono in write -> path da espellere: %s\ndati da espellere:%s\n",espelliPath,espelliDati);
 	memcpy(array_file[posizioneLibera].byteFile , dati, sizeFile);
-	strncpy(array_file[posizioneLibera].path,path,strlen(path));
+	strncpy(array_file[posizioneLibera].path,path,strlen(path)+1);
 	array_file[posizioneLibera].dimensione=sizeFile;
-	printf("array_file[indiceFile].path: %s \n byteFile %s\n",array_file[posizioneLibera].path,array_file[posizioneLibera].byteFile);
-	printf("posizione:%d\n",posizioneLibera);
+	printf("array_file[%d].path: %s \n byteFile %s\n",posizioneLibera,array_file[posizioneLibera].path,array_file[posizioneLibera].byteFile);
+//	printf("posizione:%d\n",posizioneLibera);
 	posizioneLibera=(posizioneLibera+1) % num_max_file;
 	numFileDisponibili-=1;
 	memoriaDisponibile=memoriaDisponibile-sizeFile;
 	maxMemoriaRaggiunta=maxMemoriaRaggiunta+sizeFile;
 	numMaxFilePresenti++;
-
-
+	numFilePresenti++;
+	numFileDisponibili++;
 	return 1;
 }
 

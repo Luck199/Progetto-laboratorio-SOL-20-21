@@ -20,11 +20,11 @@ void allocaStrutturaFile();//funzione per allocare la struttura dati che conterr
 void deallocaStrutturaFile();//funzione per deallocare la struttura dati che conterrà i miei file
 void accediStrutturaFile();//funzione per ottenere il lock per accedere in mutua esclusione la struttura dati che conterrà i miei file
 void lasciaStrutturaFile();//funzione per rilasciare il lock per accedere in mutua esclusione la struttura dati che conterrà i miei file
-int aggiungiFile(char * path, char * buf, size_t sizeFile);//funzione che aggiunge un nuovo file alla struttura dati che simulerà la memoria del server e ritorna 1 in caso di successo, -1 in caso di errore
+int aggiungiFile(char * path, char * buf, size_t sizeFile, int fdDaElaborare);//funzione che aggiunge un nuovo file alla struttura dati che simulerà la memoria del server e ritorna 1 in caso di successo, -1 in caso di errore
 void visualizzaArrayFile();//funzione che stampa le info di ogni file
 int cercaFile(char* pathname);//funzione che cerca il file identificato da pathname all' interno dell' array dei file, e restituisce uno se è presente al suo interno, -1 altrimenti
-int verificaInserimento(int dimFile);//funzione che verifica se è presente spazio nell' array per inserire un file: in caso positivo ritorna 1, altrimenti applica l' algoritmo di rimpiazzo
-void applicaFifo();//funzione che applica l' algoritmo di rimpiazzo fifo nell' array dei file
+int verificaInserimento(int dimFile, int fdDaElaborare);//funzione che verifica se è presente spazio nell' array per inserire un file: in caso positivo ritorna 1, altrimenti applica l' algoritmo di rimpiazzo
+void applicaFifo(int fdDaElaborare);//funzione che applica l' algoritmo di rimpiazzo fifo nell' array dei file
 void assumiLockFileLettura(int indiceFile);
 void lasciaLockFileLettura(int indiceFile);
 void assumiLockFileScrittura(int indiceFile, int fdDaElaborare);
@@ -36,9 +36,9 @@ int unlockFileServer(char *path, int fdDaElaborare);
 int removeFileServer(char * path, int fdDaElaborare);
 int applicaRemove(char *path);
 int appendToFileServer(char* path,char* buf, size_t size, char* dirname, int fdDaElaborare);
-char* readFileServer(char* path, char *buffer2,size_t *dimFile,int fdDaElaborare);
+int readFileServer(char* path, char *buffer2,size_t *dimFile,int fdDaElaborare);
 int readNFileServer(int N,  int fdDaElaborare);
-int writeFileServer(char* path, char  * dati, size_t sizeFile, int fdDaElaborare);
+int writeFileServer(char* path, char  * dati, size_t sizeFile,int fdDaElaborare);
 
 
 

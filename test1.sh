@@ -1,6 +1,6 @@
 #!/bin/bash
 
-./client "-p -f sockfile -W file1.txt " &
+./client "-p -f sockfile -W file2.txt -W file1.txt" &
 
 #./client "-p -f sockfile " &./client "-p -f sockfile " &
 

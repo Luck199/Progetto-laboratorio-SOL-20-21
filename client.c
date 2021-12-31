@@ -262,10 +262,9 @@ int parser(struct struttura_coda *comandi)
 			char* token = strtok(stringa,",");
 			while (token != NULL)
 			{
-				//writeFile(token,"");
-				void* buf="ciaociaociao";
-				size_t size =10;
-				readNFiles(10,"");
+				char * espulsi= malloc(80*sizeof(char *));
+				strcpy(espulsi,"espulsi");
+				writeFile(token,"");
 				enqueueString(files,token);
 				token = strtok(NULL, ",");
 			}
@@ -303,13 +302,19 @@ int parser(struct struttura_coda *comandi)
 			{
 				printf("%s\n", token);
 				int result=readFile(token,&buf,&size);
+				//printf("MENU CLIENT -> %s\n\n\n",*buf);
+				char * dirname=malloc(100*sizeof(char));
+				strcpy(dirname,"fileClient");
+
+				//dirname=relativoToAssoluto(dirname);
+				printf("dirname assoluto: %s\n",dirname);
 				if(result==0)
 				{
 					//printf("CLIENT -> ricevuto buffer contenente: %s, di grandezza: %ld\n",(char*)buf,size);
 				}
 				else
 				{
-					printf("CLIENT-> la readFile ha riscontrato un errore");
+					printf("CLIENT-> la readFile ha riscontrato un errore\n");
 				}
 				enqueueString(files,token);
 				token = strtok(NULL, ",");
