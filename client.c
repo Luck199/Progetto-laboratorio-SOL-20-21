@@ -193,6 +193,8 @@ int parser(struct struttura_coda *comandi)
 			}
 			//strncpy(daInviare,"WRITE_FILE;",150);
 			ritardo();
+			openFile("file2.txt",CREATELOCK);
+
 //			openFile("file1.txt",O_CREATE);
 //			openFile("file2.txt",CREATELOCK);
 
@@ -299,7 +301,7 @@ int parser(struct struttura_coda *comandi)
 			while (token != NULL)
 			{
 				printf("%s\n", token);
-				int result=readFile("file2.txt",&buf,&size);
+				int result=readFile(token,&buf,&size);
 				if(result==0)
 				{
 					//printf("CLIENT -> ricevuto buffer contenente: %s, di grandezza: %ld\n",(char*)buf,size);
@@ -440,6 +442,7 @@ int parser(struct struttura_coda *comandi)
 			{
 				////printf("CLIENT-> file correttamente aggiunti alla lista!\n");
 			}
+			closeFile("file2.txt");
 			ritardo();
 			//printf("CLIENT-> INVIO RICHIESTA UNLOCK\n");
 			//unlockFile(daInviare);

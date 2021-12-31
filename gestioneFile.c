@@ -261,19 +261,23 @@ void assumiLockFileScrittura(int indiceFile,int fdDaElaborare)
 	int errore=0,entrato=0;
 
 
-	//while((array_file[indiceFile].scrittoriAttivi!=0) || (array_file[indiceFile].lettoriAttivi!=0))
 	while((array_file[indiceFile].O_LOCK == 1) && (array_file[indiceFile].identificatoreClient!=0) && (array_file[indiceFile].identificatoreClient != fdDaElaborare))
 	{
 		entrato=1;
 		//lasciaStrutturaFile();
-		////printf("vorrei scrivere sul file, ma mi metto in attesa della lock, buonanotte!\n");
+		printf("vorrei scrivere sul file, ma mi metto in attesa della lock, buonanotte!\n");
 		pthread_cond_wait(&(array_file[indiceFile].fileConditionVariable), &(lockStrutturaFile));
-		////printf("Sono stato svegliato, buongiorno!\n");
+		printf("Sono stato svegliato, buongiorno!\n");
 	}
 	if(entrato==1)
 	{
 		entrato=0;
 		//accediStrutturaFile();
+	}
+	if(strcmp(array_file[indiceFile].path,"vuoto")==0)
+	{
+		printf("si vuole lockare un file che non esiste più!\n");
+		return;
 	}
 	if((errore=pthread_mutex_lock(&array_file[indiceFile].lockFile))!=0)
 	{
@@ -283,7 +287,7 @@ void assumiLockFileScrittura(int indiceFile,int fdDaElaborare)
 	array_file[indiceFile].O_LOCK =1;
 	array_file[indiceFile].scrittoriAttivi++;
 	array_file[indiceFile].identificatoreClient =fdDaElaborare;
-	//printf("Scrittori attivi: %ld\n",array_file[indiceFile].scrittoriAttivi);
+	printf("Scrittori attivi: %ld\n",array_file[indiceFile].scrittoriAttivi);
 }
 
 int lasciaLockFileScrittura(int indiceFile,int fdDaElaborare)
@@ -301,7 +305,7 @@ int lasciaLockFileScrittura(int indiceFile,int fdDaElaborare)
 		pthread_exit(&errore);
 	}
 	array_file[indiceFile].scrittoriAttivi--;
-	array_file[indiceFile].O_LOCK =0;
+	array_file[indiceFile].O_LOCK = 0;
 	array_file[indiceFile].identificatoreClient = 0;
 	printf("Scrittori attivi: %ld\n",array_file[indiceFile].scrittoriAttivi);
 	return 0;
@@ -357,14 +361,11 @@ int openFileServer(char *path, int flag, int fdDaElaborare)
 	//Inserisco file se non risulta presente
 	if(indiceFile == -1)
 	{
-		//indiceFile=aggiungiFile(path);
+		char * bufNuovoFile=NULL;//il buffer del nuovo file sarà chiramente vuoto
+		indiceFile=aggiungiFile(path,bufNuovoFile,0);
 	}
 
-	if(indiceFile == -1)
-	{
-		printf("non sono riuscito ad inserire il file nella struttura dati ");
-		return -1;
-	}
+
 	//Se sono arrivato qui vuol dire che posso procedere ad eseguire l' operazione di openFile
 
 	if(flag != 0)
@@ -450,6 +451,8 @@ int unlockFileServer(char *path, int fdDaElaborare)
 int applicaRemove(char *path)
 {
 	int trovato=0,i=0,daLiberare=0;
+	printf("\n\n\n\n\n\n\n\n\neliminato file\n\n\n\n\n\n\n\n\n");
+
 	while(trovato != 1)
 	{
 		if(strcmp(array_file[i].path, path)==0)
@@ -478,6 +481,7 @@ int applicaRemove(char *path)
 	}
 	numFileDisponibili+=1;
 	memoriaDisponibile=memoriaDisponibile+daLiberare;
+
 	return 1;
 }
 
@@ -509,7 +513,12 @@ int removeFileServer(char * path, int fdDaElaborare)
 		printf("non puoi rimuovere un file che non hai aperto te! \n");
 		return -1;
 	}
-	closeFileServer(path,fdDaElaborare);
+	if(array_file[indiceFile].puntatoreFile !=NULL)
+	{
+		closeFileServer(path,fdDaElaborare);
+	}
+	printf("file da eliminare presente!\n\n\n\n\n\n\n\n");
+
 	applicaRemoveResult = applicaRemove(path);
 	if(applicaRemoveResult == -1)
 	{
@@ -567,7 +576,7 @@ int appendToFileServer(char* path,char* buf, size_t size, char* dirname, int fdD
 }
 
 
-char * readFileServer(char* path, char * buf, size_t* size, int fdDaElaborare)
+char * readFileServer(char* path, char * buffer2,int fdDaElaborare)
 {
 	int indiceFile=0;
 	size_t dimFile=0;
@@ -581,7 +590,7 @@ char * readFileServer(char* path, char * buf, size_t* size, int fdDaElaborare)
 	if( (indiceFile == -1))
 	{
 		printf("si vuole leggere un file non presente, errore!\n");
-		return NULL;
+		return "errore";
 	}
 
 
@@ -591,8 +600,8 @@ char * readFileServer(char* path, char * buf, size_t* size, int fdDaElaborare)
 		return "errore";
 	}
 
-
-	strcpy(path,array_file[indiceFile].path);
+	buffer2=malloc(sizeof(char)*array_file[indiceFile].dimensione);
+	//strcpy(path,array_file[indiceFile].path);
 	return array_file[indiceFile].byteFile;
 }
 

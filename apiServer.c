@@ -12,6 +12,7 @@
 #include <assert.h>
 #include <limits.h>
 
+#include "comunicazioneClientServer.h"
 #include "apiServer.h"
 #include "utility.h"
 #include "gestioneFile.h"
@@ -295,7 +296,7 @@ int closeConnection(const char* sockname)
 int openFile(const char* pathname, int flags)
 {
 	printf("CLIENT-> faccio open File\n");
-	char bufferRicezione[200]="";
+	char * bufferRicezione=NULL;
 	char daInviare[200]="OPEN_FILE;";
 
 	if (flags < 0 || flags > 2)
@@ -314,10 +315,17 @@ int openFile(const char* pathname, int flags)
 	sprintf(flags_array, ";%d", flags);
 	strcat(daInviare,flags_array);
 
-	write(fd_socket,daInviare,200);
-	int readReturnValue=read(fd_socket,bufferRicezione,sizeof(bufferRicezione));
 
-	if(readReturnValue > 0)
+
+
+	size_t a=strlen(daInviare);
+	sendData(fd_socket,&a,sizeof(size_t));
+	sendData(fd_socket,daInviare,strlen(daInviare));
+
+
+
+	int readReturnValue=riceviDati(fd_socket,&bufferRicezione,&a);
+	if(readReturnValue>0)
 	{
 		if(strncmp(bufferRicezione,"OPEN_FILE: riscontrato errore",50)==0)
 		{
@@ -330,6 +338,10 @@ int openFile(const char* pathname, int flags)
 			printf("CLIENT-> risposta server: %s\n",bufferRicezione);
 		}
 	}
+	else
+	{
+		printf("Client -> Errore read\n");
+	}
 	return 0;
 }
 
@@ -337,7 +349,7 @@ int readFile(const char* pathname, void** buf, size_t* size)
 {
 	const char puntoVirgola[2] = ";";
 
-	char bufferRicezione[2000]="";
+	char *bufferRicezione=NULL;
 	char daInviare[200]="READ_FILE;";
 	statoFd=statoFileDescriptor();
 	if(statoFd < 0)
@@ -345,21 +357,32 @@ int readFile(const char* pathname, void** buf, size_t* size)
 		return -1;
 	}
 	pathname=relativoToAssoluto(pathname);
-	strcat(daInviare,pathname);
+	strncat(daInviare,pathname,strlen(pathname));
+
+	strncat(daInviare,puntoVirgola,2);
 
 
+	size_t a=strlen(daInviare);
+	sendData(fd_socket,&a,sizeof(size_t));
+	sendData(fd_socket,&daInviare,a);
 
-	int a=strlen(daInviare);
-		sendData(fd_socket,&a,sizeof(size_t));
-		sendData(fd_socket,daInviare,strlen(daInviare));
 
-//	write(fd_socket,daInviare,sizeof(daInviare));
-	int readReturnValue=read(fd_socket,bufferRicezione,2000);
-	readReturnValue=read(fd_socket,bufferRicezione,2000);
-	if(strcmp(bufferRicezione,"errore")==0 )
+	int readReturnValue=riceviDati(fd_socket,&bufferRicezione,&a);
+	if(errno==EINVAL)
 	{
+		printf("\n\n\n\neccolo!\n\n\n");
+	}
+	if(readReturnValue > 0)
+	{
+		printf("CLIENT-> risposta server: %s\n",bufferRicezione);
+	}
+	else
+	{
+		perror("CLIENT->Errore READ");
 		return -1;
 	}
+
+
 	FILE *file;
 //
 	if(errno==0)
@@ -373,7 +396,7 @@ int readFile(const char* pathname, void** buf, size_t* size)
 		}
 		else
 		{
-			int w = fwrite(bufferRicezione, sizeof(char), 305, file);
+			int w = fwrite(bufferRicezione, sizeof(char), a, file);
 		}
 		fclose(file);
 	}
@@ -467,45 +490,32 @@ int writeFile(const char* pathname, const char* dirname)
 
 
 	strncat(daInviare,path2,strlen(path2));
-	char size_array[10];
-	sprintf(size_array, "%ld", size);
-	strncat(daInviare,";",2);
-	strncat(daInviare,size_array,strlen(size_array));
+//	char size_array[10];
+//	sprintf(size_array, "%ld", size);
+//	strncat(daInviare,";",2);
+//	strncat(daInviare,size_array,strlen(size_array));
 
-	//write(fd_socket,daInviare, size);
-	int a=strlen(daInviare);
+	size_t a=strlen(daInviare);
 	sendData(fd_socket,&a,sizeof(size_t));
 	sendData(fd_socket,daInviare,strlen(daInviare));
 
-	//writen(fd_socket,daInviare,strlen(daInviare));
-//	char *stringaFile = (char*)buf;
-//	strncat(daInviare,";",2);
-//	strncat(daInviare,stringaFile,strlen(stringaFile));
-//	struct timespec request;
-//	struct timespec remaining;
-//	request.tv_sec=10 / 1000;
-//	request.tv_nsec=(10 % 1000) * 1000000L;
-//
-//	if(nanosleep(&request,&remaining)<0)
-//	{
-//		////printf("errore nanosleep\n");
-//	}
-	//sleep(1);
 
 	//writen(fd_socket,(void*)buf,1000);
 	sendData(fd_socket,&size, sizeof(size_t));
+//	printf("lunghezza file: %ld\n",size);
 	sendData(fd_socket,buf, size);
 
-//	int readReturnValue=riceviDati2(fd_socket,bufferRicezione,32);
-//	if(readReturnValue > 0)
-//	{
-//		printf("CLIENT-> risposta server: %s\n",bufferRicezione);
-//	}
-//	else
-//	{
-//		//perror("CLIENT->Errore READ");
-//		return -1;
-//	}
+
+	int readReturnValue=riceviDati(fd_socket,&bufferRicezione,&a);
+	if(readReturnValue > 0)
+	{
+		printf("CLIENT-> risposta server: %s\n",bufferRicezione);
+	}
+	else
+	{
+		//perror("CLIENT->Errore READ");
+		return -1;
+	}
 //	free(stringaFile);
 	return 0;
 }
@@ -543,7 +553,7 @@ int appendToFile(const char* pathname, void* buf, size_t size, const char* dirna
 int lockFile(const char* pathname)
 {
 	int readReturnValue=0;
-	char bufferRicezione[200]="";
+	char *bufferRicezione=NULL;
 	char daInviare[200]="LOCK_FILE;";
 	statoFd=statoFileDescriptor();
 	if(statoFd < 0)
@@ -551,38 +561,71 @@ int lockFile(const char* pathname)
 		return -1;
 	}
 	pathname=relativoToAssoluto(pathname);
-	strcat(daInviare,pathname);
+	strncat(daInviare,pathname,strlen(pathname));
 
 
-	write(fd_socket,daInviare,200);
-	readReturnValue=read(fd_socket,bufferRicezione,sizeof(bufferRicezione));
+
+
+	size_t a=strlen(daInviare);
+	sendData(fd_socket,&a,sizeof(size_t));
+	sendData(fd_socket,daInviare,a);
+
+
+
+
+
+
+
+	//write(fd_socket,daInviare,200);
+	readReturnValue=riceviDati(fd_socket,&bufferRicezione,&a);
 	if(readReturnValue > 0)
 	{
 		printf("CLIENT-> risposta server per file %s: %s\n",pathname,bufferRicezione);
+	}
+	else
+	{
+		printf("CLIENT -> errore in operazione lock \n");
 	}
 	return 0;
 }
 
 int unlockFile(const char* pathname)
 {
-	char bufferRicezione[200]="";
 	int readReturnValue=0;
-	char daInviare[200]="UNLOCK_FILE;";
-	statoFd=statoFileDescriptor();
+		char *bufferRicezione=NULL;
+		char daInviare[200]="UNLOCK_FILE;";
+		statoFd=statoFileDescriptor();
+		if(statoFd < 0)
+		{
+			return -1;
+		}
+		pathname=relativoToAssoluto(pathname);
+		strncat(daInviare,pathname,strlen(pathname));
 
-	if(statoFd < 0)
-	{
-		return -1;
-	}
-	pathname=relativoToAssoluto(pathname);
-	strcat(daInviare,pathname);
-	write(fd_socket,daInviare,200);
-	readReturnValue=read(fd_socket,bufferRicezione,sizeof(bufferRicezione));
-	if(readReturnValue > 0)
-	{
-		printf("CLIENT-> risposta server: %s\n",bufferRicezione);
-	}
-	return 0;
+
+
+
+		size_t a=strlen(daInviare);
+		sendData(fd_socket,&a,sizeof(size_t));
+		sendData(fd_socket,daInviare,a);
+
+
+
+
+
+
+
+		//write(fd_socket,daInviare,200);
+		readReturnValue=riceviDati(fd_socket,&bufferRicezione,&a);
+		if(readReturnValue > 0)
+		{
+			printf("CLIENT-> risposta server per file %s: %s\n",pathname,bufferRicezione);
+		}
+		else
+		{
+			printf("CLIENT -> errore in operazione lock \n");
+		}
+		return 0;
 }
 
 int closeFile(const char* pathname)
@@ -670,29 +713,30 @@ int closeFile(const char* pathname)
 
 int removeFile(const char* pathname)
 {
-	char bufferRicezione[200]="";
-
+	int readReturnValue=0;
+	char *bufferRicezione=NULL;
 	char daInviare[200]="REMOVE_FILE;";
 	statoFd=statoFileDescriptor();
 	if(statoFd < 0)
 	{
 		return -1;
 	}
-
 	pathname=relativoToAssoluto(pathname);
-	strcat(daInviare,pathname);
-	printf("invio: %s \n",daInviare);
-	write(fd_socket,daInviare,200);
+	strncat(daInviare,pathname,strlen(pathname));
 
+	size_t a=strlen(daInviare);
+	sendData(fd_socket,&a,sizeof(size_t));
+	sendData(fd_socket,daInviare,a);
 
-	int readReturnValue=read(fd_socket,bufferRicezione,sizeof(bufferRicezione));
+	//write(fd_socket,daInviare,200);
+	readReturnValue=riceviDati(fd_socket,&bufferRicezione,&a);
 	if(readReturnValue > 0)
 	{
-		printf("CLIENT-> risposta server: %s\n",bufferRicezione);
+		printf("CLIENT-> risposta server per file %s: %s\n",pathname,bufferRicezione);
 	}
 	else
 	{
-		return -1;
+		printf("CLIENT -> errore in operazione remove \n");
 	}
 	return 0;
 }
@@ -825,11 +869,6 @@ int recuperaFile(const char *path, void **fileBuffer, size_t *size)
 //  return (n - nleft); /* return >= 0 */
 //}
 
-int sendData(int fd, const void *data, size_t size)
-{
-	writen(fd_socket, (void *)data, size);
-	return 1;
-}
 
 void  riceviDati2(int fdDaElaborare, void *dest, size_t size)
 {
@@ -866,7 +905,6 @@ void  riceviDati2(int fdDaElaborare, void *dest, size_t size)
 	    //if (writeTo)
 	    {
 	      readn(fdDaElaborare, writeTo, size);
-	      printf("writeTo:%s\n",writeTo);
 	    }
 //	    else
 //	    {
@@ -889,5 +927,71 @@ void  riceviDati2(int fdDaElaborare, void *dest, size_t size)
 
 
 //	}
+}
+
+int riceviDati10(int fd, void *dest, size_t *sizePtr, int alloc)
+{
+	size_t size = 0;
+
+	  // control flow flags
+	  int sizeRead = 0;
+	  int error = 0;
+	  int done = 0;
+	  printf("ricevo Numeri!!\n\n\n\n\n\n");
+	  // read the size
+	  int a=readn(fd, &size, sizeof(size));
+	  if(a<0)
+	  {
+		  printf("boh\n");
+	  }
+	  printf("sizeletta ultima -> :%ld\n",size);
+	  //if (sizeRead)
+	  {
+	    // default behaviour: write to dest
+	    void *writeTo = dest;
+
+	   // if (alloc)
+	    {
+	      // in this situation dest is considered as the address
+	      // of a pointer that we have to set to the read data
+	      char **destPtr = dest;
+
+	      // malloc enough space
+	      *destPtr = malloc(sizeof(**destPtr) * size);
+
+	      // we have to write into the allocated space
+	      writeTo = *destPtr;
+	    }
+
+	    // read the data if writeTo is not NULL
+	    //if (writeTo)
+	    {
+	    	int b=readn(fd, writeTo, size);
+	    	if(b<0)
+	    	{
+	    		printf("boh2\n");
+	    	}
+	    	return b;
+	    }
+	//    else
+	//    {
+	//      error = 1;
+	//    }
+	  }
+
+	//  if (done)
+	//  {
+	//    // return the size as well
+	//    sizePtr ? *sizePtr = size : 0;
+	//    return 0;
+	//  }
+
+	//  if (error)
+	//  {
+	//    perror("getData has failed");
+	//    return -1;
+	//  }
+	//
+	//  return -1;
 }
 

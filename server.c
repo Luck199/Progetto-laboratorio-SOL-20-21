@@ -1,6 +1,6 @@
 //Created on: 23 set 2021
 
-
+#include "comunicazioneClientServer.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <pthread.h>

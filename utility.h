@@ -37,8 +37,6 @@ void accediSegnali();
 void lasciaSegnali();
 int getSegnale();//ottenere il numero del segnale in mutua esclusione
 
-ssize_t readn(int fd, void *v_ptr, size_t n);
-ssize_t writen(int fd, void *v_ptr, size_t n);
 
 extern struct struttura_workers
 {
