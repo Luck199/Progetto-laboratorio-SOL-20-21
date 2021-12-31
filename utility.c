@@ -209,6 +209,7 @@ void scriviSuLog(char * stringa, int count, ...)
 ssize_t writen(int fd, void *v_ptr, size_t n)
 {
 	char *pointer = v_ptr;
+	//printf("pointer:%s\n\n\n",pointer);
 	int valoreDiRitorno;
 	size_t nleft;
 	ssize_t bytesScritti;
@@ -307,7 +308,7 @@ void accediPipeWorker()
 		perror("lock pipe worker\n");
 		pthread_exit(&errore);
 	}
-	//////printf("SERVER-> Assunto lock pipe worker\n");
+	//printf("SERVER-> Assunto lock pipe worker\n");
 }
 
 void lasciaPipeWorker()
@@ -333,26 +334,32 @@ void enqueueCodaFileDescriptor(struct codaInteri *codaFileDescriptor, int fileDe
 	contatoreCodaFd++;
 	//printf("contatoreCodaFd: %d\n",contatoreCodaFd);
 	pthread_cond_signal(&CVFileDescriptor);
-	StampaLista_Interi(codaFileDescriptor);
+	//StampaLista_Interi(codaFileDescriptor);
 	lasciaCodaComandi();
 }
 
 
-int dequeueCodaFileDescriptor(struct codaInteri *codaFileDescriptor)
+int dequeueCodaFileDescriptor(struct codaInteri *codaFileDescriptor, int *stop)
 {
 	int fdDaElaborare;
-	//accediCodaComandi();
-
-	fdDaElaborare=dequeue_Interi(codaFileDescriptor);
+	accediCodaComandi();
+	int errore=0;
+	fdDaElaborare=dequeue_Interi(codaFileDescriptor, &errore);
 	//printf("fd pescato:%d\n",fdDaElaborare);
+	if(errore==1)
+	{
+		*stop=1;
+		//perror("ERRORE\n");
+		//printf("contatoreCodaFd: %d\n",contatoreCodaFd);
+	}
 	if(fdDaElaborare!=-1)
 	{
 		contatoreCodaFd--;
 		//printf("contatoreCodaFd: %d\n",contatoreCodaFd);
 	}
 
-	StampaLista_Interi(codaFileDescriptor);
-	//lasciaCodaComandi();
+	//StampaLista_Interi(codaFileDescriptor);
+	lasciaCodaComandi();
 
 	return fdDaElaborare;
 }
@@ -366,7 +373,7 @@ void accediSegnali()
 		perror("lock coda comandi\n");
 		pthread_exit(&err);
 	}
-	//printf("SERVER-> Assunto lock segnali\n");
+//	printf("SERVER-> Assunto lock segnali\n");
 }
 
 
@@ -378,7 +385,7 @@ void lasciaSegnali()
 		perror("lock coda comandi\n");
 		pthread_exit(&err);
 	}
-	//printf("SERVER-> Lasciato lock segnali\n");
+//	printf("SERVER-> Lasciato lock segnali\n");
 }
 
 int getSegnale()
@@ -386,7 +393,6 @@ int getSegnale()
 	int result=0;
 	accediSegnali();
 	result=segnale_globale;
-
 	lasciaSegnali();
 	return result;
 }

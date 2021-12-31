@@ -1,5 +1,5 @@
 thread_workers 5
-dim_memoria 500
-num_max_file 5
+dim_memoria 4000
+num_max_file 1
 socket_file ./sockfile
 logfile log.txt

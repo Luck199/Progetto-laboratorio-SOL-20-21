@@ -293,195 +293,197 @@ int main(int argc, char **argv)
 	FD_SET(pipeGestioneSegnali[0], &set);
 
 
-	int ciclo=0;
-
 
 	//ciclo dove verranno gestite le connessioni con i vari client.
 	//Verrà interrotto solo all' arrivo di un segnale
-	while (segnale != QUIT_INT && (segnale != HUP/* || getNumClient() > 0*/))
+	while (segnale != QUIT_INT && (segnale != HUP || getNumClient() > 0))
 	{
 		read_set = set;
-		    selectReturnValue = select(fd_hwm + 1, &read_set, NULL, NULL, NULL);
-		    if (selectReturnValue == -1 && errno == EINTR)
-		    {
-		      perror("SERVER-> la funzione select è stata interrotta dall' arrivo di un segnale\n");
-		      strncpy(stringaToLog,"Funzione select interrotta dall' arrivo di un segnale.",MAXLUNGHEZZA);
-		      scriviSuLog(stringaToLog, 0);
-		      exit(EXIT_FAILURE);
-		    }
-		    else if (selectReturnValue == -1)
-		    {
-		      perror("SERVER-> un errore è stato riscontrato dalla funzione select\n");
-		      strncpy(stringaToLog,"La funzione select ha riscontrato un errore.",MAXLUNGHEZZA);
-		      scriviSuLog(stringaToLog, 0);
-		      exit(EXIT_FAILURE);
-		    }
-		    else
-		    {
-				strncpy(stringaToLog,"Funzione select eseguita in maniera corretta",MAXLUNGHEZZA);
-				scriviSuLog(stringaToLog, 0);
-		    	for (fd = 0; fd <= fd_hwm && segnale != QUIT_INT && (segnale != HUP/*|| getNumClient() > 0*/); fd++)
-		    	{
-		    		if (FD_ISSET(fd, &read_set))
-		    		{
-		    			if (fd == fd_skt && segnale == 0)
-		    			{
-		    				//Entro nel ramo if se non sono presenti segnali
+		selectReturnValue = select(fd_hwm + 1, &read_set, NULL, NULL, NULL);
+		if (selectReturnValue == -1 && errno == EINTR)
+		{
+			perror("SERVER-> la funzione select è stata interrotta dall' arrivo di un segnale\n");
+			strncpy(stringaToLog,"Funzione select interrotta dall' arrivo di un segnale.",MAXLUNGHEZZA);
+			scriviSuLog(stringaToLog, 0);
+			exit(EXIT_FAILURE);
+		}
+		else if (selectReturnValue == -1)
+		{
+			perror("SERVER-> un errore è stato riscontrato dalla funzione select\n");
+			strncpy(stringaToLog,"La funzione select ha riscontrato un errore.",MAXLUNGHEZZA);
+			scriviSuLog(stringaToLog, 0);
+			exit(EXIT_FAILURE);
+		}
+		else
+		{
+			strncpy(stringaToLog,"Funzione select eseguita in maniera corretta",MAXLUNGHEZZA);
+			scriviSuLog(stringaToLog, 0);
+			for (fd = 0; fd <= fd_hwm && segnale != QUIT_INT && (segnale != HUP || getNumClient() > 0); fd++)
+			{
+				if (FD_ISSET(fd, &read_set))
+				{
+					if (fd == fd_skt && segnale == 0)
+					{
+						//Entro nel ramo if se non sono presenti segnali
 
-		    				//Operazione di accettazione di un nuovo client
-		    				acceptReturnValue = accept(fd_skt, NULL, 0);
+						//Operazione di accettazione di un nuovo client
+						acceptReturnValue = accept(fd_skt, NULL, 0);
 
-		    				if (acceptReturnValue == -1 && errno == EINTR)
-		    				{
-		    					perror("SERVER-> la funzione accept è stata interrotta dall' arrivo di un segnale\n");
-			    				strncpy(stringaToLog,"Funzione accept interrotta dall' arrivo di un segnale.",MAXLUNGHEZZA);
-			    				scriviSuLog(stringaToLog, 0);
-		    					exit(EXIT_FAILURE);
-		    				}
-		    				else if (acceptReturnValue == -1)
-		    				{
-		    					perror("SERVER-> un errore è stato riscontrato dalla funzione accept\n");
-			    				strncpy(stringaToLog,"La funzione accept ha riscontrato un errore.",MAXLUNGHEZZA);
-			    				scriviSuLog(stringaToLog, 0);
-		    					exit(EXIT_FAILURE);
-		    				}
-		    				strncpy(stringaToLog,"Funzione accept eseguita in maniera corretta.",MAXLUNGHEZZA);
-		    				scriviSuLog(stringaToLog, 0);
-		    				//un nuovo client si è connesso, aumento il numero dei client connessi
-		    				incrementaNumClient();
+						if (acceptReturnValue == -1 && errno == EINTR)
+						{
+							perror("SERVER-> la funzione accept è stata interrotta dall' arrivo di un segnale\n");
+							strncpy(stringaToLog,"Funzione accept interrotta dall' arrivo di un segnale.",MAXLUNGHEZZA);
+							scriviSuLog(stringaToLog, 0);
+							exit(EXIT_FAILURE);
+						}
+						else if (acceptReturnValue == -1)
+						{
+							perror("SERVER-> un errore è stato riscontrato dalla funzione accept\n");
+							strncpy(stringaToLog,"La funzione accept ha riscontrato un errore.",MAXLUNGHEZZA);
+							scriviSuLog(stringaToLog, 0);
+							exit(EXIT_FAILURE);
+						}
+						strncpy(stringaToLog,"Funzione accept eseguita in maniera corretta.",MAXLUNGHEZZA);
+						scriviSuLog(stringaToLog, 0);
+						//un nuovo client si è connesso, aumento il numero dei client connessi
+						incrementaNumClient();
 
-		    				int totClienti=getNumClient();
-		    				strncpy(stringaToLog,"Si è connesso un nuovo client, adesso il totale ammonta a",MAXLUNGHEZZA);
-		    				scriviSuLog(stringaToLog,1,totClienti);
+						int totClienti=getNumClient();
+						strncpy(stringaToLog,"Si è connesso un nuovo client, adesso il totale ammonta a",MAXLUNGHEZZA);
+						scriviSuLog(stringaToLog,1,totClienti);
 
-		    				//gestione delle connessioni
-							FD_SET(acceptReturnValue, &set);
-							if (acceptReturnValue > fd_hwm)
+						//gestione delle connessioni
+						FD_SET(acceptReturnValue, &set);
+						if (acceptReturnValue > fd_hwm)
+						{
+							fd_hwm = acceptReturnValue;
+						}
+						write(acceptReturnValue,"connessione eseguita correttamente!\n",37);
+					}
+					else if (fd == pipeGestioneWorkers[0])
+					{
+						//Un client è stato servito: recupero il suo indice
+
+						int fd;
+
+						accediPipeWorker();
+						HANDLE_WRNS(readn(pipeGestioneWorkers[0], &fd, sizeof(fd)), sizeof(fd), ;, errore = 1;);
+						lasciaPipeWorker();
+						if (errore)
+						{
+							perror("SERVER-> Errore nella lettura dalla pipe per gestione dei worker\n");
+							strncpy(stringaToLog,"Errore riscontrato nella lettura dalla pipe per la gestione dei workers.",MAXLUNGHEZZA);
+							scriviSuLog(stringaToLog, 0);
+							exit(EXIT_FAILURE);
+						}
+						else
+						{
+							strncpy(stringaToLog,"Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta.",MAXLUNGHEZZA);
+							scriviSuLog(stringaToLog, 0);
+							if (fd == -1)
 							{
-								fd_hwm = acceptReturnValue;
-							}
-							write(acceptReturnValue,"connessione eseguita correttamente!\n",37);
-		    			}
-		    			else if (fd == pipeGestioneWorkers[0])
-		    			{
-		    				//Un client è stato servito: recupero il suo indice
-
-		    				int fd;
-
-		    				accediPipeWorker();
-		    				HANDLE_WRNS(readn(pipeGestioneWorkers[0], &fd, sizeof(fd)), sizeof(fd), ;, errore = 1;);
-		    				lasciaPipeWorker();
-		    				if (errore)
-		    				{
-		    					perror("SERVER-> Errore nella lettura dalla pipe per gestione dei worker\n");
-			    				strncpy(stringaToLog,"Errore riscontrato nella lettura dalla pipe per la gestione dei workers.",MAXLUNGHEZZA);
-			    				scriviSuLog(stringaToLog, 0);
-		    					exit(EXIT_FAILURE);
-		    				}
-		    				else
-		    				{
-			    				strncpy(stringaToLog,"Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta.",MAXLUNGHEZZA);
-			    				scriviSuLog(stringaToLog, 0);
-		    					if (fd == -1)
-		    					{
-		    						//un client si è disconnesso, quindi decremento il numero di quelli connessi
+								//un client si è disconnesso, quindi decremento il numero di quelli connessi
 		    						//clientConnessi--;
 //		    						strncpy(stringaToLog,"Un client si è disconnesso, adesso il totale ammonta a",MAXLUNGHEZZA);
 //		    						scriviSuLog(stringaToLog,1,clientConnessi);
-		    					}
-		    					else
-		    					{
-		    						FD_SET(fd, &set);
-		    						if (fd > fd_hwm)
-		    						{
-		    							fd_hwm = fd;
-		    						}
-		    					}
-		    				}
-		    			}
-		    			else if (fd == pipeGestioneSegnali[0])
-		    			{
-		    				//è arrivato un segnale, recupero il suo indice dalla pipe dedicata
-		    				HANDLE_WRNS(readn(pipeGestioneSegnali[0], &segnale, sizeof(segnale));, sizeof(segnale), ;, errore = 1;);
+							}
+							else
+							{
+								FD_SET(fd, &set);
+								if (fd > fd_hwm)
+								{
+									fd_hwm = fd;
+								}
+							}
+						}
+					}
+					else if (fd == pipeGestioneSegnali[0])
+					{
+						//è arrivato un segnale, recupero il suo indice dalla pipe dedicata
+						HANDLE_WRNS(readn(pipeGestioneSegnali[0], &segnale, sizeof(segnale));, sizeof(segnale), ;, errore = 1;);
 
-		    				if (errore != 0)
-		    				{
-		    					perror("SERVER-> Errore nella lettura della pipe utilizzata per la gestione dei segnali\n");
-			    				strncpy(stringaToLog,"Errore riscontrato nella lettura dalla pipe per la gestione dei segnali.",MAXLUNGHEZZA);
-			    				scriviSuLog(stringaToLog, 0);
-		    					exit(EXIT_FAILURE);
-		    				}
-		    				strncpy(stringaToLog,"Lettura dalla pipe per la gestione dei segnali avvenuta in maniera corretta.",MAXLUNGHEZZA);
-		    				scriviSuLog(stringaToLog, 0);
-		    			}
-		    			else
-		    			{
-		    				//Nel caso in cui un client gia connesso abbia richiesto un'operazione,
-		    				//invio quest' ultima ai thread workers per essere gestita, e  rimuovo il file descriptor dall' insieme
-		    				strncpy(stringaToLog,"Ricevuta una richiesta dal client",MAXLUNGHEZZA);
-		    				scriviSuLog(stringaToLog,1,fd);
+						if (errore != 0)
+						{
+							perror("SERVER-> Errore nella lettura della pipe utilizzata per la gestione dei segnali\n");
+							strncpy(stringaToLog,"Errore riscontrato nella lettura dalla pipe per la gestione dei segnali.",MAXLUNGHEZZA);
+							scriviSuLog(stringaToLog, 0);
+							exit(EXIT_FAILURE);
+						}
+						strncpy(stringaToLog,"Lettura dalla pipe per la gestione dei segnali avvenuta in maniera corretta.",MAXLUNGHEZZA);
+						scriviSuLog(stringaToLog, 0);
+					}
+					else
+					{
+						//Nel caso in cui un client gia connesso abbia richiesto un'operazione,
+						//invio quest' ultima ai thread workers per essere gestita, e  rimuovo il file descriptor dall' insieme
+						strncpy(stringaToLog,"Ricevuta una richiesta dal client",MAXLUNGHEZZA);
+						scriviSuLog(stringaToLog,1,fd);
 
-		    				FD_CLR(fd, &set);
-		    				if (fd == fd_hwm)
-		    				{
-		    					fd_hwm--;
-		    				}
+						FD_CLR(fd, &set);
+						if (fd == fd_hwm)
+						{
+							fd_hwm--;
+						}
 
-		    				// control flow flags
-		    				int shouldClose = 0;
-		    				int shouldExit = 0;
+						// control flow flags
+						int shouldClose = 0;
+						int shouldExit = 0;
 
-		    				int *fileDescriptorPointer = malloc(sizeof(*fileDescriptorPointer));
-		    				if (fileDescriptorPointer == NULL)
-		    				{
-		    					shouldClose = 1;
-		    				}
-		    				else
-		    				{
-		    					//invio il fd ai thread workers, con l' ausilio della pipe dedicata
-		    					*fileDescriptorPointer = fd;
+						int *fileDescriptorPointer = malloc(sizeof(*fileDescriptorPointer));
+						if (fileDescriptorPointer == NULL)
+						{
+							shouldClose = 1;
+						}
+						else
+						{
+							//invio il fd ai thread workers, con l' ausilio della pipe dedicata
+							*fileDescriptorPointer = fd;
 
-		    					if(primaVolta==0)
-		    					{
-		    						//printf("prima volta che inserisco fd\n");
-		    						codaFileDescriptor->fileDescriptor=fd;
-		    						contatoreCodaFd++;
-		    						//printf("numero fd presenti in coda: %d\n",contatoreCodaFd);
-		    						StampaLista_Interi(codaFileDescriptor);
-		    						primaVolta=1;
-		    					}
-		    					else
-		    					{
-		    						//printf("seconda volta\n");
-		    						enqueueCodaFileDescriptor(codaFileDescriptor, fd);
-		    					}
-		    					if (errore == E_SQ_MUTEX_COND || errore == E_SQ_MUTEX_LOCK)
-		    					{
-		    						perror("Mutex error");
-		    						shouldClose = 1;
-		    						shouldExit = 1;
-		    					}
-		    					else if (errore != 0)
-		    					{
-		    						shouldClose = 1;
-		    					}
-		    				}
+							//diviso in due volte per via del primo inserimento
+							if(primaVolta==0)
+							{
+								accediCodaComandi();
+								//printf("prima volta che inserisco fd\n");
+								codaFileDescriptor->fileDescriptor=fd;
+								contatoreCodaFd++;
+								pthread_cond_signal(&CVFileDescriptor);
 
-		    				if (shouldClose)
-		    				{
-		    					close(fd);
-		    					//dequeueCodaFileDescriptor(fd);
-		    				}
+								//printf("numero fd presenti in coda: %d\n",contatoreCodaFd);
+								//StampaLista_Interi(codaFileDescriptor);
+								primaVolta=1;
+								lasciaCodaComandi();
+							}
+							else
+							{
+								//printf("seconda volta\n");
+								enqueueCodaFileDescriptor(codaFileDescriptor, fd);
+							}
+							if (errore == E_SQ_MUTEX_COND || errore == E_SQ_MUTEX_LOCK)
+							{
+								perror("Mutex error");
+								shouldClose = 1;
+								shouldExit = 1;
+							}
+							else if (errore != 0)
+							{
+								shouldClose = 1;
+							}
+						}
 
-		    				if (shouldExit)
-		    				{
-		    					exit(EXIT_FAILURE);
-		    				}
-		    				free(fileDescriptorPointer);
-		    			}
-		    		}
-		    	}
-		    }
+						if (shouldClose)
+						{
+							close(fd);
+						}
+
+						if (shouldExit)
+						{
+							exit(EXIT_FAILURE);
+						}
+						free(fileDescriptorPointer);
+					}
+				}
+			}
+		}
 	}
 
 	accediCodaComandi();
@@ -492,14 +494,15 @@ int main(int argc, char **argv)
 
 	//gestione worker all' arrivo di un segnale di terminazione immediata
 	int fdNew=0;
+	int guasto=0;
 	if(segnale == QUIT_INT)
 	{
 		//////printf("Segnale di quit o di int\n");
-		accediCodaComandi();
+//		accediCodaComandi();
 		while(getNumClient()>0)
 		{
-			fdNew=dequeueCodaFileDescriptor(codaFileDescriptor);
-			//if(fdNew != -1)
+			fdNew=dequeueCodaFileDescriptor(codaFileDescriptor,&guasto);
+			if(fdNew != -1)
 			{
 				int closeReturnValue = close(fdNew);
 				if ((closeReturnValue == -1) && (errno == EBADF))
@@ -526,30 +529,31 @@ int main(int argc, char **argv)
 			}
 
 		}
-		lasciaCodaComandi();
+//		lasciaCodaComandi();
 	}
 
 	//gestione worker all' arrivo di un segnale di terminazione leggera
 
-	if(segnale == HUP)
-	{
-		//accediCodaComandi();
-		//attesa fino a  che i thread non hanno terminato
-		pthread_mutex_lock(&lockClientConnessi);
-		while(clientConnessi > 0)
-		{
-			printf("ASPETTO CHE I CLIENT SI TOLGANO DI CULO\n");
-			pthread_cond_wait(&allClientExitCond, &lockClientConnessi);
-			printf("CLIENT ASPETTATI\n");
-		}
-		pthread_mutex_unlock(&lockClientConnessi);
-
-	}
-
+//	if(segnale == HUP)
+//	{
+//
+//		//accediCodaComandi();
+//		//attesa fino a  che i thread non hanno terminato
+//		pthread_mutex_lock(&lockClientConnessi);
+//		while(getNumClient() > 0)
+//		{
+//			printf("\n\ncucù\n\n\n");
+//
+//			printf("ASPETTO CHE I CLIENT SI TOLGANO DI CULO\n");
+//			pthread_cond_wait(&allClientExitCond, &lockClientConnessi);
+//			printf("CLIENT ASPETTATI\n");
+//		}
+//		pthread_mutex_unlock(&lockClientConnessi);
+//
+//	}
 	for (i=0;i<thread_workers;i++)
 	{
 		printf("SERVER-> Attendo il worker {%d}\n", workers[i].id_worker);
-		lasciaCodaComandi();
 		joinReturnValue=pthread_join(workers[i].threadId, NULL);
 		if(joinReturnValue != 0)
 		{
@@ -666,12 +670,6 @@ static void *gestoreSegnali(void *argument)
 		tipoSegnale = QUIT_INT;
 		accediSegnali();
 		segnale_globale=2;
-
-		accediCodaComandi();
-
-					pthread_cond_signal(&CVFileDescriptor);
-					lasciaCodaComandi();
-
 		lasciaSegnali();
 		segnaleChiusuraHup = QUIT_INT;
 	}
@@ -684,7 +682,6 @@ static void *gestoreSegnali(void *argument)
 		accediSegnali();
 		segnale_globale=1;
 		lasciaSegnali();
-
 		segnaleChiusuraHup = HUP;
 	}
 	else

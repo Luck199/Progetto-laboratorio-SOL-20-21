@@ -194,12 +194,12 @@ int parser(struct struttura_coda *comandi)
 			//strncpy(daInviare,"WRITE_FILE;",150);
 			ritardo();
 //			openFile("file1.txt",O_CREATE);
-			openFile("file1.txt",CREATELOCK);
-			closeFile("file1.txt");
+//			openFile("file2.txt",CREATELOCK);
 
-			char buffer[400]="Ale'! ale'! ale' milan ale'! forza lotta vincerai, non ti lasceremo mai.\n";
 
-			appendToFile("file1.txt",buffer,sizeof(buffer),"cartella");
+//			char buffer[400]="Ale'! ale'! ale' milan ale'! forza lotta vincerai, non ti lasceremo mai.\n";
+//
+//			appendToFile("file1.txt",buffer,sizeof(buffer),"cartella");
 //			lockFile("file1.txt");
 			//openFile("file2.txt",O_LOCK);
 			continue;
@@ -256,15 +256,18 @@ int parser(struct struttura_coda *comandi)
 		if(strcmp(stringa,"-W")==0)
 		{
 			stringa=dequeue(comandi);
+			//la stringa token conterrà mano mano tutti i singoli file ricevuti a linea di comando che dovranno essere inviati al server
 			char* token = strtok(stringa,",");
 			while (token != NULL)
 			{
+				writeFile(token,"");
+
 				enqueueString(files,token);
 				token = strtok(NULL, ",");
 			}
+			//closeFile("file2.txt");
 			strncpy(daInviare,"WRITE_FILE;ti/puzza/il/culo.txt\n",150);
 			ritardo();
-			writeFile(daInviare,daInviare);
 			continue;
 		}
 		if(strcmp(stringa,"-D")==0)
@@ -290,13 +293,26 @@ int parser(struct struttura_coda *comandi)
 		{
 
 			stringa=dequeue(comandi);
+			void *buf = NULL;
+			size_t size;
 			char* token = strtok(stringa, ",");
 			while (token != NULL)
 			{
-				//////printf("%s\n", token);
+				printf("%s\n", token);
+				int result=readFile("file2.txt",&buf,&size);
+				if(result==0)
+				{
+					//printf("CLIENT -> ricevuto buffer contenente: %s, di grandezza: %ld\n",(char*)buf,size);
+				}
+				else
+				{
+					printf("CLIENT-> la readFile ha riscontrato un errore");
+				}
 				enqueueString(files,token);
 				token = strtok(NULL, ",");
 			}
+
+//			closeFile("debiti.txt");
 			//StampaLista(files);
 			ritardo();
 			//readFile();
@@ -334,7 +350,7 @@ int parser(struct struttura_coda *comandi)
 				}
 			}
 			ritardo();
-
+			readNFiles(numeroFileDaLeggere, "cartella");
 			continue;
 		}
 		if(strcmp(stringa,"-d")==0)
@@ -389,13 +405,10 @@ int parser(struct struttura_coda *comandi)
 			stringa=dequeue(comandi);
 			char* token = strtok(stringa, ",");
 
-			//openFile("debiti.txt",CREATELOCK);
-
-
 			while (token != NULL)
 			{
 				ritardo();
-				printf("voglio lockare il file: %s\n", token);
+				//printf("voglio lockare il file: %s\n", token);
 				lockFile(token);
 				enqueueString(files,token);
 				token = strtok(NULL, ",");
@@ -407,7 +420,6 @@ int parser(struct struttura_coda *comandi)
 			ritardo();
 			//printf("CLIENT-> INVIO RICHIESTA LOCK\n");
 
-			strncpy(daInviare,"LOCK_FILE;ti/puzza/il/culo.txt\n",150);
 
 //			lockFile(daInviare);
 			continue;
@@ -430,8 +442,6 @@ int parser(struct struttura_coda *comandi)
 			}
 			ritardo();
 			//printf("CLIENT-> INVIO RICHIESTA UNLOCK\n");
-			strncpy(daInviare,"UNLOCK_FILE;ti/puzza/il/culo.txt\n",150);
-			closeFile("debiti.txt");
 			//unlockFile(daInviare);
 			continue;
 		}
@@ -469,8 +479,6 @@ int parser(struct struttura_coda *comandi)
 	free(stringa);
 	return 0;
 }
-
-
 
 
 

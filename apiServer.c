@@ -327,58 +327,18 @@ int openFile(const char* pathname, int flags)
 		}
 		else
 		{
-//			printf("CLIENT-> risposta server: %s\n",bufferRicezione);
+			printf("CLIENT-> risposta server: %s\n",bufferRicezione);
 		}
 	}
-
-
-
-
-
-
-
-
-
 	return 0;
 }
 
 int readFile(const char* pathname, void** buf, size_t* size)
 {
-	char bufferRicezione[200]="";
-	statoFd=statoFileDescriptor();
-	if(statoFd < 0)
-	{
-		return -1;
-	}
-	pathname=relativoToAssoluto(pathname);
+	const char puntoVirgola[2] = ";";
 
-
-	write(fd_socket,pathname,40);
-	int readReturnValue=read(fd_socket,bufferRicezione,sizeof(bufferRicezione));
-	if(readReturnValue > 0)
-	{
-		////printf("CLIENT-> risposta server: %s\n",bufferRicezione);
-	}
-	return 0;
-}
-
-int readNFiles(int N, const char* dirname)
-{
-	char bufferRicezione[200]="";
-	write(fd_socket,dirname,40);
-	int readReturnValue=read(fd_socket,bufferRicezione,sizeof(bufferRicezione));
-	if(readReturnValue > 0)
-	{
-		////printf("CLIENT-> risposta server: %s\n",bufferRicezione);
-	}
-	return 0;
-}
-
-
-int writeFile(const char* pathname, const char* dirname)
-{
-	char daInviare[200]="WRITE_FILE;";
-	char bufferRicezione[200]="";
+	char bufferRicezione[2000]="";
+	char daInviare[200]="READ_FILE;";
 	statoFd=statoFileDescriptor();
 	if(statoFd < 0)
 	{
@@ -386,14 +346,167 @@ int writeFile(const char* pathname, const char* dirname)
 	}
 	pathname=relativoToAssoluto(pathname);
 	strcat(daInviare,pathname);
-	printf("invio: %s \n",daInviare);
 
-	write(fd_socket,daInviare,200);
+
+
+	int a=strlen(daInviare);
+		sendData(fd_socket,&a,sizeof(size_t));
+		sendData(fd_socket,daInviare,strlen(daInviare));
+
+//	write(fd_socket,daInviare,sizeof(daInviare));
+	int readReturnValue=read(fd_socket,bufferRicezione,2000);
+	readReturnValue=read(fd_socket,bufferRicezione,2000);
+	if(strcmp(bufferRicezione,"errore")==0 )
+	{
+		return -1;
+	}
+	FILE *file;
+//
+	if(errno==0)
+	{
+		printf("faccio fopen\n\n\n\n\n");
+		file = fopen("prova.txt", "w");
+		if( file==NULL )
+		{
+			perror("Errore in apertura del file");
+			return -1;
+		}
+		else
+		{
+			int w = fwrite(bufferRicezione, sizeof(char), 305, file);
+		}
+		fclose(file);
+	}
+	return 0;
+}
+
+int readNFiles(int N, const char* dirname)
+{
+	char bufferRicezione[200]="";
+	char daInviare[200]="READ_N_FILE;";
+	char appoggio[20];
+	int numFile=0;
+	statoFd=statoFileDescriptor();
+	if(statoFd < 0)
+	{
+		return -1;
+	}
+
+	sprintf(appoggio, "%d", N);
+
+	strcat(daInviare,appoggio);
+	strcat(daInviare,";");
+	strcat(daInviare,dirname);
+
+	printf("\n\nda inviare: %s \n\n",daInviare);
+
+
+
+
+
+
+
+
+	write(fd_socket,daInviare,sizeof(daInviare));
 	int readReturnValue=read(fd_socket,bufferRicezione,sizeof(bufferRicezione));
+
+	char* rest = bufferRicezione;
+	char *esito=strtok_r(bufferRicezione, ";", &rest);
+
 	if(readReturnValue > 0)
 	{
-		printf("CLIENT-> risposta server: %s\n",bufferRicezione);
+		if(strcmp(esito,"READ_N_FILE eseguita correttamente!")==0)
+		{
+			numFile = atoi(strtok_r(bufferRicezione, ";", &rest));
+			printf("CLIENT-> Letti %d file!\n", numFile);
+		}
+
+		else
+		{
+			printf("CLIENT-> risposta server: %s\n",bufferRicezione);
+		}
 	}
+	else
+	{
+		//la read ha riportato errori
+		return -1;
+	}
+	return numFile;
+}
+
+
+int writeFile(const char* pathname, const char* dirname)
+{
+	char daInviare[200]="WRITE_FILE;";
+	char *bufferRicezione=NULL;
+	statoFd=statoFileDescriptor();
+	if(statoFd < 0)
+	{
+		return -1;
+	}
+	char * path2="";
+	path2=relativoToAssoluto(pathname);
+	dirname=relativoToAssoluto(dirname);
+
+
+
+	//recupero il file da poter inviare
+	void *buf = NULL;
+	size_t size = 0;
+
+	int recuperaFileReturnValue=0;
+	recuperaFileReturnValue=recuperaFile(path2, &buf, &size);
+	if(recuperaFileReturnValue == -1)
+	{
+		printf("Errore nel recupero del file\n ");
+		return -1;
+	}
+
+
+
+
+
+	strncat(daInviare,path2,strlen(path2));
+	char size_array[10];
+	sprintf(size_array, "%ld", size);
+	strncat(daInviare,";",2);
+	strncat(daInviare,size_array,strlen(size_array));
+
+	//write(fd_socket,daInviare, size);
+	int a=strlen(daInviare);
+	sendData(fd_socket,&a,sizeof(size_t));
+	sendData(fd_socket,daInviare,strlen(daInviare));
+
+	//writen(fd_socket,daInviare,strlen(daInviare));
+//	char *stringaFile = (char*)buf;
+//	strncat(daInviare,";",2);
+//	strncat(daInviare,stringaFile,strlen(stringaFile));
+//	struct timespec request;
+//	struct timespec remaining;
+//	request.tv_sec=10 / 1000;
+//	request.tv_nsec=(10 % 1000) * 1000000L;
+//
+//	if(nanosleep(&request,&remaining)<0)
+//	{
+//		////printf("errore nanosleep\n");
+//	}
+	//sleep(1);
+
+	//writen(fd_socket,(void*)buf,1000);
+	sendData(fd_socket,&size, sizeof(size_t));
+	sendData(fd_socket,buf, size);
+
+//	int readReturnValue=riceviDati2(fd_socket,bufferRicezione,32);
+//	if(readReturnValue > 0)
+//	{
+//		printf("CLIENT-> risposta server: %s\n",bufferRicezione);
+//	}
+//	else
+//	{
+//		//perror("CLIENT->Errore READ");
+//		return -1;
+//	}
+//	free(stringaFile);
 	return 0;
 }
 
@@ -496,6 +609,7 @@ int closeFile(const char* pathname)
 //			errno=EBADF;
 //			perror("File descriptor non valido\n");
 			printf("CLIENT-> risposta server: %s\n",bufferRicezione);
+			return -1;
 
 		}
 		else
@@ -551,7 +665,7 @@ int closeFile(const char* pathname)
 			return -1;
 		}
 	}
-	return 1;
+	return 0;
 }
 
 int removeFile(const char* pathname)
@@ -580,12 +694,200 @@ int removeFile(const char* pathname)
 	{
 		return -1;
 	}
-	return 1;
+	return 0;
 }
 
 
+int recuperaFile(const char *path, void **fileBuffer, size_t *size)
+{
+
+  FILE *filePointer = NULL;
+  *fileBuffer = NULL;
+
+  //printf("path:%s\n\n\n",path);
+  // control flow flags
+  int error = 0;
+  int chiudi = 0;
+  int freeBuf = 0;
+
+  // open the file
+  filePointer = fopen(path, "r");
+  if(filePointer == NULL)
+  {
+	  perror("SERVER -> Error fopen");
+	  return -1;
+  }
+  // go to the end of the file
+  fseek(filePointer, 0L, SEEK_END);
 
 
+  //mi salvo la grandezza del file
+  *size = ftell(filePointer);
+
+  //riporto il puntatore del file all' inizio di esso
+  errno = 0;
+  rewind(filePointer);
+  if (errno)
+  {
+	  perror("Client -> ERRORE OPERAZIONE REWIND");
+  }
 
 
+  //alloco lo spazio necessario
+
+  *fileBuffer = malloc(sizeof(char) * (*size));
+  //fare controllo se sono riuscito ad allocare abbastanza memoria
+
+  //inserisco il file nel buffer
+  if (!error)
+  {
+	  int readSize = fread(*fileBuffer, sizeof(char), *size, filePointer);
+	  if (readSize < *size)
+	  {
+		  perror("readLocalFile internal error: fread");
+		  return -1;
+	  }
+
+	  chiudi = 1;
+  }
+
+  if (chiudi)
+  {
+	  errno = 0;
+	  fclose(filePointer);
+	  if (errno)
+	  {
+		  perror("Client -> ERRORE OPERAZIONE FCLOSE");
+		  return -1;
+	  }
+  }
+
+  if (freeBuf)
+  {
+	  free(*fileBuffer);
+	  *fileBuffer = NULL;
+  }
+
+  //printf("successfully read the file %s from disk of size %zd\n", path, *size);
+  return 0;
+
+}
+
+
+//ssize_t readn(int fd, void *v_ptr, size_t n)
+//{
+//  char *ptr = v_ptr;
+//  size_t nleft;
+//  ssize_t nread;
+//
+//  nleft = n;
+//  while (nleft > 0)
+//  {
+//    if ((nread = read(fd, ptr, nleft)) < 0)
+//    {
+//      if (nleft == n)
+//        return -1; /* error, return -1 */
+//      else
+//        break; /* error, return amount read so far */
+//    }
+//    else if (nread == 0)
+//    {
+//      break; /* EOF */
+//    }
+//    nleft -= nread;
+//    ptr += nread;
+//  }
+//  return (n - nleft); /* return >= 0 */
+//}
+//
+///* Write "n" bytes to a descriptor */
+//ssize_t writen(int fd, void *v_ptr, size_t n)
+//{
+//  char *ptr = v_ptr;
+//  size_t nleft;
+//  ssize_t nwritten;
+//
+//  nleft = n;
+//  while (nleft > 0)
+//  {
+//    if ((nwritten = write(fd, ptr, nleft)) < 0)
+//    {
+//      if (nleft == n)
+//        return -1; /* error, return -1 */
+//      else
+//        break; /* error, return amount written so far */
+//    }
+//    else if (nwritten == 0)
+//      break;
+//    nleft -= nwritten;
+//    ptr += nwritten;
+//  }
+//  return (n - nleft); /* return >= 0 */
+//}
+
+int sendData(int fd, const void *data, size_t size)
+{
+	writen(fd_socket, (void *)data, size);
+	return 1;
+}
+
+void  riceviDati2(int fdDaElaborare, void *dest, size_t size)
+{
+
+	//size_t size = 0;
+
+	  // control flow flags
+	  int sizeRead = 0;
+	  int error = 0;
+	  int done = 0;
+
+	  // read the size
+	//  readn(fdDaElaborare, &size, sizeof(size));
+
+//	  if (sizeRead)
+//	  {
+	    // default behaviour: write to dest
+	    void *writeTo = dest;
+
+//	    if (alloc)
+//	    {
+	      // in this situation dest is considered as the address
+	      // of a pointer that we have to set to the read data
+	      char **destPtr = dest;
+
+	      // malloc enough space
+	      *destPtr = malloc(sizeof(**destPtr) * size);
+
+	      // we have to write into the allocated space
+	      writeTo = *destPtr;
+//	    }
+
+	    // read the data if writeTo is not NULL
+	    //if (writeTo)
+	    {
+	      readn(fdDaElaborare, writeTo, size);
+	      printf("writeTo:%s\n",writeTo);
+	    }
+//	    else
+//	    {
+//	      error = 1;
+//	    }
+	//  }
+
+//	  if (done)
+//	  {
+//	    // return the size as well
+//	    sizePtr ? *sizePtr = size : 0;
+//	    return 0;
+//	  }
+//
+//	  if (error)
+//	  {
+//	    perror("getData has failed");
+//	    return -1;
+//	  }
+
+
+//	}
+}
 

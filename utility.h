@@ -29,7 +29,7 @@ int getNumClient();
 void accediCodaComandi();
 void lasciaCodaComandi();
 void enqueueCodaFileDescriptor(struct codaInteri *codaFileDescriptor, int fileDescriptorPointer);
-int dequeueCodaFileDescriptor(struct codaInteri *codaFileDescriptor);
+int dequeueCodaFileDescriptor(struct codaInteri *codaFileDescriptor, int *stop);
 void accediPipeWorker();
 void lasciaPipeWorker();
 void scriviSuLog(char * stringa, int count, ...);
@@ -52,6 +52,7 @@ extern struct struttura_workers *workers;
 extern struct info_file
 {
     char *path;
+    char * byteFile;
     long data;
     short O_LOCK;
     short O_CREATE;
@@ -60,10 +61,6 @@ extern struct info_file
 
     FILE * puntatoreFile;
     int identificatoreClient;
-//    OwnerId currentlyLockedBy; // OwnerId (client id), 0 if no owner
-//    OwnerId ownerCanWrite;     // OwnerId (client id), 0 if no owner
-//    List_T waitingLockers;     // OwnerIds (client ids)
-//    List_T openedBy;           // OwnerIds (client ids)
 
     size_t lettoriAttivi;
     size_t scrittoriAttivi;

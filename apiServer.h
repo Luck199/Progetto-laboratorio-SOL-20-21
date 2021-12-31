@@ -98,5 +98,9 @@ int removeFile(const char* pathname);
 
 
 
+int recuperaFile(const char *path, void **bufPtr, size_t *size);
+
+
+
 
 
