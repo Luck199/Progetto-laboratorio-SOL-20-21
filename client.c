@@ -193,7 +193,7 @@ int parser(struct struttura_coda *comandi)
 			}
 			//strncpy(daInviare,"WRITE_FILE;",150);
 			ritardo();
-			openFile("file2.txt",CREATELOCK);
+			//openFile("file2.txt",CREATELOCK);
 
 //			openFile("file1.txt",O_CREATE);
 //			openFile("file2.txt",CREATELOCK);
@@ -262,12 +262,13 @@ int parser(struct struttura_coda *comandi)
 			char* token = strtok(stringa,",");
 			while (token != NULL)
 			{
-				writeFile(token,"");
-
+				//writeFile(token,"");
+				void* buf="ciaociaociao";
+				size_t size =10;
+				readNFiles(10,"");
 				enqueueString(files,token);
 				token = strtok(NULL, ",");
 			}
-			//closeFile("file2.txt");
 			strncpy(daInviare,"WRITE_FILE;ti/puzza/il/culo.txt\n",150);
 			ritardo();
 			continue;
@@ -442,7 +443,6 @@ int parser(struct struttura_coda *comandi)
 			{
 				////printf("CLIENT-> file correttamente aggiunti alla lista!\n");
 			}
-			closeFile("file2.txt");
 			ritardo();
 			//printf("CLIENT-> INVIO RICHIESTA UNLOCK\n");
 			//unlockFile(daInviare);
@@ -456,7 +456,6 @@ int parser(struct struttura_coda *comandi)
 			while (token != NULL)
 			{
 				printf("%s\n", token);
-
 				removeFile(token);
 				enqueueString(files,token);
 				token = strtok(NULL, ",");

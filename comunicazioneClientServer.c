@@ -94,9 +94,9 @@ int riceviDati(int fd, void *dest, size_t *sizePtr)
   size_t size = 0;
 
   // control flow flags
-  int sizeRead = 0;
-  int error = 0;
-  int done = 0;
+//  int sizeRead = 0;
+//  int error = 0;
+//  int done = 0;
 
   // read the size
   int a=readn(fd, &size, sizeof(size));
@@ -132,10 +132,9 @@ int riceviDati(int fd, void *dest, size_t *sizePtr)
     	int b=readn(fd, writeTo, size);
     	if(b<0)
     	{
-    		//printf("boh2\n");
+    		printf("boh2\n");
     		return -1;
     	}
-
     	return b;
 
 //    else

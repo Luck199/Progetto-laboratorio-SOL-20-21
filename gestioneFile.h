@@ -36,11 +36,15 @@ int unlockFileServer(char *path, int fdDaElaborare);
 int removeFileServer(char * path, int fdDaElaborare);
 int applicaRemove(char *path);
 int appendToFileServer(char* path,char* buf, size_t size, char* dirname, int fdDaElaborare);
-char * readFileServer(char* path, char * buffer2,int fdDaElaborare);
+char* readFileServer(char* path, char *buffer2,size_t *dimFile,int fdDaElaborare);
 int readNFileServer(int N,  int fdDaElaborare);
 int writeFileServer(char* path, char  * dati, size_t sizeFile, int fdDaElaborare);
 
 
+
+extern int numMaxFilePresenti;
+extern float maxMemoriaRaggiunta;
+extern int numVolteAlgoritmoRimpiazzo;
 extern int memoriaDisponibile;//memoria disponibile nell' array
 extern int numFileDisponibili;//numero di file che posso ancora inserire nell' array
 extern int posizioneLibera;//prossima posizione dove poter scrivere nell' array dei miei file

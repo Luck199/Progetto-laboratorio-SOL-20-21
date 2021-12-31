@@ -358,7 +358,11 @@ int main(int argc, char **argv)
 						{
 							fd_hwm = acceptReturnValue;
 						}
-						write(acceptReturnValue,"connessione eseguita correttamente!\n",37);
+						char  daInviare[200]="";
+						strncpy(daInviare,"connessione eseguita correttamente!\n",37);
+						size_t a=strlen(daInviare);
+						sendData(acceptReturnValue,&a,sizeof(size_t));
+						sendData(acceptReturnValue,&daInviare,a);
 					}
 					else if (fd == pipeGestioneWorkers[0])
 					{
@@ -602,11 +606,35 @@ int main(int argc, char **argv)
 	strncpy(stringaToLog,"Funzione di chiusura del socket riuscita correttamente.",MAXLUNGHEZZA);
 	scriviSuLog(stringaToLog,0);
 
-	fclose(logFile);
+
 	accediCodaComandi();
 	free(codaFileDescriptor);
 	lasciaCodaComandi();
+	printf("Stampe finali:\n");
+	printf("-> Numero di file massimo memorizzato nel server: %d\n",numMaxFilePresenti);
+	printf("-> Dimensione massima in Mbytes raggiunta dal file storage: %f\n",maxMemoriaRaggiunta);
+	printf("-> Numero di volte in cui l' algoritmo di rimpiazzamento della cache è stato eseguito per selezionare uno o più file \"vittima\": %d\n",numVolteAlgoritmoRimpiazzo);
+	printf("-> lista dei file contenuti nello storage al momento della chiusura del server:\n");
+	for(i=0;i<num_max_file;i++)
+	{
+		if(strcmp(array_file[i].path,"vuota")!=0)
+		{
+			printf("\t-> %s\n",array_file[i].path);
+		}
+	}
+
+
+	strncpy(stringaToLog,"Num Rimpiazzi",MAXLUNGHEZZA);
+	scriviSuLog(stringaToLog,1,numVolteAlgoritmoRimpiazzo);
+
+	strncpy(stringaToLog,"Num max connessioni contemporanee",MAXLUNGHEZZA);
+	scriviSuLog(stringaToLog,1,numMaxconnessioniContemporanee);
+
+
+
+	fclose(logFile);
 	deallocaStrutturaFile();
+
 	printf("SERVER-> finito Server, i client connessi risultano: %d\n",clientConnessi);
 	printf("Sono passati dal server: %d client\n",clientTotali);
 	return 0;

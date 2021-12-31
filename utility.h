@@ -21,6 +21,7 @@ extern int pipeGestioneWorkers[2];
 extern int segnaleChiusuraHup;
 extern int segnale_globale;
 extern int broadcast;
+extern int numMaxconnessioniContemporanee;
 
 void letturaFile(char *config, char *nomeFilelog);
 void decrementaNumClient();

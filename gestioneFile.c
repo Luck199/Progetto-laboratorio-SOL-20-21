@@ -25,6 +25,9 @@ int numFileDisponibili;
 int posizioneLibera;
 int numFilePresenti;
 int filePiuVecchio;
+int numMaxFilePresenti;
+float maxMemoriaRaggiunta;
+int numVolteAlgoritmoRimpiazzo;
 char * cartellaClient;
 char * cartellaServer;
 
@@ -53,11 +56,16 @@ void allocaStrutturaFile()
 		array_file[i].scrittoriAttivi=0;
 		array_file[i].puntatoreFile = NULL;
 		array_file[i].identificatoreClient=0;
+		array_file[i].byteFile=(char*)malloc(sizeof(char)*MAXSTRING);
+		strncpy(array_file[i].byteFile,"vuota",6);
 		pthread_mutex_init(&(array_file[i].lockFile), NULL);
 		pthread_cond_init(&(array_file[i].fileConditionVariable), NULL);
 
 
 	}
+	numMaxFilePresenti=0;
+	maxMemoriaRaggiunta=0;
+	numVolteAlgoritmoRimpiazzo=0;
 	////////printf("Allocazione struttura file terminata con successo\n");
 }
 
@@ -139,9 +147,8 @@ int aggiungiFile(char * path, char * buf, size_t sizeFile)
 		{
 			perror("Errore nell' inserimento del nuovo file\n");
 //			lasciaStrutturaFile();
-				return -1;
+			return -1;
 		}
-		int value=0;
 		//se arrivo qui vuol dire che l' inserimento del file può essere fatto
 
 		//inserisco il file dalla cartella client alla cartella server
@@ -168,6 +175,8 @@ int aggiungiFile(char * path, char * buf, size_t sizeFile)
 		posizioneLibera=(posizioneLibera+1) % num_max_file;
 		numFileDisponibili-=1;
 		memoriaDisponibile=memoriaDisponibile-sizeFile;
+		maxMemoriaRaggiunta=maxMemoriaRaggiunta+sizeFile;
+		numMaxFilePresenti++;
 		//visualizzaArrayFile();
 		return posDiRitorno;
 	}
@@ -188,7 +197,12 @@ int verificaInserimento(int dimFile)
 	{
 		//siamo in un caso di capacity misses
 		//////printf("applico fifo!!\n");
-		applicaFifo();
+
+		while(memoriaDisponibile < dimFile && numFileDisponibili<=0)
+		{
+			applicaFifo();
+			numVolteAlgoritmoRimpiazzo++;
+		}
 		visualizzaArrayFile();
 		return 1;
 	}
@@ -333,7 +347,6 @@ int cercaFile(char* pathname)
 int openFileServer(char *path, int flag, int fdDaElaborare)
 {
 
-	//printf("è stata chiamata dal thread worker la open file sul file %s con il flag : %d\n",path,flag);
 	//verifico se il flag ricevuto ha un valore uguale a 0 oppure a 1
 	if (flag < 0 || flag > 2)
 	{
@@ -361,12 +374,13 @@ int openFileServer(char *path, int flag, int fdDaElaborare)
 	//Inserisco file se non risulta presente
 	if(indiceFile == -1)
 	{
-		char * bufNuovoFile=NULL;//il buffer del nuovo file sarà chiramente vuoto
+		char * bufNuovoFile="vuota";//il buffer del nuovo file sarà chiaramente vuoto
 		indiceFile=aggiungiFile(path,bufNuovoFile,0);
 	}
 
 
 	//Se sono arrivato qui vuol dire che posso procedere ad eseguire l' operazione di openFile
+
 
 	if(flag != 0)
 	{
@@ -400,6 +414,11 @@ int closeFileServer(char *path,int fdDaElaborare)
 	if(array_file[indiceFile].identificatoreClient != fdDaElaborare)
 	{
 		printf("non puoi chiudere un file che non hai aperto te! appartiene!\n");
+		return -1;
+	}
+	if(array_file[indiceFile].puntatoreFile == NULL)
+	{
+		printf("Non posso chiudere un file non aperto\n");
 		return -1;
 	}
 	fclose(array_file[indiceFile].puntatoreFile);
@@ -526,6 +545,7 @@ int removeFileServer(char * path, int fdDaElaborare)
 	}
 	pthread_cond_signal(&(array_file[indiceFile].fileConditionVariable));
 	////printf("fatta signal\n");
+	lasciaLockFileScrittura(indiceFile, fdDaElaborare);
 
 
 
@@ -576,10 +596,9 @@ int appendToFileServer(char* path,char* buf, size_t size, char* dirname, int fdD
 }
 
 
-char * readFileServer(char* path, char * buffer2,int fdDaElaborare)
+char* readFileServer(char* path, char * buffer2,size_t *dimFile,int fdDaElaborare)
 {
 	int indiceFile=0;
-	size_t dimFile=0;
 	indiceFile=cercaFile(path);
 	/**
 	 * per leggere un file, verifico che:
@@ -600,8 +619,32 @@ char * readFileServer(char* path, char * buffer2,int fdDaElaborare)
 		return "errore";
 	}
 
+	*dimFile=array_file[indiceFile].dimensione;
+
+
+	void *writeTo = buffer2;
+
+	   // if (alloc)
+
+	      // in this situation dest is considered as the address
+	      // of a pointer that we have to set to the read data
+	    	char **destPtr = buffer2;
+
+	      // malloc enough space
+	      *destPtr = malloc(sizeof(**destPtr) * (*dimFile));
+
+	      // we have to write into the allocated space
+	      writeTo = *destPtr;
+
+
+
+
+
 	buffer2=malloc(sizeof(char)*array_file[indiceFile].dimensione);
+
+	memcpy(writeTo,array_file[indiceFile].byteFile,array_file[indiceFile].dimensione);
 	//strcpy(path,array_file[indiceFile].path);
+	printf("buffer2: %s\n",buffer2);
 	return array_file[indiceFile].byteFile;
 }
 
@@ -619,10 +662,10 @@ int readNFileServer(int N,  int fdDaElaborare)
 	return fileLetti;
 
 }
+
 int writeFileServer(char* path, char  * dati, size_t sizeFile, int fdDaElaborare)
 {
 	int indiceFile=0;
-	size_t dimFile=0;
 	indiceFile=cercaFile(path);
 	/**
 	 * per scrivere su un file, verifico che :
@@ -635,13 +678,38 @@ int writeFileServer(char* path, char  * dati, size_t sizeFile, int fdDaElaborare
 		printf("si vuole scrivere in memoria un file già presente, errore!\n");
 		return -1;
 	}
-
 	int aggiungiFileReturnValue=0;
-	aggiungiFileReturnValue=aggiungiFile(path,dati,sizeFile);
-	if(aggiungiFileReturnValue == -1)
+	//aggiungiFileReturnValue=aggiungiFile(path,dati,sizeFile);
+
+	//verifico che il file che desidero inserire nel server non sia più grande di tutta la memoria
+	if(sizeFile>dim_memoria)
 	{
+		printf("il file che si desidera inserire nella memoria è più grande di tutto lo spazio disponibile\n");
 		return -1;
 	}
+
+	if(array_file[indiceFile].dimensione<sizeFile)
+	{
+		if((array_file[indiceFile].dimensione+sizeFile)>dim_memoria)
+		{
+			printf("Non si può allocare questa porzione di memoria\n");
+			return -1;
+		}
+		//è necessario riallocare memoria
+		array_file[indiceFile].byteFile=realloc(array_file[indiceFile].byteFile, (array_file[indiceFile].dimensione+sizeFile)*sizeof(char));
+	}
+	memcpy(array_file[posizioneLibera].byteFile , dati, sizeFile);
+	strncpy(array_file[posizioneLibera].path,path,strlen(path));
+	array_file[posizioneLibera].dimensione=sizeFile;
+	printf("array_file[indiceFile].path: %s \n byteFile %s\n",array_file[posizioneLibera].path,array_file[posizioneLibera].byteFile);
+	printf("posizione:%d\n",posizioneLibera);
+	posizioneLibera=(posizioneLibera+1) % num_max_file;
+	numFileDisponibili-=1;
+	memoriaDisponibile=memoriaDisponibile-sizeFile;
+	maxMemoriaRaggiunta=maxMemoriaRaggiunta+sizeFile;
+	numMaxFilePresenti++;
+
+
 	return 1;
 }
 

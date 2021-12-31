@@ -23,7 +23,7 @@
 #define DIM 100
 #define UNIX_PATH_MAX 108
 
-
+int numMaxconnessioniContemporanee=-1;
 int clientTotali=0;
 int thread_workers;
 int threadInAttesa=0;
@@ -71,7 +71,7 @@ void letturaFile(char *config, char *nomeFilelog)
         exit(EXIT_FAILURE);
     }
 
-    while( (r = getline(&riga , &len, f)) != -1)
+    while((r=getline(&riga,&len,f)) != -1)
     {
 
       	parola = strtok(riga, " ");
@@ -151,8 +151,13 @@ void incrementaNumClient()
 		perror("lock numero clienti in supermercato");
 		pthread_exit(&err);
 	}
+
 	clientTotali++;
 	clientConnessi++;
+	if(numMaxconnessioniContemporanee<clientConnessi)
+	{
+		numMaxconnessioniContemporanee=clientConnessi;
+	}
 	printf("SERVER-> Sono connessi %d client\n",clientConnessi);
 	////printf("numero fd presenti in coda: %d, numero client connessi: %d\n",contatoreCodaFd,clientConnessi);
 	pthread_mutex_unlock(&lockClientConnessi);

@@ -115,7 +115,6 @@ void* vitaWorker(void*  idWorker)
 		{
 			primaVolta=1;
 			fdDaElaborare=dequeueCodaFileDescriptor(codaFileDescriptor, &stop);
-
 			stoLavorando=1;
 			chiudiConnessione=0;
 		}
@@ -236,14 +235,31 @@ void* vitaWorker(void*  idWorker)
 							if(openFileServerReturnValue != 1)
 							{
 								strncpy(daInviare,"OPEN_FILE: riscontrato errore\n",31);
-								strncpy(stringaToLog,"OPEN_FILE: riscontrato errore",32);
-								scriviSuLog(stringaToLog,0);
+								if(flag==1 || flag ==2)
+								{
+									strncpy(stringaToLog,"OPEN_FILE_LOCK: riscontrato errore",32);
+									scriviSuLog(stringaToLog,0);
+								}
+								else
+								{
+									strncpy(stringaToLog,"OPEN_FILE: riscontrato errore",32);
+									scriviSuLog(stringaToLog,0);
+								}
 							}
 							else
 							{
+								if(flag==1 || flag ==2)
+								{
+									strncpy(stringaToLog,"OPEN_FILE_LOCK: eseguita operazione",31);
+									scriviSuLog(stringaToLog,0);
+								}
+								else
+								{
+									strncpy(stringaToLog,"OPEN_FILE: eseguita operazione",31);
+									scriviSuLog(stringaToLog,0);
+
+								}
 								strncpy(daInviare,"OPEN_FILE eseguita correttamente!\n",35);
-								strncpy(stringaToLog,"OPEN_FILE: eseguita operazione",31);
-								scriviSuLog(stringaToLog,0);
 							}
 							size_t a=strlen(daInviare);
 							sendData(fdDaElaborare,&a,sizeof(size_t));
@@ -345,23 +361,32 @@ void* vitaWorker(void*  idWorker)
 						char * path=strtok_r(NULL, puntoVirgola, &rest);
 
 						printf("il worker fa la close file sul file : %s \n\n",path);
-
 						accediStrutturaFile();
 						closeFileServerReturnValue=closeFileServer(path,fdDaElaborare);
 						lasciaStrutturaFile();
+
+
+						char daInviare[200]="";
+
 						if(closeFileServerReturnValue != 1)
 						{
-							write(fdDaElaborare,"CLOSE_FILE: riscontrato errore\n",32);
-							strncpy(stringaToLog,"CLOSE_FILE: riscontrato errore",31);
+							strncpy(daInviare,"CLOSE_FILE: riscontrato errore\n",32);
+							strncpy(stringaToLog,"CLOSE_FILE: riscontrato errore",33);
 							scriviSuLog(stringaToLog,0);
+
 						}
 						else
 						{
-							write(fdDaElaborare,"CLOSE_FILE eseguita correttamente!\n",36);
+							strncpy(daInviare,"CLOSE_FILE eseguita correttamente!\n",36);
 							strncpy(stringaToLog,"CLOSE_FILE: eseguita operazione",32);
 							scriviSuLog(stringaToLog,0);
 						}
 						//operazioneEseguita=1;
+
+						size_t a=strlen(daInviare);
+						sendData(fdDaElaborare,&a,sizeof(size_t));
+						sendData(fdDaElaborare,&daInviare,a);
+
 						strncpy(stringaToLog,"Richiesta Servita dal thread",32);
 						scriviSuLog(stringaToLog,1,indiceWorker);
 					}
@@ -378,7 +403,7 @@ void* vitaWorker(void*  idWorker)
 						char daInviare[200]="";
 						if(removeFileServerReturnValue != 1)
 						{
-							strncpy(daInviare,"REMOVE_FILE: riscontrato errore\n",31);
+							strncpy(daInviare,"REMOVE_FILE: riscontrato errore",32);
 							strncpy(stringaToLog,"REMOVE_FILE: riscontrato errore",32);
 							scriviSuLog(stringaToLog,0);
 						}
@@ -388,7 +413,6 @@ void* vitaWorker(void*  idWorker)
 							strncpy(daInviare,"REMOVE_FILE eseguita correttamente!\n",37);
 							strncpy(stringaToLog,"REMOVE_FILE: eseguita operazione",33);
 							scriviSuLog(stringaToLog,0);
-
 						}
 						size_t a=strlen(daInviare);
 						sendData(fdDaElaborare,&a,sizeof(size_t));
@@ -409,20 +433,32 @@ void* vitaWorker(void*  idWorker)
 						printf("il worker esegue append file sul file %s scrivendoci:\n %s\n, il buffer è grande: %ld\n e la cartella dirname è uguale a %s\n",path,buffer,size,dirname);
 
 						accediStrutturaFile();
-						appendToFileServerReturnValue=appendToFileServer(path,buffer,size,dirname,fdDaElaborare);
+						//appendToFileServerReturnValue=appendToFileServer(path,buffer,size,dirname,fdDaElaborare);
 						lasciaStrutturaFile();
+						char daInviare[200]="";
 						if(appendToFileServerReturnValue != 1)
 						{
-							write(fdDaElaborare,"APPEND_TO_FILE: riscontrato errore\n",36);
-							strncpy(stringaToLog,"APPEND_TO_FILE: riscontrato errore",35);
+							strncpy(daInviare,"APPEND_TO_FILE: riscontrato errore",32);
+							strncpy(stringaToLog,"APPEND_TO_FILE: riscontrato errore",32);
 							scriviSuLog(stringaToLog,0);
+
 						}
 						else
 						{
-							write(fdDaElaborare,"APPEND_TO_FILE eseguita correttamente!\n",36);
-							strncpy(stringaToLog,"APPEND_TO_FILE: eseguita operazione",36);
+							strncpy(daInviare,"APPEND_TO_FILE eseguita correttamente!\n",37);
+							strncpy(stringaToLog,"APPEND_TO_FILE: eseguita operazione",33);
 							scriviSuLog(stringaToLog,0);
 						}
+
+
+						size_t a=strlen(daInviare);
+						sendData(fdDaElaborare,&a,sizeof(size_t));
+						sendData(fdDaElaborare,&daInviare,a);
+
+
+
+
+
 						strncpy(stringaToLog,"Richiesta Servita dal thread",32);
 						scriviSuLog(stringaToLog,1,indiceWorker);
 						//operazioneEseguita=1;
@@ -431,35 +467,34 @@ void* vitaWorker(void*  idWorker)
 					if(strcmp(bufferRicezione,"READ_FILE")==0)
 					{
 						printf("Arrivata operazione READ_FILE\n");
-						char  stringa[200];
 						char * buffer2;
-						int readFileServerReturnValue=1;
 						char * path;
 						path=strtok_r(NULL, puntoVirgola, &rest);
 //						printf("il worker esegue read file sul file %s \n",path);
 
-
-
+						size_t dimFile=0;
+						char * result=malloc(sizeof(char)*30);
 						accediStrutturaFile();
-						size_t size=0;
-						buffer2=readFileServer(path,buffer2,fdDaElaborare);
+						buffer2=readFileServer(path,&buffer2,&dimFile,fdDaElaborare);
 						lasciaStrutturaFile();
-						size_t a=strlen(buffer2);
-						if(strcmp(buffer2,"errore")==0)
+						size_t a=strlen(result);
+						if(strcmp(result,"errore")==0)
 						{
-
 							sendData(fdDaElaborare,&a,sizeof(size_t));
-							sendData(fdDaElaborare,&buffer2,a);
+							sendData(fdDaElaborare,&result,a);
 						}
 						else
 						{
-							printf("\n\n\n\ninvio al client: %s!!! e la sua lunghezza is: %ld \n\n\n\n",buffer2,a);
-							sendData(fdDaElaborare,&a,sizeof(size_t));
-							sendData(fdDaElaborare,&buffer2,a);
+							printf("\n\n\n\ninvio al client: %s!!! e la sua lunghezza is: %ld \n\n\n\n",buffer2,dimFile);
+							strncpy(stringaToLog,"READ_FILE di byte",32);
+							scriviSuLog(stringaToLog,1,dimFile);
+
+							sendData(fdDaElaborare,&dimFile,sizeof(size_t));
+							sendData(fdDaElaborare,&buffer2,dimFile);
 
 						}
 
-						free(buffer2);
+						//free(buffer2);
 						strncpy(stringaToLog,"Richiesta Servita dal thread",32);
 						scriviSuLog(stringaToLog,1,indiceWorker);
 
@@ -477,32 +512,30 @@ void* vitaWorker(void*  idWorker)
 
 						printf("WORKER-> N= %d, dirname= %s\n\n",N,dirname);
 						accediStrutturaFile();
-						read_N_FileServerReturnValue=readNFileServer(N,fdDaElaborare);
+						//read_N_FileServerReturnValue=readNFileServer(N,fdDaElaborare);
 						lasciaStrutturaFile();
+
+
+						char daInviare[200]="";
 
 						char appoggio[10]="";
 
 						if(read_N_FileServerReturnValue != -1)
 						{
-							strncat(risposta,"READ_N_FILE eseguita correttamente!;",37);
-							sprintf(appoggio, "%d", read_N_FileServerReturnValue);
-							strncat(risposta,appoggio,10);
-							write(fdDaElaborare,risposta,37);
-							strncpy(stringaToLog,"READ_N_FILE: eseguita operazione",33);
-							scriviSuLog(stringaToLog,0);
-
-						}
-						else
-						{
-							strncat(risposta,"READ_N_FILE: riscontrato errore;",34);
-							sprintf(appoggio, "%d", read_N_FileServerReturnValue);
-							strncat(risposta,appoggio,10);
-
-
-							write(fdDaElaborare,risposta,37);
+							strncpy(daInviare,"READ_N_FILE: riscontrato errore",32);
 							strncpy(stringaToLog,"READ_N_FILE: riscontrato errore",32);
 							scriviSuLog(stringaToLog,0);
 						}
+						else
+						{
+							strncpy(daInviare,"READ_N_FILE eseguita correttamente!\n",37);
+							strncpy(stringaToLog,"READ_N_FILE: eseguita operazione",33);
+							scriviSuLog(stringaToLog,0);
+						}
+						size_t a=strlen(daInviare);
+						sendData(fdDaElaborare,&a,sizeof(size_t));
+						sendData(fdDaElaborare,&daInviare,a);
+
 						strncpy(stringaToLog,"Richiesta Servita dal thread",32);
 						scriviSuLog(stringaToLog,1,indiceWorker);
 
@@ -515,33 +548,35 @@ void* vitaWorker(void*  idWorker)
 //
 //
 						int writeFileServerReturnValue=0;
-
-						char * path=strtok_r(NULL, puntoVirgola, &rest);
+						char * path= malloc(200*sizeof(char));
+						printf("array_file[0].path:%s\n",array_file[0].path);
+						path=strtok_r(NULL, puntoVirgola, &rest);
 						if(path == NULL)
 						{
 							writeFileServerReturnValue=-1;
 						}
+//						else
+//						{
+//
+//						}
 //						printf("il worker esegue write file sul file %s \n",path);
-						strncpy(stringaToLog,"Arrivata richiesta di writeFile\n",33);
+						strncpy(stringaToLog,"Arrivata richiesta di writeFile",33);
 						scriviSuLog(stringaToLog,0);
 						size_t sizeFile=0;
 //						char *sizeArray="";
 //						sizeArray=strtok_r(NULL, puntoVirgola, &rest);
 //						sizeFile=atoi(sizeArray);
 						//printf("Worker -> size:%ld\n\n\n",sizeFile);
-//
+//						printf("worker-> path:%s\n",path);
 						//write(fdDaElaborare,"ok",3);
 						//riceviData
 						//void* buf2=strtok_r(NULL, puntoVirgola, &rest);
 						//printf("buf2:%s\n",buf2);
-						char* dati;
+						void * dati;
 						//dati= malloc(sizeFile*sizeof(char));
-printf("sizeof(dati) -> %d\n",sizeof(dati));
 						riceviDati(fdDaElaborare, &dati, &sizeFile);
-						printf("sizeof(dati) -> %d\n",sizeof(dati));
+						//printf("dati : %s\n",dati);
 
-//						printf("dati: %s\n\n\n\n\n\n\n\n",dati);
-//						printf("grandezza file: %ld\n",sizeFile);
 						accediStrutturaFile();
 						writeFileServerReturnValue=writeFileServer(path,dati,sizeFile,fdDaElaborare);
 						lasciaStrutturaFile();
@@ -556,8 +591,8 @@ printf("sizeof(dati) -> %d\n",sizeof(dati));
 						else
 						{
 							strncpy(daInviare,"WRITE_FILE eseguita correttamente!",35);
-							strncpy(stringaToLog,"WRITE_FILE: eseguita operazione",32);
-							scriviSuLog(stringaToLog,0);
+							strncpy(stringaToLog,"WRITE_FILE di byte",32);
+							scriviSuLog(stringaToLog,1,sizeFile);
 						}
 						size_t a=strlen(daInviare);
 						//printf("\n\n\n\ninvio al client: %s!!! e la sua lunghezza is: %ld \n\n\n\n",daInviare,a);
@@ -566,7 +601,7 @@ printf("sizeof(dati) -> %d\n",sizeof(dati));
 
 						strncpy(stringaToLog,"Richiesta Servita dal thread",32);
 						scriviSuLog(stringaToLog,1,indiceWorker);
-
+//free(path);
 						//operazioneEseguita=1;
 					}
 
@@ -612,96 +647,4 @@ printf("sizeof(dati) -> %d\n",sizeof(dati));
 		}
 	}
 	pthread_exit(NULL);
-}
-
-
-//ssize_t readn(int fd, void *v_ptr, size_t n)
-//{
-//  char *ptr = v_ptr;
-//  size_t nleft;
-//  ssize_t nread;
-//
-//  nleft = n;
-//  while (nleft > 0)
-//  {
-//    if ((nread = read(fd, ptr, nleft)) < 0)
-//    {
-//      if (nleft == n)
-//        return -1; /* error, return -1 */
-//      else
-//        break; /* error, return amount read so far */
-//    }
-//    else if (nread == 0)
-//    {
-//      break; /* EOF */
-//    }
-//    nleft -= nread;
-//    ptr += nread;
-//  }
-//  return (n - nleft); /* return >= 0 */
-//}
-//
-///* Write "n" bytes to a descriptor */
-//ssize_t writen(int fd, void *v_ptr, size_t n)
-//{
-//  char *ptr = v_ptr;
-//  size_t nleft;
-//  ssize_t nwritten;
-//
-//  nleft = n;
-//  while (nleft > 0)
-//  {
-//    if ((nwritten = write(fd, ptr, nleft)) < 0)
-//    {
-//      if (nleft == n)
-//        return -1; /* error, return -1 */
-//      else
-//        break; /* error, return amount written so far */
-//    }
-//    else if (nwritten == 0)
-//      break;
-//    nleft -= nwritten;
-//    ptr += nwritten;
-//  }
-//  return (n - nleft); /* return >= 0 */
-//}
-//
-//
-
-int getData(int fdDaElaborare, void *dest, size_t *sizePtr, int alloc)
-{
-  size_t size = 0;
-printf("cucù\n\n\n\n");
-  // control flow flags
-  int sizeRead = 0;
-  int error = 0;
-  int done = 0;
-
-  // read the size
-  //readn(fdDaElaborare, &size, sizeof(size));
-  void *writeTo = dest;
-
-
-      // in this situation dest is considered as the address
-      // of a pointer that we have to set to the read data
-      char **destPtr = dest;
-
-      // malloc enough space
-      *destPtr = malloc(sizeof(**destPtr) * size);
-
-      // we have to write into the allocated space
-      writeTo = *destPtr;
-
-
-  readn(fdDaElaborare, writeTo, size);
-
-  return 0;
-}
-
-
-
-int sendData2(int fd_socket, const void *data, size_t size)
-{
-	int a=writen(fd_socket, (void *)data, size);
-	return a;
 }
