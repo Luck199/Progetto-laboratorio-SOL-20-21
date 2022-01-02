@@ -79,6 +79,10 @@ void deallocaStrutturaFile()
 	{
 		free(array_file[i].path);
 		//free(array_file[i].data);
+		if(array_file[i].puntatoreFile != NULL)
+		{
+			fclose(array_file[i].puntatoreFile);
+		}
 		pthread_mutex_destroy(&(array_file[i].lockFile));
 		pthread_cond_destroy(&(array_file[i].fileConditionVariable));
 		free(array_file[i].byteFile);
@@ -218,16 +222,19 @@ void applicaFifo(int fdDaElaborare)
 	//indice è presente nella variabile filePiuVecchio, il file presente nell' array alla sua destra ( in modulo ) sarà sempre il più vecchio
 	int i=filePiuVecchio,trovato=0;
 	size_t daLiberare=0;
-	char * espelliPath=NULL;
-	char * espelliDati=NULL;
+//	char * espelliPath=NULL;
+//	char * espelliDati=NULL;
+	char espelliPath[300];
+	char espelliDati[300];
+
 	size_t dimEspulso=0;
 
 	while(trovato != 1)
 	{
 		if(array_file[i].O_LOCK==0)//(array_file[i].lettoriAttivi == 0) &&  (array_file[i].scrittoriAttivi == 0))
 		{
-			espelliPath=malloc(sizeof(char)*(strlen(array_file[i].path)+1));
-			espelliDati=malloc(sizeof(char)*array_file[i].dimensione);
+			//espelliPath=malloc(sizeof(char)*(strlen(array_file[i].path)+1));
+			//espelliDati=malloc(sizeof(char)*array_file[i].dimensione);
 
 			//elimino il file in questa posizione, perchè è quello che è da più tempo nell' array e in questo momento non è in stato di lock
 			strcpy(espelliPath,array_file[i].path);
@@ -259,15 +266,15 @@ void applicaFifo(int fdDaElaborare)
 	sendData(fdDaElaborare,&a,sizeof(size_t));
 	sendData(fdDaElaborare,&espelliPath,a);
 
-//	size_t b=sizeof(espelliDati);
-//	sendData(fdDaElaborare,&dimEspulso,sizeof(size_t));
-//	sendData(fdDaElaborare,&espelliDati,b);
+	size_t b=sizeof(espelliDati);
+	sendData(fdDaElaborare,&dimEspulso,sizeof(size_t));
+	sendData(fdDaElaborare,&espelliDati,b);
 
 	numFileDisponibili+=1;
 	memoriaDisponibile=memoriaDisponibile+daLiberare;
 	numVolteAlgoritmoRimpiazzo++;
-	free(espelliPath);
-	free(espelliDati);
+//	free(espelliPath);
+//	free(espelliDati);
 }
 
 void assumiLockFileLettura(int indiceFile)
@@ -698,9 +705,9 @@ int writeFileServer(char* path, char  * dati, size_t sizeFile, int fdDaElaborare
 	 * -> il file sia in stato di lock
 	 * -> il file sia posseduto da me
 	 */
-	if((indiceFile != -1))
+	if((indiceFile == -1))
 	{
-		printf("si vuole scrivere in memoria un file già presente, errore!\n");
+		printf("si vuole scrivere nella memoria di un file non presente, errore!\n");
 		return -1;
 	}
 	int aggiungiFileReturnValue=0;
@@ -726,9 +733,12 @@ int writeFileServer(char* path, char  * dati, size_t sizeFile, int fdDaElaborare
 	}
 	char * espelliPath=NULL;
 	char * espelliDati=NULL;
+	int espelliFile=0;
 	if(memoriaDisponibile<sizeFile || numFilePresenti == num_max_file)
 	{
+		espelliFile=1;
 		applicaFifo(fdDaElaborare);
+
 	}
 
 	//printf("sono in write -> path da espellere: %s\ndati da espellere:%s\n",espelliPath,espelliDati);
@@ -744,6 +754,12 @@ int writeFileServer(char* path, char  * dati, size_t sizeFile, int fdDaElaborare
 	numMaxFilePresenti++;
 	numFilePresenti++;
 	numFileDisponibili++;
+
+	//se ho espulso un file per liberare spazio, allora ritorno un valore diverso per modoficare le risposte al client
+	if(espelliFile==1)
+	{
+		return 2;
+	}
 	return 1;
 }
 

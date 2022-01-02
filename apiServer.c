@@ -369,26 +369,19 @@ int readFile(const char* pathname, void** buf, size_t* size)
 
 
 	int readReturnValue=riceviDati(fd_socket,&bufferRicezione,&a);
-	printf("readValue:%d\n",readReturnValue);
 	if(errno==EINVAL)
 	{
 		printf("\n\n\n\neccolo!\n\n\n");
 	}
 	if(readReturnValue > 0)
 	{
-
-		if(strncmp(bufferRicezione,"errore",a)==0)
-		{
-			printf("CLIENT-> risposta server: %s\n",bufferRicezione);
-			return -1;
-		}
 		printf("CLIENT-> risposta server: %s\n",bufferRicezione);
 		FILE *file;
 		//
-		//if(errno==0)
+		if(errno==0)
 		{
 			printf("faccio fopen\n\n\n\n\n");
-			file = fopen(pathname,"w");
+			file = fopen("prova.txt","w");
 			if( file==NULL )
 			{
 				perror("Errore in apertura del file");
@@ -403,7 +396,6 @@ int readFile(const char* pathname, void** buf, size_t* size)
 				}
 			}
 			fclose(file);
-
 		}
 	}
 	else
@@ -419,7 +411,7 @@ int readFile(const char* pathname, void** buf, size_t* size)
 
 int readNFiles(int N, const char* dirname)
 {
-	char* bufferRicezione=NULL;
+	char bufferRicezione=NULL;
 	char daInviare[200]="READ_N_FILE;";
 	char appoggio[20];
 	int numFile=0;
@@ -437,144 +429,34 @@ int readNFiles(int N, const char* dirname)
 
 	printf("\n\nda inviare: %s \n\n",daInviare);
 
+
+
+
+
+
+
+
 	size_t a=strlen(daInviare);
 	sendData(fd_socket,&a,sizeof(size_t));
 	sendData(fd_socket,&daInviare,a);
-
-
-
-
-	int fileEffettivamenteLetti=0;
-	int entrato=0;
-	int uscita=0;
-	char * path=NULL;
-	printf("fuori\n");
-	//int readReturnValue=riceviDati(fd_socket,&bufferRicezione,&a);
-//	path=malloc(sizeof(char)*(strlen(bufferRicezione)+1));
-//	strncpy(path,bufferRicezione,strlen(bufferRicezione)+1);
-
-	//printf("client -> bufferRicezione: %s\n",bufferRicezione);
-	while(uscita!=1)
-	{
-//		if(strncmp(bufferRicezione,"finito",7)==0)
-//		{
-//			break;
-//		}
-//		else
+	int readReturnValue=riceviDati(fd_socket,&bufferRicezione,&a);
+		if(readReturnValue>0)
 		{
-//			if(entrato==0)
+//			if(strncmp(bufferRicezione,"OPEN_FILE: riscontrato errore",50)==0)
 //			{
-//				//free(bufferRicezione);
-//				int readReturnValue=riceviDati(fd_socket,&bufferRicezione,&a);
-//				FILE *file;
-//
-//				printf("faccio fopen sul file: %s, scrivendo: %s\n\n",path,bufferRicezione);
-//				file = fopen(path,"w");
-//				if( file==NULL )
-//				{
-//					perror("Errore in apertura del file");
-//					return -1;
-//				}
-//				else
-//				{
-//					int w = fwrite(bufferRicezione, sizeof(char), a, file);
-//					if(w<0)
-//					{
-//						printf("CLIENT -> ERRORE fwrite\n");
-//					}
-//				}
-//				fclose(file);
-//				entrato=1;
+//				errno=EBADF;
+//				perror("File descriptor non valido\n");
+//				return -1;
 //			}
 //			else
 			{
-				//free(path);
-				int readReturnValue=riceviDati(fd_socket,&bufferRicezione,&a);
-				if(strncmp(bufferRicezione,"finito",7)== 0)
-				{
-					uscita=1;
-					break;
-				}
-				path=malloc(sizeof(char)*a);
-
-				strncpy(path,bufferRicezione,a+1);
-				free(bufferRicezione);
-				readReturnValue=riceviDati(fd_socket,&bufferRicezione,&a);
-				if(strncmp(bufferRicezione,"finito",7)==0)
-				{
-					uscita=1;
-					break;
-				}
-				FILE *file;
-
-				printf("faccio fopen sul file: %s, scrivendo: %s\n\n",path,bufferRicezione);
-				file = fopen(path,"w");
-				if( file==NULL )
-				{
-					perror("Errore in apertura del file");
-					return -1;
-				}
-				else
-				{
-					int w = fwrite(bufferRicezione, sizeof(char), a, file);
-					if(w<0)
-					{
-						printf("CLIENT -> ERRORE fwrite\n");
-					}
-				}
-				fclose(file);
-
-				free(bufferRicezione);
-				//readReturnValue=riceviDati(fd_socket,&bufferRicezione,&a);
-
+				printf("CLIENT-> risposta server: %s\n",bufferRicezione);
 			}
-
-			fileEffettivamenteLetti++;
 		}
-
-	}
-
-
-
-
-
-
-
-//	if(readReturnValue>0)
-//	{
-////			if(strncmp(bufferRicezione,"OPEN_FILE: riscontrato errore",50)==0)
-////			{
-////				errno=EBADF;
-////				perror("File descriptor non valido\n");
-////				return -1;
-////			}
-////			else
-//			{
-//				printf("CLIENT-> risposta server: %s\n",bufferRicezione);
-//			}
-//		}
-//		else
-//		{
-//			printf("Client -> Errore open\n");
-//		}
-//
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+		else
+		{
+			printf("Client -> Errore open\n");
+		}
 //	char* rest = bufferRicezione;
 //	char *esito=strtok_r(bufferRicezione, ";", &rest);
 //
@@ -596,14 +478,14 @@ int readNFiles(int N, const char* dirname)
 //		//la read ha riportato errori
 //		return -1;
 //	}
-	return fileEffettivamenteLetti;
+	return numFile;
 }
 
 
 int writeFile(const char* pathname, const char* dirname)
 {
 	char daInviare[200]="WRITE_FILE;";
-	char  * bufferRicezione=NULL;
+	char *bufferRicezione=NULL;
 	statoFd=statoFileDescriptor();
 	if(statoFd < 0)
 	{
@@ -630,6 +512,7 @@ int writeFile(const char* pathname, const char* dirname)
 
 
 
+
 	strncat(daInviare,path2,strlen(path2));
 //	char size_array[10];
 //	sprintf(size_array, "%ld", size);
@@ -646,68 +529,17 @@ int writeFile(const char* pathname, const char* dirname)
 //	printf("lunghezza file: %ld\n",size);
 	sendData(fd_socket,buf, size);
 
-	int trovato=0;
-	int entrato=0;
-	char * pathEspulso=NULL;
-	char * datiEspulsi=NULL;
-	int readReturnValue=0;
-	while(trovato != 1)
+
+	int readReturnValue=riceviDati(fd_socket,&bufferRicezione,&a);
+	if(readReturnValue > 0)
 	{
-		readReturnValue=riceviDati(fd_socket,&bufferRicezione,&a);
-		printf("a:%ld\n",a);
-		if(readReturnValue > 0)
-		{
-			if((strcmp(bufferRicezione,"WRITE_FILE eseguita correttamente!") == 0) || (strcmp(bufferRicezione,"WRITE_FILE: riscontrato errore") == 0))
-			{
-				trovato = 1;
-			}
-			else
-			{
-				if(entrato==0)
-				{
-					pathEspulso=malloc(a*sizeof(char));
-					strncpy(pathEspulso,bufferRicezione,strlen(bufferRicezione));
-					printf("CLIENT -> pathEspulso: %s\n",bufferRicezione);
-					free(bufferRicezione);
-					entrato=1;
-				}
-				else
-				{
-//					datiEspulsi=malloc(a*sizeof(char));
-//					memcpy(datiEspulsi,bufferRicezione,a);
-//					free(bufferRicezione);
-				}
-			}
-
-		}
-		else
-		{
-			perror("CLIENT->Errore READ");
-			return -1;
-		}
-
+		printf("CLIENT-> risposta server: %s\n",bufferRicezione);
 	}
-	FILE *file;
-//	if((dirname!=NULL || strcmp(dirname,"")!=0) && errno==0)
-//	{
-//		printf("faccio fopen\n\n");
-//		file = fopen(pathEspulso,"w");
-//		if( file==NULL )
-//		{
-//			perror("Errore in apertura del file");
-//			return -1;
-//		}
-//		else
-//		{
-//			int w = fwrite(datiEspulsi, sizeof(char), a, file);
-//			if(w<0)
-//			{
-//				printf("CLIENT -> ERRORE fwrite\n");
-//			}
-//		}
-//		fclose(file);
-//
-//	}
+	else
+	{
+		//perror("CLIENT->Errore READ");
+		return -1;
+	}
 //	free(stringaFile);
 	return 0;
 }
@@ -715,7 +547,7 @@ int writeFile(const char* pathname, const char* dirname)
 int appendToFile(const char* pathname, void* buf, size_t size, const char* dirname)
 {
 	char daInviare[200]="APPEND_TO_FILE;";
-	char * bufferRicezione=NULL;
+	char bufferRicezione=NULL;
 	statoFd=statoFileDescriptor();
 	if(statoFd < 0)
 	{
@@ -761,26 +593,23 @@ int lockFile(const char* pathname)
 	{
 		return -1;
 	}
+	pathname=relativoToAssoluto(pathname);
+	strncat(daInviare,pathname,strlen(pathname));
+
+
+
+
 	size_t a=strlen(daInviare);
 	sendData(fd_socket,&a,sizeof(size_t));
 	sendData(fd_socket,daInviare,a);
 
-	pathname=relativoToAssoluto(pathname);
-//	strncat(daInviare,pathname,strlen(pathname));
-
-
-
-
-	a=strlen(pathname);
-	sendData(fd_socket,&a,sizeof(size_t));
-	sendData(fd_socket,pathname,a);
 
 
 
 
 
 
-
+	//write(fd_socket,daInviare,200);
 	readReturnValue=riceviDati(fd_socket,&bufferRicezione,&a);
 	if(readReturnValue > 0)
 	{
@@ -790,7 +619,6 @@ int lockFile(const char* pathname)
 	{
 		printf("CLIENT -> errore in operazione lock \n");
 	}
-	free(bufferRicezione);
 	return 0;
 }
 
@@ -804,22 +632,17 @@ int unlockFile(const char* pathname)
 		{
 			return -1;
 		}
+		pathname=relativoToAssoluto(pathname);
+		strncat(daInviare,pathname,strlen(pathname));
 
 
-////
+
+
 		size_t a=strlen(daInviare);
-			sendData(fd_socket,&a,sizeof(size_t));
-			sendData(fd_socket,daInviare,a);
-
-			pathname=relativoToAssoluto(pathname);
-		//	strncat(daInviare,pathname,strlen(pathname));
+		sendData(fd_socket,&a,sizeof(size_t));
+		sendData(fd_socket,daInviare,a);
 
 
-
-
-			a=strlen(pathname);
-			sendData(fd_socket,&a,sizeof(size_t));
-			sendData(fd_socket,pathname,a);
 
 
 
@@ -835,9 +658,7 @@ int unlockFile(const char* pathname)
 		{
 			printf("CLIENT -> errore in operazione lock \n");
 		}
-		free(bufferRicezione);
 		return 0;
-
 }
 
 int closeFile(const char* pathname)
@@ -944,22 +765,14 @@ int removeFile(const char* pathname)
 	{
 		return -1;
 	}
+	pathname=relativoToAssoluto(pathname);
+	strncat(daInviare,pathname,strlen(pathname));
+
 	size_t a=strlen(daInviare);
 	sendData(fd_socket,&a,sizeof(size_t));
 	sendData(fd_socket,daInviare,a);
 
-	pathname=relativoToAssoluto(pathname);
-	//	strncat(daInviare,pathname,strlen(pathname));
-
-
-
-
-	a=strlen(pathname);
-	sendData(fd_socket,&a,sizeof(size_t));
-	sendData(fd_socket,pathname,a);
-
-
-
+	//write(fd_socket,daInviare,200);
 	readReturnValue=riceviDati(fd_socket,&bufferRicezione,&a);
 	if(readReturnValue > 0)
 	{
@@ -976,76 +789,75 @@ int removeFile(const char* pathname)
 int recuperaFile(const char *path, void **fileBuffer, size_t *size)
 {
 
-	  FILE *filePointer = NULL;
-	  *fileBuffer = NULL;
+  FILE *filePointer = NULL;
+  *fileBuffer = NULL;
 
-	  //printf("path:%s\n\n\n",path);
-	  // control flow flags
-	  int error = 0;
-	  int chiudi = 0;
-	  int freeBuf = 0;
+  //printf("path:%s\n\n\n",path);
+  // control flow flags
+  int error = 0;
+  int chiudi = 0;
+  int freeBuf = 0;
 
-	  // open the file
-	  filePointer = fopen(path, "r");
-	  if(filePointer == NULL)
+  // open the file
+  filePointer = fopen(path, "r");
+  if(filePointer == NULL)
+  {
+	  perror("SERVER -> Error fopen");
+	  return -1;
+  }
+  // go to the end of the file
+  fseek(filePointer, 0L, SEEK_END);
+
+
+  //mi salvo la grandezza del file
+  *size = ftell(filePointer);
+
+  //riporto il puntatore del file all' inizio di esso
+  errno = 0;
+  rewind(filePointer);
+  if (errno)
+  {
+	  perror("Client -> ERRORE OPERAZIONE REWIND");
+  }
+
+
+  //alloco lo spazio necessario
+
+  *fileBuffer = malloc(sizeof(char) * (*size));
+  //fare controllo se sono riuscito ad allocare abbastanza memoria
+
+  //inserisco il file nel buffer
+  if (!error)
+  {
+	  int readSize = fread(*fileBuffer, sizeof(char), *size, filePointer);
+	  if (readSize < *size)
 	  {
-		  perror("SERVER -> Error fopen");
+		  perror("readLocalFile internal error: fread");
 		  return -1;
 	  }
-	  // go to the end of the file
-	  fseek(filePointer, 0L, SEEK_END);
 
+	  chiudi = 1;
+  }
 
-	  //mi salvo la grandezza del file
-	  *size = ftell(filePointer);
-
-	  //riporto il puntatore del file all' inizio di esso
+  if (chiudi)
+  {
 	  errno = 0;
-	  rewind(filePointer);
+	  fclose(filePointer);
 	  if (errno)
 	  {
-		  perror("Client -> ERRORE OPERAZIONE REWIND");
+		  perror("Client -> ERRORE OPERAZIONE FCLOSE");
+		  return -1;
 	  }
+  }
 
+  if (freeBuf)
+  {
+	  free(*fileBuffer);
+	  *fileBuffer = NULL;
+  }
 
-	  //alloco lo spazio necessario
-
-	  *fileBuffer = malloc(sizeof(char) * (*size));
-	  //fare controllo se sono riuscito ad allocare abbastanza memoria
-
-	  //inserisco il file nel buffer
-	  if (!error)
-	  {
-		  int readSize = fread(*fileBuffer, sizeof(char), *size, filePointer);
-		  if (readSize < *size)
-		  {
-			  perror("readLocalFile internal error: fread");
-			  return -1;
-		  }
-
-		  chiudi = 1;
-	  }
-
-	  if (chiudi)
-	  {
-		  errno = 0;
-		  fclose(filePointer);
-		  if (errno)
-		  {
-			  perror("Client -> ERRORE OPERAZIONE FCLOSE");
-			  return -1;
-		  }
-	  }
-
-	  if (freeBuf)
-	  {
-		  free(*fileBuffer);
-		  *fileBuffer = NULL;
-	  }
-
-	  //printf("successfully read the file %s from disk of size %zd\n", path, *size);
-	  return 0;
+  //printf("successfully read the file %s from disk of size %zd\n", path, *size);
+  return 0;
 
 }
-
 

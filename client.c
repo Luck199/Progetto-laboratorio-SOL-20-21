@@ -193,9 +193,10 @@ int parser(struct struttura_coda *comandi)
 			}
 			//strncpy(daInviare,"WRITE_FILE;",150);
 			ritardo();
+			printf("ciao!!!!!\n");
 			//openFile("file2.txt",CREATELOCK);
 
-//			openFile("file1.txt",O_CREATE);
+			openFile("file1.txt",O_CREATE);
 //			openFile("file2.txt",CREATELOCK);
 
 

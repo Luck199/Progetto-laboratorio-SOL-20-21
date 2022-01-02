@@ -102,7 +102,7 @@ int riceviDati(int fd, void *dest, size_t *sizePtr)
   int a=readn(fd, &size, sizeof(size));
   if(a<0)
   {
-	  printf("boh\n");
+	  printf("boh1\n");
 	  return -1;
   }
   *sizePtr=size;
@@ -135,6 +135,7 @@ int riceviDati(int fd, void *dest, size_t *sizePtr)
     		printf("boh2\n");
     		return -1;
     	}
+    	free(size);
     	return b;
 
 //    else
