@@ -145,7 +145,7 @@ int statoFd=0;
 int openConnection(const char *sockname, int msec, const struct timespec abstime)
 {
 
-	char *bufferRicezione=NULL;
+	char * bufferRicezione=NULL;
 	//creo il socket e gestisco gli eventuali errori
 	fd_socket = socket(AF_UNIX, SOCK_STREAM, 0);
 
@@ -196,9 +196,9 @@ int openConnection(const char *sockname, int msec, const struct timespec abstime
 			return -1;
 		}
 	}
+
 	size_t a=0;
 	int readReturnValue=riceviDati(fd_socket,&bufferRicezione,&a);
-
 
 	if(readReturnValue > 0)
 	{
@@ -310,8 +310,12 @@ int openFile(const char* pathname, int flags)
 	{
 		return -1;
 	}
+	size_t a=strlen(daInviare);
+	sendData(fd_socket,&a,sizeof(size_t));
+	sendData(fd_socket,daInviare,strlen(daInviare));
+
 	pathname=relativoToAssoluto(pathname);
-	strcat(daInviare,pathname);
+	strcpy(daInviare,pathname);
 	char flags_array[3];
 	sprintf(flags_array, ";%d", flags);
 	strcat(daInviare,flags_array);
@@ -319,31 +323,68 @@ int openFile(const char* pathname, int flags)
 
 
 
-	size_t a=strlen(daInviare);
-	sendData(fd_socket,&a,sizeof(size_t));
+	size_t b=strlen(daInviare);
+	sendData(fd_socket,&b,sizeof(size_t));
 	sendData(fd_socket,daInviare,strlen(daInviare));
 
+	int fileTornato=0;
+			int exit=0;
+			char * pathEspulso=NULL;
+			char * datiEspulsi=NULL;
+			int entrato=0;
+			while(exit!=1)
+			{
+				int readReturnValue=riceviDati(fd_socket,&bufferRicezione,&a);
+				printf("BufferRicezione:%s\n\n\n\n\n",bufferRicezione);
+
+				if(readReturnValue>0)
+				{
+					if(strncmp(bufferRicezione,"OPEN_FILE: riscontrato errore",50)==0)
+					{
+						errno=EBADF;
+						perror("File descriptor non valido\n");
+						return -1;
+					}
+					if(strncmp(bufferRicezione,"OPEN_FILE eseguita correttamente!",34)==0)
+					{
+						exit=1;
+						free(bufferRicezione);
+						printf("esco\n");
+					}
+					else
+					{
+						if(entrato==0)
+						{
+							pathEspulso=malloc(sizeof(char)*a);
+							strncpy(pathEspulso, bufferRicezione,a);
+							printf("path Espulso:%s\n",pathEspulso);
+							free(bufferRicezione);
+							entrato=1;
+						}
+						else
+						{
+							datiEspulsi=malloc(sizeof(char)*a);
+							memcpy(datiEspulsi, bufferRicezione, a);
+							exit=1;
+							free(bufferRicezione);
+						}
+//
+//
+					}
+				}
+				else
+				{
+					printf("Client -> Errore open\n");
+				}
+	//
+			}
+			printf("path espulso: %s\nDati espulsi:%s\n",pathEspulso,datiEspulsi);
 
 
-	int readReturnValue=riceviDati(fd_socket,&bufferRicezione,&a);
-	if(readReturnValue>0)
-	{
-		if(strncmp(bufferRicezione,"OPEN_FILE: riscontrato errore",50)==0)
-		{
-			errno=EBADF;
-			perror("File descriptor non valido\n");
-			return -1;
-		}
-		else
-		{
-			printf("CLIENT-> risposta server: %s\n",bufferRicezione);
-		}
-	}
-	else
-	{
-		printf("Client -> Errore open\n");
-	}
-	return 0;
+
+
+
+		return 0;
 }
 
 int readFile(const char* pathname, void** buf, size_t* size)
@@ -411,7 +452,7 @@ int readFile(const char* pathname, void** buf, size_t* size)
 
 int readNFiles(int N, const char* dirname)
 {
-	char bufferRicezione=NULL;
+	char * bufferRicezione=NULL;
 	char daInviare[200]="READ_N_FILE;";
 	char appoggio[20];
 	int numFile=0;
@@ -491,9 +532,10 @@ int writeFile(const char* pathname, const char* dirname)
 	{
 		return -1;
 	}
+	dirname=relativoToAssoluto(dirname);
+
 	char * path2="";
 	path2=relativoToAssoluto(pathname);
-	dirname=relativoToAssoluto(dirname);
 
 
 
@@ -510,18 +552,21 @@ int writeFile(const char* pathname, const char* dirname)
 	}
 
 
+	size_t a=strlen(daInviare);
+	sendData(fd_socket,&a,sizeof(size_t));
+	sendData(fd_socket,daInviare,strlen(daInviare));
 
 
 
-	strncat(daInviare,path2,strlen(path2));
+	strncpy(daInviare,path2,strlen(path2));
 //	char size_array[10];
 //	sprintf(size_array, "%ld", size);
 //	strncat(daInviare,";",2);
 //	strncat(daInviare,size_array,strlen(size_array));
 
-	size_t a=strlen(daInviare);
-	sendData(fd_socket,&a,sizeof(size_t));
-	sendData(fd_socket,daInviare,strlen(daInviare));
+	size_t b=strlen(daInviare);
+	sendData(fd_socket,&b,sizeof(size_t));
+	sendData(fd_socket,daInviare,b);
 
 
 	//writen(fd_socket,(void*)buf,1000);
@@ -530,16 +575,106 @@ int writeFile(const char* pathname, const char* dirname)
 	sendData(fd_socket,buf, size);
 
 
-	int readReturnValue=riceviDati(fd_socket,&bufferRicezione,&a);
-	if(readReturnValue > 0)
-	{
-		printf("CLIENT-> risposta server: %s\n",bufferRicezione);
-	}
-	else
-	{
-		//perror("CLIENT->Errore READ");
-		return -1;
-	}
+
+
+
+
+
+
+
+	int fileTornato=0;
+		int exit=0;
+		char * pathEspulso=NULL;
+		char * datiEspulsi=NULL;
+		int entrato=0;
+		//while(exit!=1)
+		//{
+			int readReturnValue=riceviDati(fd_socket,&bufferRicezione,&a);
+printf("BUfferRicezione:%s\n\n\n\n\n\n\n\n",bufferRicezione);
+
+			if(readReturnValue>0)
+			{
+//				if(strncmp(bufferRicezione,"WRITE_FILE: riscontrato errore",50)==0)
+//				{
+//					errno=EBADF;
+//					perror("File descriptor non valido\n");
+//					return -1;
+//				}
+//				if(strncmp(bufferRicezione,"WRITE_FILE eseguita correttamente!",50)==0)
+//				{
+//					exit=1;
+//					printf("esco");
+//				}
+//				else
+//				{
+//					if(entrato==0)
+//					{
+//						strncpy(pathEspulso, bufferRicezione,a);
+//						free(bufferRicezione);
+//						entrato=1;
+//					}
+//					else
+//					{
+//						memcpy(datiEspulsi, bufferRicezione, a);
+//						free(bufferRicezione);
+//					}
+//					exit=1;
+//
+//				}
+//			}
+//			else
+//			{
+//				printf("Client -> Errore open\n");
+//			}
+//
+		}
+		printf("path espulso: %s\nDati espulsi:%s\n",pathEspulso,datiEspulsi);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//	int readReturnValue=riceviDati(fd_socket,&bufferRicezione,&a);
+//	if(readReturnValue > 0)
+//	{
+//		printf("CLIENT-> risposta server: %s\n",bufferRicezione);
+//	}
+//	else
+//	{
+//		//perror("CLIENT->Errore READ");
+//		return -1;
+//	}
 //	free(stringaFile);
 	return 0;
 }
@@ -547,7 +682,7 @@ int writeFile(const char* pathname, const char* dirname)
 int appendToFile(const char* pathname, void* buf, size_t size, const char* dirname)
 {
 	char daInviare[200]="APPEND_TO_FILE;";
-	char bufferRicezione=NULL;
+	char *bufferRicezione=NULL;
 	statoFd=statoFileDescriptor();
 	if(statoFd < 0)
 	{
@@ -593,8 +728,12 @@ int lockFile(const char* pathname)
 	{
 		return -1;
 	}
+	size_t b=strlen(daInviare);
+	sendData(fd_socket,&b,sizeof(size_t));
+	sendData(fd_socket,daInviare,b);
+
 	pathname=relativoToAssoluto(pathname);
-	strncat(daInviare,pathname,strlen(pathname));
+	strncpy(daInviare,pathname,strlen(pathname));
 
 
 
@@ -632,8 +771,13 @@ int unlockFile(const char* pathname)
 		{
 			return -1;
 		}
+
+		size_t b=strlen(daInviare);
+		sendData(fd_socket,&b,sizeof(size_t));
+		sendData(fd_socket,daInviare,b);
+
 		pathname=relativoToAssoluto(pathname);
-		strncat(daInviare,pathname,strlen(pathname));
+		strncpy(daInviare,pathname,strlen(pathname));
 
 
 
@@ -671,20 +815,16 @@ int closeFile(const char* pathname)
 		return -1;
 	}
 
+	size_t b=strlen(daInviare);
+	sendData(fd_socket,&b,sizeof(size_t));
+	sendData(fd_socket,daInviare,b);
+
 	pathname=relativoToAssoluto(pathname);
 	strcat(daInviare,pathname);
-
-
 
 	size_t a=strlen(daInviare);
 	sendData(fd_socket,&a,sizeof(size_t));
 	sendData(fd_socket,daInviare,a);
-
-
-
-
-
-
 
 	//write(fd_socket,daInviare,200);
 	int	readReturnValue=riceviDati(fd_socket,&bufferRicezione,&a);
@@ -765,8 +905,12 @@ int removeFile(const char* pathname)
 	{
 		return -1;
 	}
+	size_t b=strlen(daInviare);
+	sendData(fd_socket,&b,sizeof(size_t));
+	sendData(fd_socket,daInviare,b);
+
 	pathname=relativoToAssoluto(pathname);
-	strncat(daInviare,pathname,strlen(pathname));
+	strncpy(daInviare,pathname,strlen(pathname));
 
 	size_t a=strlen(daInviare);
 	sendData(fd_socket,&a,sizeof(size_t));

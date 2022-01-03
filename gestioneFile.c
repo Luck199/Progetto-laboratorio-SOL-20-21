@@ -116,19 +116,20 @@ void lasciaStrutturaFile()
 void visualizzaArrayFile()
 {
 	int i=0;
-	printf("\n\n\narray dei file: \n");
-	printf("numero di file presenti: %d\n",numFilePresenti);
-	printf("memoria disponibile: %d\n",memoriaDisponibile);
-	printf("numero dei file ancora inseribili: %d\n",numFileDisponibili);
-
+//	printf("\n\n\narray dei file: \n");
+//	printf("numero di file presenti: %d\n",numFilePresenti);
+//	printf("memoria disponibile: %d\n",memoriaDisponibile);
+//	printf("numero dei file ancora inseribili: %d\n",numFileDisponibili);
+//
 	//***********************************
 	//Tale procedura dà errore con valgrind, non utilizzare in progetto finale
 	//***********************************
 	for(i=0;i<num_max_file;i++)
 	{
-		//////printf("posizione: %d -> file : %s\n",i,array_file[i].path);
-		////////printf("dimensione in byte: %ld\n",array_file[i].dimensione);
-		////////printf("data e ora di inserimento: %ld\n",array_file[i].data);
+		printf("path[%d]:%s\n",i,array_file[i].path);
+//		printf("posizione: %d -> file : %s\n",i,array_file[i].path);
+		//printf("dimensione in byte: %ld\n",array_file[i].dimensione);
+		//printf("data e ora di inserimento: %ld\n",array_file[i].data);
 
 	}
 }
@@ -137,7 +138,6 @@ int aggiungiFile(char * path, char * buf, size_t sizeFile, int fdDaElaborare)
 {
 
 	int posDiRitorno=0;
-
 
 
 	if(sizeFile>dim_memoria)
@@ -149,6 +149,8 @@ int aggiungiFile(char * path, char * buf, size_t sizeFile, int fdDaElaborare)
 	else
 	{
 		int verificaInserimentoReturnValue=verificaInserimento(sizeFile,  fdDaElaborare);
+
+
 		if(verificaInserimentoReturnValue != 1)
 		{
 			perror("Errore nell' inserimento del nuovo file\n");
@@ -158,23 +160,29 @@ int aggiungiFile(char * path, char * buf, size_t sizeFile, int fdDaElaborare)
 		//se arrivo qui vuol dire che l' inserimento del file può essere fatto
 
 		//inserisco il file dalla cartella client alla cartella server
-
+//		printf("visualizza array prima del ciclo:\n");
+//		visualizzaArrayFile();
 		while(strcmp(array_file[posizioneLibera].path,"vuota")!=0)
 		{
+			printf("posizioneLibera:%d\n\n\n\n", posizioneLibera);
+
 			posizioneLibera=(posizioneLibera+1) % num_max_file;
 		}
 		strncpy(array_file[posizioneLibera].path,path,strlen(path));
-		array_file[posizioneLibera].data= time(NULL);
+		//array_file[posizioneLibera].data= time(NULL);
 		if(array_file[posizioneLibera].byteFile != NULL)
 		{
 			free(array_file[posizioneLibera].byteFile);
 		}
+	//	printf("ciaociaociaociaociaociaociaociaociaociaociaociao\n\n\n\n");
+
 		array_file[posizioneLibera].byteFile=malloc(sizeof(char)*sizeFile);
 		strncpy(array_file[posizioneLibera].byteFile,buf,sizeFile);
-		printf("array_file[posizioneLibera].byteFile= %s\n",array_file[posizioneLibera].byteFile);
+		//printf("array_file[posizioneLibera].byteFile= %s\n",array_file[posizioneLibera].byteFile);
 		array_file[posizioneLibera].dimensione=sizeFile;
 		numFilePresenti++;
 		array_file[posizioneLibera].O_CREATE=1;
+
 
 		//ho aggiunto correttamente un file alla struttura, modifico le variabili necessarie
 		posDiRitorno=posizioneLibera;
@@ -183,8 +191,10 @@ int aggiungiFile(char * path, char * buf, size_t sizeFile, int fdDaElaborare)
 		memoriaDisponibile=memoriaDisponibile-sizeFile;
 		maxMemoriaRaggiunta=maxMemoriaRaggiunta+sizeFile;
 		numMaxFilePresenti++;
+
 		//visualizzaArrayFile();
 		return posDiRitorno;
+
 	}
 
 
@@ -202,22 +212,23 @@ int verificaInserimento(int dimFile, int fdDaElaborare)
 	else
 	{
 		//siamo in un caso di capacity misses
-		//////printf("applico fifo!!\n");
+		//printf("applico fifo!!\n");
 
-		char * espelliPath=NULL;
-		char * espelliDati=NULL;
-		while(memoriaDisponibile < dimFile && numFileDisponibili<=0)
+		while(memoriaDisponibile < dimFile || numFileDisponibili==0)
 		{
+			//printf("faccio fifo\n\n\n\n\n\n\n\n\n\n");
 			applicaFifo(fdDaElaborare);
 
 		}
-		visualizzaArrayFile();
+		//visualizzaArrayFile();
 		return 1;
 	}
 }
 
 void applicaFifo(int fdDaElaborare)
 {
+
+	printf("applico fifo\n");
 	//grazie alla politica fifo, so che una volta eliminato il file più vecchio, il quale
 	//indice è presente nella variabile filePiuVecchio, il file presente nell' array alla sua destra ( in modulo ) sarà sempre il più vecchio
 	int i=filePiuVecchio,trovato=0;
@@ -242,6 +253,7 @@ void applicaFifo(int fdDaElaborare)
 			dimEspulso=array_file[i].dimensione;
 			//printf("elimino il file %s\n",array_file[i].path);
 			strncpy(array_file[i].path,"vuota",6);
+
 			array_file[i].data=0;//(char*)malloc(sizeof(char)*MAXSTRING);
 			daLiberare=array_file[i].dimensione;
 			array_file[i].dimensione=0;
@@ -302,6 +314,7 @@ void lasciaLockFileLettura(int indiceFile)
 void assumiLockFileScrittura(int indiceFile,int fdDaElaborare)
 {
 	int errore=0,entrato=0;
+
 
 
 	while((array_file[indiceFile].O_LOCK == 1) && (array_file[indiceFile].identificatoreClient!=0) && (array_file[indiceFile].identificatoreClient != fdDaElaborare))
@@ -375,7 +388,8 @@ int cercaFile(char* pathname)
 //Non ancora gestito caso in cui entrambi i flag
 int openFileServer(char *path, int flag, int fdDaElaborare)
 {
-
+//	printf("visualizza prima open:\n");
+//	visualizzaArrayFile();
 	//verifico se il flag ricevuto ha un valore uguale a 0 oppure a 1
 	if (flag < 0 || flag > 2)
 	{
@@ -404,7 +418,7 @@ int openFileServer(char *path, int flag, int fdDaElaborare)
 	if(indiceFile == -1)
 	{
 		char * bufNuovoFile="vuota";//il buffer del nuovo file sarà chiaramente vuoto
-		indiceFile=aggiungiFile(path,bufNuovoFile,0, fdDaElaborare);
+		indiceFile=aggiungiFile(path,bufNuovoFile,6, fdDaElaborare);
 	}
 
 
@@ -417,16 +431,16 @@ int openFileServer(char *path, int flag, int fdDaElaborare)
 	}
 
 	printf("file %s acquisito dal client %d\n",array_file[indiceFile].path,array_file[indiceFile].identificatoreClient);
-	array_file[indiceFile].puntatoreFile=fopen(array_file[indiceFile].path, "a+");
+	//array_file[indiceFile].puntatoreFile=fopen(array_file[indiceFile].path, "a+");
 
 
-	if(array_file[indiceFile].puntatoreFile == NULL)
-	{
-		perror("SERVER -> Error fopen");
+//	if(array_file[indiceFile].puntatoreFile == NULL)
+//	{
+//		perror("SERVER -> Error fopen");
 //		strncpy(stringaToLog,"La funzione fopen per file di log ha riscontrato un errore.",MAXLUNGHEZZA);
 //		scriviSuLog(stringaToLog,0);
-		return -1;
-	}
+//		return -1;
+//	}
 //	fprintf(array_file[indiceFile].puntatoreFile, "stasera vince Morgan\n");
 
 	return 1;
@@ -705,11 +719,11 @@ int writeFileServer(char* path, char  * dati, size_t sizeFile, int fdDaElaborare
 	 * -> il file sia in stato di lock
 	 * -> il file sia posseduto da me
 	 */
-	if((indiceFile == -1))
-	{
-		printf("si vuole scrivere nella memoria di un file non presente, errore!\n");
-		return -1;
-	}
+//	if((indiceFile == -1))
+//	{
+//		printf("si vuole scrivere nella memoria di un file non presente, errore!\n");
+//		return -1;
+//	}
 	int aggiungiFileReturnValue=0;
 	//aggiungiFileReturnValue=aggiungiFile(path,dati,sizeFile);
 
@@ -731,8 +745,6 @@ int writeFileServer(char* path, char  * dati, size_t sizeFile, int fdDaElaborare
 		//è necessario riallocare memoria
 		array_file[indiceFile].byteFile=realloc(array_file[indiceFile].byteFile, (array_file[indiceFile].dimensione+sizeFile)*sizeof(char));
 	}
-	char * espelliPath=NULL;
-	char * espelliDati=NULL;
 	int espelliFile=0;
 	if(memoriaDisponibile<sizeFile || numFilePresenti == num_max_file)
 	{

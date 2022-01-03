@@ -193,10 +193,9 @@ int parser(struct struttura_coda *comandi)
 			}
 			//strncpy(daInviare,"WRITE_FILE;",150);
 			ritardo();
-			printf("ciao!!!!!\n");
 			//openFile("file2.txt",CREATELOCK);
 
-			openFile("file1.txt",O_CREATE);
+			//openFile("file1.txt",O_CREATE);
 //			openFile("file2.txt",CREATELOCK);
 
 
@@ -263,9 +262,13 @@ int parser(struct struttura_coda *comandi)
 			char* token = strtok(stringa,",");
 			while (token != NULL)
 			{
-				char * espulsi= malloc(80*sizeof(char *));
-				strcpy(espulsi,"espulsi");
-				writeFile(token,"");
+//				char * espulsi= malloc(80*sizeof(char *));
+//				strcpy(espulsi,"espulsi");
+				//openFile(token,O_CREATE);
+				//writeFile(token,"");
+
+//				openFile(token,O_CREATE);
+				closeFile(token);
 				enqueueString(files,token);
 				token = strtok(NULL, ",");
 			}
@@ -284,7 +287,7 @@ int parser(struct struttura_coda *comandi)
 				}
 				continue;
 			}
-			strcpy(dirname,stringa);
+			strcpy(dirnameSecondario,stringa);
 			if(abilitaStampe==1)
 			{
 				////printf("CLIENT-> Letto dirname: %s\n",dirname);
