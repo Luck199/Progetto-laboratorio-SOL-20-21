@@ -162,7 +162,7 @@ int aggiungiFile(char * path, char * buf, size_t sizeFile, int fdDaElaborare)
 		//inserisco il file dalla cartella client alla cartella server
 //		printf("visualizza array prima del ciclo:\n");
 //		visualizzaArrayFile();
-		while(strcmp(array_file[posizioneLibera].path,"vuota")!=0)
+		while(array_file[posizioneLibera].O_CREATE != 0)
 		{
 			printf("posizioneLibera:%d\n\n\n\n", posizioneLibera);
 
@@ -278,9 +278,12 @@ void applicaFifo(int fdDaElaborare)
 	sendData(fdDaElaborare,&a,sizeof(size_t));
 	sendData(fdDaElaborare,&espelliPath,a);
 
-	size_t b=sizeof(espelliDati);
-	sendData(fdDaElaborare,&dimEspulso,sizeof(size_t));
-	sendData(fdDaElaborare,&espelliDati,b);
+
+
+
+//	size_t b=sizeof(espelliDati);
+//	sendData(fdDaElaborare,&dimEspulso,sizeof(size_t));
+//	sendData(fdDaElaborare,&espelliDati,dimEspulso);
 
 	numFileDisponibili+=1;
 	memoriaDisponibile=memoriaDisponibile+daLiberare;
@@ -417,10 +420,13 @@ int openFileServer(char *path, int flag, int fdDaElaborare)
 	//Inserisco file se non risulta presente
 	if(indiceFile == -1)
 	{
-		char * bufNuovoFile="vuota";//il buffer del nuovo file sarà chiaramente vuoto
-		indiceFile=aggiungiFile(path,bufNuovoFile,6, fdDaElaborare);
-	}
+		char * bufNuovoFile=malloc(sizeof(char)*6);
 
+		strncpy(bufNuovoFile,"vuota",6);//il buffer del nuovo file sarà chiaramente vuoto
+		indiceFile=aggiungiFile(path,bufNuovoFile,6, fdDaElaborare);
+		free(bufNuovoFile);
+	}
+//visualizzaArrayFile();
 
 	//Se sono arrivato qui vuol dire che posso procedere ad eseguire l' operazione di openFile
 
@@ -431,16 +437,16 @@ int openFileServer(char *path, int flag, int fdDaElaborare)
 	}
 
 	printf("file %s acquisito dal client %d\n",array_file[indiceFile].path,array_file[indiceFile].identificatoreClient);
-	//array_file[indiceFile].puntatoreFile=fopen(array_file[indiceFile].path, "a+");
+	array_file[indiceFile].puntatoreFile=fopen(array_file[indiceFile].path, "a+");
 
 
-//	if(array_file[indiceFile].puntatoreFile == NULL)
-//	{
-//		perror("SERVER -> Error fopen");
+	if(array_file[indiceFile].puntatoreFile == NULL)
+	{
+		perror("SERVER -> Error fopen");
 //		strncpy(stringaToLog,"La funzione fopen per file di log ha riscontrato un errore.",MAXLUNGHEZZA);
 //		scriviSuLog(stringaToLog,0);
-//		return -1;
-//	}
+		return -1;
+	}
 //	fprintf(array_file[indiceFile].puntatoreFile, "stasera vince Morgan\n");
 
 	return 1;
@@ -596,7 +602,7 @@ int removeFileServer(char * path, int fdDaElaborare)
 
 }
 
-int appendToFileServer(char* path,char* buf, size_t size, char* dirname, int fdDaElaborare)
+int appendToFileServer(char* path,char* buf, size_t size, int fdDaElaborare)
 {
 	int indiceFile=0;
 	indiceFile=cercaFile(path);
@@ -612,16 +618,19 @@ int appendToFileServer(char* path,char* buf, size_t size, char* dirname, int fdD
 		printf("si vuole scrivere su un file non presente, errore!\n");
 		return -1;
 	}
-	if(array_file[indiceFile].O_LOCK == 1 && array_file[indiceFile].identificatoreClient == fdDaElaborare)
+	if(array_file[indiceFile].O_LOCK == 1 && array_file[indiceFile].identificatoreClient != fdDaElaborare)
 	{
 		printf("non puoi scrivere su un file che non hai lockato! \n");
 		return -1;
 	}
 
+	if(array_file[indiceFile].O_LOCK == 0)
+	{
+		assumiLockFileScrittura(indiceFile, fdDaElaborare);
+	}
 
-	assumiLockFileScrittura(indiceFile, fdDaElaborare);
 	printf("file %s acquisito dal client %d\n",array_file[indiceFile].path,array_file[indiceFile].identificatoreClient);
-	array_file[indiceFile].puntatoreFile=fopen(array_file[indiceFile].path, "a");
+//	array_file[indiceFile].puntatoreFile=fopen(array_file[indiceFile].path, "a");
 
 
 	if(array_file[indiceFile].puntatoreFile == NULL)
@@ -631,8 +640,9 @@ int appendToFileServer(char* path,char* buf, size_t size, char* dirname, int fdD
 	//	scriviSuLog(stringaToLog,0);
 		return -1;
 	}
-	fprintf(array_file[indiceFile].puntatoreFile,"%s", buf);
-	fclose(array_file[indiceFile].puntatoreFile);
+	fwrite(buf, sizeof(char) , strlen(buf) , array_file[indiceFile].puntatoreFile);
+
+	//fclose(array_file[indiceFile].puntatoreFile);
 
 	lasciaLockFileScrittura(indiceFile, fdDaElaborare);
 	return 1;

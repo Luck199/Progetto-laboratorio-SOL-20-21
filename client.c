@@ -265,10 +265,13 @@ int parser(struct struttura_coda *comandi)
 //				char * espulsi= malloc(80*sizeof(char *));
 //				strcpy(espulsi,"espulsi");
 				//openFile(token,O_CREATE);
-				//writeFile(token,"");
 
-//				openFile(token,O_CREATE);
-				closeFile(token);
+				void * buf="viva il carnevale";
+				size_t size=sizeof(buf);
+				openFile(token,O_CREATE);
+				//writeFile(token,"ciao");
+				appendToFile(token,buf,size,"");
+//				closeFile(token);
 				enqueueString(files,token);
 				token = strtok(NULL, ",");
 			}
