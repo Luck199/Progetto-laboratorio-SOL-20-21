@@ -24,7 +24,7 @@ int aggiungiFile(char * path, char * buf, size_t sizeFile, int fdDaElaborare);//
 void visualizzaArrayFile();//funzione che stampa le info di ogni file
 int cercaFile(char* pathname);//funzione che cerca il file identificato da pathname all' interno dell' array dei file, e restituisce uno se è presente al suo interno, -1 altrimenti
 int verificaInserimento(int dimFile, int fdDaElaborare);//funzione che verifica se è presente spazio nell' array per inserire un file: in caso positivo ritorna 1, altrimenti applica l' algoritmo di rimpiazzo
-void applicaFifo(int fdDaElaborare);//funzione che applica l' algoritmo di rimpiazzo fifo nell' array dei file
+void applicaFifo(int fdDaElaborare, int daSalvare);//funzione che applica l' algoritmo di rimpiazzo fifo nell' array dei file
 void assumiLockFileLettura(int indiceFile);
 void lasciaLockFileLettura(int indiceFile);
 void assumiLockFileScrittura(int indiceFile, int fdDaElaborare);

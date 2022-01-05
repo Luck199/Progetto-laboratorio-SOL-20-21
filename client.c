@@ -47,7 +47,6 @@ int main(int argc, char **argv)
 	files->opzione=NULL;
 	files->next = NULL;
 	files->prec = NULL;
-	//int op;
 	char * stringa=(char*)malloc(200*sizeof(char));
 	strcpy(stringa, argv[1]);
 	////printf("CLIENT-> Stringa dei comandi: %s\n",stringa);
@@ -56,7 +55,6 @@ int main(int argc, char **argv)
 
 	while (token != NULL)
 	{
-		//////printf("%s\n", token);
 		enqueueString(comandi,token);
 	    token = strtok(NULL, " ");
 	}
@@ -268,9 +266,9 @@ int parser(struct struttura_coda *comandi)
 
 				void * buf="viva il carnevale";
 				size_t size=sizeof(buf);
-				openFile(token,O_CREATE);
-				//writeFile(token,"ciao");
-				appendToFile(token,buf,size,"");
+				openFile(token,CREATELOCK);
+				writeFile(token,"");
+				//appendToFile(token,buf,size,"");
 //				closeFile(token);
 				enqueueString(files,token);
 				token = strtok(NULL, ",");

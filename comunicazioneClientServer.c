@@ -17,20 +17,19 @@
 
 
 
-ssize_t writen(int fd, void *v_ptr, size_t n)
+ssize_t readnBytes(int fdDaElaborare, void *v_ptr, size_t N)
 {
 	char *pointer = v_ptr;
-	//printf("pointer:%s\n\n\n",pointer);
 	int valoreDiRitorno;
 	size_t nleft;
 	ssize_t bytesScritti;
 
-	nleft = n;
+	nleft = N;
 	while (nleft > 0)
 	{
-		if ((bytesScritti = write(fd, pointer, nleft)) < 0)
+		if ((bytesScritti = write(fdDaElaborare, pointer, nleft)) < 0)
 		{
-			if (nleft == n)
+			if (nleft == N)
 			{
 				//è stato riscontrato un errore, ritorno -1
 				return -1;
@@ -49,24 +48,24 @@ ssize_t writen(int fd, void *v_ptr, size_t n)
 		nleft -= bytesScritti;
 		pointer += bytesScritti;
 	}
-	valoreDiRitorno = n - nleft; //valoreDiRitorno >= 0
+	valoreDiRitorno = N - nleft; //valoreDiRitorno >= 0
 	return valoreDiRitorno;
 }
 
 //Funzione read con un numero di bytes massimo uguale ad n
-ssize_t readn(int fd, void *v_ptr, size_t n)
+ssize_t readnBytes(int fdDaElaborare, void *v_ptr, size_t N)
 {
 	char *pointer = v_ptr;
 	size_t nleft;
 	ssize_t bytesLetti;
 	int valoreDiRitorno;
 
-	nleft = n;
+	nleft = N;
 	while (nleft > 0)
 	{
-		if ((bytesLetti = read(fd, pointer, nleft)) < 0)
+		if ((bytesLetti = read(fdDaElaborare, pointer, nleft)) < 0)
 		{
-			if (nleft == n)
+			if (nleft == N)
 			{
 				//è stato riscontrato un errore, ritorno -1
 				return -1;
@@ -85,7 +84,7 @@ ssize_t readn(int fd, void *v_ptr, size_t n)
 		nleft -= bytesLetti;
 		pointer += bytesLetti;
 	}
-	valoreDiRitorno = n - nleft; //valoreDiRitorno >= 0
+	valoreDiRitorno = N - nleft; //valoreDiRitorno >= 0
   	return valoreDiRitorno;
 }
 
