@@ -322,7 +322,7 @@ int openFile(const char* pathname, int flags)
 
 
 	char flags_array[3];
-	sprintf(flags_array, ";%d", flags);
+	sprintf(flags_array, "%d", flags);
 	strcpy(daInviare,flags_array);
 	a=strlen(daInviare);
 	sendData(fd_socket,&a,sizeof(size_t));
@@ -343,7 +343,8 @@ int openFile(const char* pathname, int flags)
 	while(exit!=1)
 	{
 		int readReturnValue=riceviDati(fd_socket,&bufferRicezione,&a);
-		//printf("BufferRicezione:%s\n\n\n\n\n",bufferRicezione);
+
+		printf("BufferRicezione:%s\n\n\n\n\n",bufferRicezione);
 
 		if(readReturnValue>0)
 		{
@@ -351,13 +352,15 @@ int openFile(const char* pathname, int flags)
 			{
 				errno=EBADF;
 				perror("File descriptor non valido\n");
+				printf("esco con errore\n");
+
 				return -1;
 			}
 			if(strncmp(bufferRicezione,"OPEN_FILE eseguita correttamente!",34)==0)
 			{
 				exit=1;
 				free(bufferRicezione);
-				//printf("esco\n");
+				printf("esco\n");
 			}
 			else
 			{
@@ -389,7 +392,7 @@ int openFile(const char* pathname, int flags)
 
 	if(pathEspulso!=NULL || datiEspulsi!=NULL)
 	{
-		printf("path espulso: %s\nDati espulsi:%s\n",pathEspulso,datiEspulsi);
+		printf("\n\n\n\nIN WRITE FILE:path espulso: %s \nDati espulsi:%s\n\n\n\n",pathEspulso,datiEspulsi);
 	}
 
 	return 0;
@@ -609,7 +612,7 @@ int writeFile(const char* pathname, const char* dirname)
 			{
 				exit=1;
 				free(bufferRicezione);
-				//printf("esco\n");
+				printf("esco\n");
 			}
 			else
 			{
@@ -647,8 +650,26 @@ int writeFile(const char* pathname, const char* dirname)
 	}
 
 
-
-
+//	FILE *file;
+//	if(errno==0)
+//	{
+//		printf("faccio fopen\n\n\n\n\n");
+//		file = fopen("prova.txt","w");
+//		if( file==NULL )
+//		{
+//			perror("Errore in apertura del file");
+//			return -1;
+//		}
+//		else
+//		{
+//			int w = fwrite(datiEspulsi, sizeof(char), a, file);
+//			if(w<0)
+//			{
+//				printf("CLIENT -> ERRORE fwrite\n");
+//			}
+//		}
+//		fclose(file);
+//	}
 
 
 

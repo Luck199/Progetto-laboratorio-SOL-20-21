@@ -266,7 +266,7 @@ int parser(struct struttura_coda *comandi)
 
 				void * buf="viva il carnevale";
 				size_t size=sizeof(buf);
-				openFile(token,CREATELOCK);
+				openFile(token,O_CREATE);
 				writeFile(token,"");
 				//appendToFile(token,buf,size,"");
 //				closeFile(token);

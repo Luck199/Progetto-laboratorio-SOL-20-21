@@ -78,11 +78,11 @@ void deallocaStrutturaFile()
 	for(i=0;i<num_max_file;i++)
 	{
 		free(array_file[i].path);
-		//free(array_file[i].data);
-		if(array_file[i].puntatoreFile != NULL)
-		{
-			fclose(array_file[i].puntatoreFile);
-		}
+//		free(array_file[i].data);
+//		if(array_file[i].puntatoreFile != NULL)
+//		{
+//			fclose(array_file[i].puntatoreFile);
+//		}
 		pthread_mutex_destroy(&(array_file[i].lockFile));
 		pthread_cond_destroy(&(array_file[i].fileConditionVariable));
 		free(array_file[i].byteFile);
@@ -165,7 +165,6 @@ int aggiungiFile(char * path, char * buf, size_t sizeFile, int fdDaElaborare)
 		while(array_file[posizioneLibera].O_CREATE != 0)
 		{
 			//printf("posizioneLibera:%d\n\n\n\n", posizioneLibera);
-
 			posizioneLibera=(posizioneLibera+1) % num_max_file;
 		}
 
@@ -241,20 +240,24 @@ void applicaFifo(int fdDaElaborare, int daSalvare)
 	size_t daLiberare=0;
 //	char * espelliPath=NULL;
 //	char * espelliDati=NULL;
-	char espelliPath[300]="";
-	char espelliDati[300]="";
+	char *espelliPath=NULL;
+	char *espelliDati=NULL;
 
 	size_t dimEspulso=0;
 
 	while(trovato != 1)
 	{
+		printf("daSalvare: %d, i:%d\n",daSalvare,i);
+		//LA variabile daSalvare indica quale file non deve essere eliminato, perchè si vuole liberare
+		//spazio proprio per quel file, quindi risulterebbe un errore cancellarlo
 		if((array_file[i].O_LOCK==0) && daSalvare != i)//(array_file[i].lettoriAttivi == 0) &&  (array_file[i].scrittoriAttivi == 0))
 		{
-//			espelliPath=malloc(sizeof(char)*(strlen(array_file[i].path)+1));
-//			espelliDati=malloc(sizeof(char)*array_file[i].dimensione);
+			espelliPath=malloc(sizeof(char)*(strlen(array_file[i].path)+1));
+			espelliDati=malloc(sizeof(char)*(array_file[i].dimensione+10));
 
 			//elimino il file in questa posizione, perchè è quello che è da più tempo nell' array e in questo momento non è in stato di lock
-			strcpy(espelliPath,array_file[i].path);
+			strncpy(espelliPath,array_file[i].path,strlen(array_file[i].path)+1);
+			printf("\n\n\n\nVOGLIO ELIMINARE PROPRIO QUESTI BYTE:%ld\n\n\n\n\n",array_file[i].dimensione);
 			memcpy(espelliDati,array_file[i].byteFile,array_file[i].dimensione);
 			dimEspulso=array_file[i].dimensione;
 			//printf("elimino il file %s\n",array_file[i].path);
@@ -278,24 +281,21 @@ void applicaFifo(int fdDaElaborare, int daSalvare)
 			i=(i+1)%num_max_file;
 		}
 	}
-//	printf("rimuovo il file %s \n che contiene %s\n",espelliPath,espelliDati);
-
-	size_t a=strlen(espelliPath);
+	printf("rimuovo il file %s \n che contiene %s\n",espelliPath,espelliDati);
+	size_t a=strlen(espelliPath)+1;
 	sendData(fdDaElaborare,&a,sizeof(size_t));
 	sendData(fdDaElaborare,&espelliPath,a);
 
 
-
-
-	size_t b=sizeof(espelliDati);
+	size_t b=sizeof(espelliDati)+1;
 	sendData(fdDaElaborare,&dimEspulso,sizeof(size_t));
 	sendData(fdDaElaborare,&espelliDati,dimEspulso);
 
 	numFileDisponibili+=1;
 	memoriaDisponibile=memoriaDisponibile+daLiberare;
 	numVolteAlgoritmoRimpiazzo++;
-//	free(espelliPath);
-//	free(espelliDati);
+	free(espelliPath);
+	free(espelliDati);
 }
 
 void assumiLockFileLettura(int indiceFile)
@@ -405,7 +405,6 @@ int openFileServer(char *path, int flag, int fdDaElaborare)
 		errno = EINVAL;
 		return -1;
 	}
-
 //	//se il file richiesto è presente nell' array e il flag risulta 0 ( ovvero O_CREATE) ritorno errore
 	int indiceFile=cercaFile(path);
 
@@ -421,7 +420,7 @@ int openFileServer(char *path, int flag, int fdDaElaborare)
 		printf("si vuole lockare un file non presente, errore!\n");
 		return -1;
 	}
-//
+
 //
 //	//Inserisco file se non risulta presente
 	if(indiceFile == -1)
@@ -430,6 +429,7 @@ int openFileServer(char *path, int flag, int fdDaElaborare)
 
 		strncpy(bufNuovoFile,"vuota",6);//il buffer del nuovo file sarà chiaramente vuoto
 		indiceFile=aggiungiFile(path,bufNuovoFile,6, fdDaElaborare);
+
 		free(bufNuovoFile);
 	}
 //visualizzaArrayFile();
@@ -439,20 +439,21 @@ int openFileServer(char *path, int flag, int fdDaElaborare)
 
 	if(flag != 0)
 	{
+		printf("lock\n");
 		assumiLockFileScrittura(indiceFile,fdDaElaborare);
 	}
 
 //	printf("file %s acquisito dal client %d\n",array_file[indiceFile].path,array_file[indiceFile].identificatoreClient);
-	//array_file[indiceFile].puntatoreFile=fopen(array_file[indiceFile].path, "a");
+	array_file[indiceFile].puntatoreFile=fopen(array_file[indiceFile].path, "a");
 
 
-//	if(array_file[indiceFile].puntatoreFile == NULL)
-//	{
-//		perror("SERVER -> Error fopen");
+	if(array_file[indiceFile].puntatoreFile == NULL)
+	{
+		perror("SERVER -> Error fopen");
 //		strncpy(stringaToLog,"La funzione fopen per file di log ha riscontrato un errore.",MAXLUNGHEZZA);
 //		scriviSuLog(stringaToLog,0);
-//		return -1;
-//	}
+		return -1;
+	}
 //	printf("Aperto File\n");
 
 	return 1;
@@ -468,7 +469,7 @@ int closeFileServer(char *path,int fdDaElaborare)
 	}
 	if(array_file[indiceFile].identificatoreClient != fdDaElaborare)
 	{
-		printf("non puoi chiudere un file che non hai aperto te! appartiene!\n");
+		printf("non puoi chiudere un file che non hai lockato te! \n");
 		return -1;
 	}
 	if(array_file[indiceFile].puntatoreFile == NULL)
@@ -756,7 +757,6 @@ int writeFileServer(char* path, char  * dati, size_t sizeFile, int fdDaElaborare
 	}
 	if(array_file[indiceFile].dimensione<sizeFile)
 	{
-		printf("qui!\n\n\n");
 		//è necessario riallocare memoria, ne rialloco tanta quanto appena necessario
 		modificaDiMemoria=sizeFile+array_file[indiceFile].dimensione;
 //		realloc(array_file[indiceFile].byteFile, (array_file[indiceFile].dimensione+sizeFile)*sizeof(char));
@@ -774,8 +774,9 @@ int writeFileServer(char* path, char  * dati, size_t sizeFile, int fdDaElaborare
 		espelliFile=1;
 		applicaFifo(fdDaElaborare, daSalvare);
 	}
-	printf("\ndati:%s\n",dati);
 	memcpy(array_file[indiceFile].byteFile , dati, sizeFile);
+	printf("\nDATI QUI:%s\n\n\n\n\n",array_file[indiceFile].byteFile);
+	array_file[indiceFile].dimensione=sizeFile;
 	memoriaDisponibile=memoriaDisponibile-sizeFile;
 	maxMemoriaRaggiunta=maxMemoriaRaggiunta+sizeFile;
 	return 1;
