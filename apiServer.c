@@ -11,6 +11,12 @@
 #include <errno.h>
 #include <assert.h>
 #include <limits.h>
+#include <dirent.h>
+#include <sys/syscall.h>
+#include <stddef.h>
+#include <sys/stat.h>
+
+
 
 #include "comunicazioneClientServer.h"
 #include "apiServer.h"
@@ -79,54 +85,54 @@ char* relativoToAssoluto(const char *fd)
 	ptr = realpath(fd, actualpath);
 	if((ptr== NULL) && (errno==EACCES))
 	{
-		////printf("Errore: l'autorizzazione di lettura o ricerca è stata negata per un componente del prefisso del percorso.\n");
+		printf("Errore: l'autorizzazione di lettura o ricerca è stata negata per un componente del prefisso del percorso.\n");
 		return NULL;
 	}
 
 	else if((ptr== NULL) && (errno==EINVAL))
 	{
-		////printf("Errore: il path risulta NULL.\n");
+		printf("Errore: il path risulta NULL.\n");
 		return NULL;
 	}
 
 	else if((ptr== NULL) && (errno==EIO))
 	{
-		////printf("Errore: si è verificato un errore di I/O durante la lettura dal filesystem.\n");
+		printf("Errore: si è verificato un errore di I/O durante la lettura dal filesystem.\n");
 		return NULL;
 	}
 
 	else if((ptr== NULL) && (errno==ELOOP))
 	{
-		////printf("Errore: Sono stati rilevati troppi collegamenti simbolici nella traduzione del percorso.\n");
+		printf("Errore: Sono stati rilevati troppi collegamenti simbolici nella traduzione del percorso.\n");
 		return NULL;
 	}
 
 	else if((ptr== NULL) && (errno==ENAMETOOLONG))
 	{
-		////printf("Un componente di un percorso ha superato i caratteri NAME_MAX o un intero percorso ha superato i caratteri PATH_MAX. \n");
+		printf("Un componente di un percorso ha superato i caratteri NAME_MAX o un intero percorso ha superato i caratteri PATH_MAX. \n");
 		return NULL;
 	}
 
 	else if((ptr== NULL) && (errno==ENOENT))
 	{
-		////printf("Errore: il file non risulta presente in questa directory.\n");
+		printf("Errore: il file non risulta presente in questa directory.\n");
 		return NULL;
 	}
 
 	else if((ptr== NULL) && (errno==ENOMEM))
 	{
-		////printf("Errore: fuori dalla memoria.\n");
+		printf("Errore: fuori dalla memoria.\n");
 		return NULL;
 	}
 
 	else if((ptr== NULL) && (errno==ENOTDIR))
 	{
-		////printf("Errore: un componente del path prefisso non è una directory\n");
+		printf("Errore: un componente del path prefisso non è una directory\n");
 		return NULL;
 	}
 	else
 	{
-		////printf("%s\n",actualpath);
+		//printf("%s\n",actualpath);
 	}
 
 	return actualpath;
@@ -343,8 +349,7 @@ int openFile(const char* pathname, int flags)
 	while(exit!=1)
 	{
 		int readReturnValue=riceviDati(fd_socket,&bufferRicezione,&a);
-
-		printf("BufferRicezione:%s\n\n\n\n\n",bufferRicezione);
+		printf("bufferRicezioneOPEN:%s\n",bufferRicezione);
 
 		if(readReturnValue>0)
 		{
@@ -392,9 +397,8 @@ int openFile(const char* pathname, int flags)
 
 	if(pathEspulso!=NULL || datiEspulsi!=NULL)
 	{
-		printf("\n\n\n\nIN WRITE FILE:path espulso: %s \nDati espulsi:%s\n\n\n\n",pathEspulso,datiEspulsi);
+		printf("\n\n\n\nIN OPEN FILE:path espulso: %s \nDati espulsi:%s\n\n\n\n",pathEspulso,datiEspulsi);
 	}
-
 	return 0;
 }
 
@@ -430,10 +434,10 @@ int readFile(const char* pathname, void** buf, size_t* size)
 		printf("CLIENT-> risposta server: %s\n",bufferRicezione);
 		FILE *file;
 		//
-		if(errno==0)
+//		if(errno==0)
 		{
 			printf("faccio fopen\n\n\n\n\n");
-			file = fopen("prova.txt","w");
+			file = fopen(pathname,"w");
 			if( file==NULL )
 			{
 				perror("Errore in apertura del file");
@@ -472,43 +476,98 @@ int readNFiles(int N, const char* dirname)
 	{
 		return -1;
 	}
-
+	size_t b=strlen(daInviare);
+	sendData(fd_socket,&b,sizeof(size_t));
+	sendData(fd_socket,&daInviare,b);
 	sprintf(appoggio, "%d", N);
 
-	strcat(daInviare,appoggio);
-	strcat(daInviare,";");
-	strcat(daInviare,dirname);
+	strcpy(daInviare,appoggio);
 
 	printf("\n\nda inviare: %s \n\n",daInviare);
-
-
-
-
-
 
 
 
 	size_t a=strlen(daInviare);
 	sendData(fd_socket,&a,sizeof(size_t));
 	sendData(fd_socket,&daInviare,a);
-	int readReturnValue=riceviDati(fd_socket,&bufferRicezione,&a);
+	a=0;
+	short exit=0;
+	int readReturnValue=0;
+	short leggoPath=0,leggoDati=0;
+	FILE *file;
+	char *datiLetti=NULL;
+	char *pathLetto=NULL;
+	while(exit!=1)
+	{
+		readReturnValue=riceviDati(fd_socket,&bufferRicezione,&a);
+		printf("bufferRicezione:%s\n",bufferRicezione);
 		if(readReturnValue>0)
 		{
-//			if(strncmp(bufferRicezione,"OPEN_FILE: riscontrato errore",50)==0)
-//			{
-//				errno=EBADF;
-//				perror("File descriptor non valido\n");
-//				return -1;
-//			}
-//			else
+			if(strncmp(bufferRicezione,"READ_N_FILE: riscontrato errore",32)==0)
 			{
-				printf("CLIENT-> risposta server: %s\n",bufferRicezione);
+				errno=EBADF;
+				perror("File descriptor non valido\n");
+				return -1;
+			}
+			else if(strncmp(bufferRicezione,"READ_N_FILE: eseguita operazione",34)==0)
+			{
+				//errno=EBADF;
+				printf("FINE READ_N_FILE!\n");
+				exit=1;
+			}
+			else
+			{
+				if((leggoPath==0))
+				{
+//
+//					pathLetto=malloc(sizeof(char)*a);
+//					strncpy(pathLetto,bufferRicezione,a);
+					free(bufferRicezione);
+					leggoPath=1;
+//					a=0;
+				}
+				else if(leggoPath==1)
+				{
+//					datiLetti=malloc(sizeof(char)*a);
+//					memcpy(datiLetti,bufferRicezione,a);
+//
+////					if(errno==0)
+////					{
+////						printf("faccio fopen\n\n\n\n\n");
+////						file = fopen("prova.txt","w");
+////						if( file==NULL )
+////						{
+////							perror("Errore in apertura del file");
+////							return -1;
+////						}
+////						else
+////						{
+////							int w = fwrite(bufferRicezione, sizeof(char), a, file);
+////							if(w<0)
+////							{
+////								printf("CLIENT -> ERRORE fwrite\n");
+////							}
+////						}
+////						fclose(file);
+////					}
+//
+					free(bufferRicezione);
+					leggoPath=0;
+//
+				}
 			}
 		}
-		else
-		{
-			printf("Client -> Errore open\n");
-		}
+//		else
+//		{
+//			printf("Client -> Errore READ_N_FILE\n");
+//		}
+
+	}
+
+
+
+
+
 //	char* rest = bufferRicezione;
 //	char *esito=strtok_r(bufferRicezione, ";", &rest);
 //
@@ -534,7 +593,7 @@ int readNFiles(int N, const char* dirname)
 }
 
 
-int writeFile(const char* pathname, const char* dirname)
+int writeFile(const char* pathname, const char* dirName)
 {
 	char daInviare[200]="WRITE_FILE;";
 	char *bufferRicezione=NULL;
@@ -543,11 +602,11 @@ int writeFile(const char* pathname, const char* dirname)
 	{
 		return -1;
 	}
-	dirname=relativoToAssoluto(dirname);
+	dirName=relativoToAssoluto(dirName);
+	printf("la cartella che utilizzo è:%s\n",dirName);
 
 	char * path2="";
 	path2=relativoToAssoluto(pathname);
-
 
 
 	//recupero il file da poter inviare
@@ -590,16 +649,17 @@ int writeFile(const char* pathname, const char* dirname)
 
 
 
-
-
+	size_t dimBufferRicezione=0;
 	int fileTornato=0;
 	int exit=0;
 	char * pathEspulso=NULL;
 	char * datiEspulsi=NULL;
 	int entrato=0;
+	printf("CLIENT -> ENTRO NEL WHILE!!\n");
 	while(exit!=1)
 	{
-		int readReturnValue=riceviDati(fd_socket,&bufferRicezione,&a);
+		int readReturnValue=riceviDati(fd_socket,&bufferRicezione,&dimBufferRicezione);
+		printf("CLIENT -> BUFFERRicezioneWRITE:%s\n\n\n\n\n",bufferRicezione);
 
 		if(readReturnValue>0)
 		{
@@ -612,7 +672,7 @@ int writeFile(const char* pathname, const char* dirname)
 			{
 				exit=1;
 				free(bufferRicezione);
-				printf("esco\n");
+				printf("CLIENT -> esco\n");
 			}
 			else
 			{
@@ -625,51 +685,49 @@ int writeFile(const char* pathname, const char* dirname)
 				}
 				else
 				{
-					printf("BufferRicezione:%s\n\n\n\n\n",bufferRicezione);
-
 					datiEspulsi=malloc(sizeof(char)*a);
 					memcpy(datiEspulsi, bufferRicezione, a);
 					exit=1;
 					free(bufferRicezione);
 				}
-//
-//
 			}
 		}
 		else
 		{
 			printf("Client -> Errore open\n");
 		}
-	//
 	}
-
-
-	if(pathEspulso!=NULL || datiEspulsi!=NULL)
+	printf("ESCO DAL WHILE!\n");
+	if(pathEspulso!=NULL)
 	{
-		printf("path espulso: %s\nDati espulsi:%s\n",pathEspulso,datiEspulsi);
+		printf("\nIN WRITE FILE:path espulso: %s \n",pathEspulso);
 	}
+	if(datiEspulsi != NULL)
+	{
+		printf("Dati espulsi:%s\n\n\n\n",datiEspulsi);
+	}
+	printf("fine OPerazione\n");
 
-
-//	FILE *file;
-//	if(errno==0)
-//	{
-//		printf("faccio fopen\n\n\n\n\n");
-//		file = fopen("prova.txt","w");
-//		if( file==NULL )
-//		{
-//			perror("Errore in apertura del file");
-//			return -1;
-//		}
-//		else
-//		{
-//			int w = fwrite(datiEspulsi, sizeof(char), a, file);
-//			if(w<0)
-//			{
-//				printf("CLIENT -> ERRORE fwrite\n");
-//			}
-//		}
-//		fclose(file);
-//	}
+	FILE *file;
+	if(errno==0 && datiEspulsi != NULL && pathEspulso != NULL)
+	{
+		printf("faccio fopen\n\n\n\n\n");
+		file = fopen("prova.txt","w");
+		if( file==NULL )
+		{
+			perror("Errore in apertura del file");
+			return -1;
+		}
+		else
+		{
+			int w = fwrite(datiEspulsi, sizeof(char), a, file);
+			if(w<0)
+			{
+				printf("CLIENT -> ERRORE fwrite\n");
+			}
+		}
+		fclose(file);
+	}
 
 
 
@@ -1048,6 +1106,159 @@ int recuperaFile(const char *path, void **fileBuffer, size_t *size)
 
   //printf("successfully read the file %s from disk of size %zd\n", path, *size);
   return 0;
+
+}
+
+
+int isCurrentDirOrParentDir(char *nomeDirectory)
+{
+	if (strcmp(nomeDirectory, ".") == 0)
+	{
+		return 1;
+	}
+	else if(strcmp(nomeDirectory, "..") == 0)
+	{
+		return 2;
+	}
+	else
+	{
+		return 0;
+	}
+}
+
+
+//Funzione che legge N file da una directory
+//nel caso in cui siano presenti sottoDirectory, le visita ricorsivamente fino al raggiungimento di N
+ int leggiNFileDaDirectory(int *numFile2,const char *dirName, char** arrayPath, int posizioneArray, short bitConteggio, int *numeroFileLetti)
+{
+		if(numFile2 == NULL)
+		{
+			perror("ERRORE è stato passato alla funzione un valore non valido");
+			return -1;
+		}
+
+
+		int leggiTuttiIFile = *numFile2 <= 0;
+		// open the dir
+		DIR *dir = opendir(dirName);
+		if(dir==NULL)
+		{
+			perror("ERRORE nella funzione openDir\n");
+			return -1;
+		}
+
+		// Eseguo operazione cd nella directory selezionata
+		int chDirReturnValue=0;
+		chDirReturnValue=chdir(dirName);
+		if(chDirReturnValue==-1 && errno!=0)
+      	{
+      		perror("ERRORE nella funzione chdir\n");
+      	}
+
+
+		struct dirent *file = NULL;
+		//Leggo ogni entry presente nella directory fino a che non ho letto tutti i file oppure ho raggiunto il limite
+		while ((leggiTuttiIFile || *numFile2) && (file = readdir(dir)) != NULL)
+		{
+			char *filename = file->d_name;
+			struct stat s;
+			stat(filename, &s);
+
+			//  stat(filename, &s);
+
+
+			int isFileCurrentDir = isCurrentDirOrParentDir(filename);
+			// int isFileParentDir = isCurrentDir(filename);
+			//**************************
+			//SCRIVERE IN RELAZIONE CHE UTILIZZO STAT CHE NON é POSIX!!!
+			//******************************
+			int isDirectory = S_ISDIR(s.st_mode);
+			int isFileRegolare = S_ISREG(s.st_mode);
+
+			//Tramite questi tre if, se ho selezionato un file
+			//speciale lo salto, non considerandolo nel conteggio
+			if (isFileCurrentDir == 1 || isFileCurrentDir == 2)
+			{
+				continue;
+			}
+			else if (!isDirectory && !isFileRegolare)
+			{
+				//se entro dentro questo if significato che
+				//grazie all' utilizzo della struttura stat,
+				//sono riuscito ad identificare che il file considerato in questo momento non
+				//risulta un file regolare e nemmeno una directory
+				continue;
+			}
+
+
+
+
+
+			else if (isDirectory)
+			{
+				int chiamataRicorsivaReturnValue = leggiNFileDaDirectory( numFile2,filename, arrayPath,posizioneArray,bitConteggio, numeroFileLetti);
+				if (chiamataRicorsivaReturnValue == -1)
+				{
+					int closeDirReturnValue=0;
+					closeDirReturnValue=closedir(dir);
+					if(closeDirReturnValue==-1 && errno!=0)
+					{
+						perror("ERRORE nella funzione closedir\n");
+					}
+				}
+				else
+				{
+					//Ritorno nella directory che sto elaborando
+					// cd in the current dir again
+
+					int chdirReturnValue=0;
+
+					chdirReturnValue=chdir("..");
+					if(chdirReturnValue==-1 && errno!=0)
+					{
+						perror("ERRORE nella funzione closedir\n");
+					}
+
+				}
+			}
+			else if (isFileRegolare)
+			{
+
+				if(bitConteggio == 0)
+				{
+					(*numeroFileLetti)++;
+				}
+				else
+				{
+					int lunghezza=strlen(relativoToAssoluto(filename))+1;
+					char *path =NULL;//Sistemare il discorso della free
+					path=malloc(sizeof(char)*lunghezza);
+					path=relativoToAssoluto(filename);
+
+					if(strcmp(arrayPath[posizioneArray],"")!=0)
+					{
+						posizioneArray++;
+					}
+					strcpy(arrayPath[posizioneArray],path);
+
+//					free(path);
+
+
+
+				}
+				if (!leggiTuttiIFile)
+				{
+					(*numFile2)--;
+				}
+
+
+			}
+		}
+
+
+		closedir(dir);
+		return 0;
+
 
 }
 

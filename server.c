@@ -371,7 +371,7 @@ int main(int argc, char **argv)
 						int fd;
 
 						accediPipeWorker();
-						HANDLE_WRNS(readn(pipeGestioneWorkers[0], &fd, sizeof(fd)), sizeof(fd), ;, errore = 1;);
+						HANDLE_WRNS(readNBytes(pipeGestioneWorkers[0], &fd, sizeof(fd)), sizeof(fd), ;, errore = 1;);
 						lasciaPipeWorker();
 						if (errore)
 						{
@@ -404,7 +404,7 @@ int main(int argc, char **argv)
 					else if (fd == pipeGestioneSegnali[0])
 					{
 						//è arrivato un segnale, recupero il suo indice dalla pipe dedicata
-						HANDLE_WRNS(readn(pipeGestioneSegnali[0], &segnale, sizeof(segnale));, sizeof(segnale), ;, errore = 1;);
+						HANDLE_WRNS(readNBytes(pipeGestioneSegnali[0], &segnale, sizeof(segnale));, sizeof(segnale), ;, errore = 1;);
 
 						if (errore != 0)
 						{
@@ -612,7 +612,7 @@ int main(int argc, char **argv)
 	lasciaCodaComandi();
 	printf("Stampe finali:\n");
 	printf("-> Numero di file massimo memorizzato nel server: %d\n",numMaxFilePresenti);
-	printf("-> Dimensione massima in Mbytes raggiunta dal file storage: %f\n",maxMemoriaRaggiunta);
+	printf("-> Dimensione massima in Mbytes raggiunta dal file storage: %d\n",(int)maxMemoriaRaggiunta);
 	printf("-> Numero di volte in cui l' algoritmo di rimpiazzamento della cache è stato eseguito per selezionare uno o più file \"vittima\": %d\n",numVolteAlgoritmoRimpiazzo);
 	printf("-> lista dei file contenuti nello storage al momento della chiusura del server:\n");
 	for(i=0;i<num_max_file;i++)
@@ -624,10 +624,14 @@ int main(int argc, char **argv)
 	}
 
 
-	strncpy(stringaToLog,"Num Rimpiazzi",MAXLUNGHEZZA);
+	strncpy(stringaToLog,"maxMemoriaRaggiunta",MAXLUNGHEZZA);
+	scriviSuLog(stringaToLog,1,(int)maxMemoriaRaggiunta);
+
+
+	strncpy(stringaToLog,"NumRimpiazzi",MAXLUNGHEZZA);
 	scriviSuLog(stringaToLog,1,numVolteAlgoritmoRimpiazzo);
 
-	strncpy(stringaToLog,"Num max connessioni contemporanee",MAXLUNGHEZZA);
+	strncpy(stringaToLog,"NumMaxConnessioniContemporanee",MAXLUNGHEZZA);
 	scriviSuLog(stringaToLog,1,numMaxconnessioniContemporanee);
 
 
@@ -722,7 +726,7 @@ static void *gestoreSegnali(void *argument)
 
 	if (tipoSegnale)
 	{
-		HANDLE_WRNS(writen(pipe, &tipoSegnale, sizeof(tipoSegnale)), sizeof(tipoSegnale), NOOP, perror("invio dati al thread main fallito");)
+		HANDLE_WRNS(writeNBytes(pipe, &tipoSegnale, sizeof(tipoSegnale)), sizeof(tipoSegnale), NOOP, perror("invio dati al thread main fallito");)
 	}
 
 	pthread_exit(NULL);

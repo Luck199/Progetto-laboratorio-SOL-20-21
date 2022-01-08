@@ -44,6 +44,8 @@ clean:
 	-rm *.o
 	-rm log.txt
 	-rm sockfile
+	-rm server
+	-rm client
 	echo tutto pulito
 	 
 test1:	
