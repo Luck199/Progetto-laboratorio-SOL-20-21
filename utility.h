@@ -51,6 +51,7 @@ extern struct struttura_workers *workers;
 extern struct info_file
 {
     char *path;
+    short fileAperto;
     char * byteFile;
     long data;
     short O_LOCK;

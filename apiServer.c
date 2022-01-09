@@ -499,7 +499,13 @@ int readNFiles(int N, const char* dirname)
 	char *pathLetto=NULL;
 	while(exit!=1)
 	{
+		if(bufferRicezione != NULL)
+		{
+			free(bufferRicezione);
+		}
+		a=0;
 		readReturnValue=riceviDati(fd_socket,&bufferRicezione,&a);
+		printf("a:%ld\n",a);
 		printf("bufferRicezione:%s\n",bufferRicezione);
 		if(readReturnValue>0)
 		{
@@ -509,7 +515,7 @@ int readNFiles(int N, const char* dirname)
 				perror("File descriptor non valido\n");
 				return -1;
 			}
-			else if(strncmp(bufferRicezione,"READ_N_FILE: eseguita operazione",34)==0)
+			else if(strncmp(bufferRicezione,"READ_N_FILE: eseguita operazione",32)==0)
 			{
 				//errno=EBADF;
 				printf("FINE READ_N_FILE!\n");
@@ -519,39 +525,48 @@ int readNFiles(int N, const char* dirname)
 			{
 				if((leggoPath==0))
 				{
-//
-//					pathLetto=malloc(sizeof(char)*a);
-//					strncpy(pathLetto,bufferRicezione,a);
-					free(bufferRicezione);
+					printf("a:%ld\n",a);
+//					if(pathLetto != NULL)
+//					{
+//						free(pathLetto);
+//					}
+
+					pathLetto=malloc(sizeof(char)*a);
+					strncpy(pathLetto,bufferRicezione,a);
+//					free(bufferRicezione);
 					leggoPath=1;
-//					a=0;
+					a=0;
 				}
 				else if(leggoPath==1)
 				{
-//					datiLetti=malloc(sizeof(char)*a);
-//					memcpy(datiLetti,bufferRicezione,a);
-//
-////					if(errno==0)
-////					{
-////						printf("faccio fopen\n\n\n\n\n");
-////						file = fopen("prova.txt","w");
-////						if( file==NULL )
-////						{
-////							perror("Errore in apertura del file");
-////							return -1;
-////						}
-////						else
-////						{
-////							int w = fwrite(bufferRicezione, sizeof(char), a, file);
-////							if(w<0)
-////							{
-////								printf("CLIENT -> ERRORE fwrite\n");
-////							}
-////						}
-////						fclose(file);
-////					}
-//
-					free(bufferRicezione);
+//					if(datiLetti != NULL)
+//					{
+//						free(datiLetti);
+//					}
+					datiLetti=malloc(sizeof(char)*a);
+					memcpy(datiLetti,bufferRicezione,a);
+					if(errno==0)
+					{
+						printf("faccio fopen\n\n\n\n\n");
+
+						file = fopen(pathLetto,"w");
+						if( file==NULL )
+						{
+							perror("Errore in apertura del file");
+							return -1;
+						}
+						else
+						{
+							int w = fwrite(datiLetti, sizeof(char), a, file);
+							if(w<0)
+							{
+								printf("CLIENT -> ERRORE fwrite\n");
+							}
+						}
+						fclose(file);
+						numFile++;
+					}
+
 					leggoPath=0;
 //
 				}
@@ -564,31 +579,11 @@ int readNFiles(int N, const char* dirname)
 
 	}
 
+	free(datiLetti);
+	free(pathLetto);
 
 
 
-
-//	char* rest = bufferRicezione;
-//	char *esito=strtok_r(bufferRicezione, ";", &rest);
-//
-//	if(readReturnValue > 0)
-//	{
-//		if(strcmp(esito,"READ_N_FILE eseguita correttamente!")==0)
-//		{
-//			numFile = atoi(strtok_r(bufferRicezione, ";", &rest));
-//			printf("CLIENT-> Letti %d file!\n", numFile);
-//		}
-//
-//		else
-//		{
-//			printf("CLIENT-> risposta server: %s\n",bufferRicezione);
-//		}
-//	}
-//	else
-//	{
-//		//la read ha riportato errori
-//		return -1;
-//	}
 	return numFile;
 }
 
@@ -602,6 +597,11 @@ int writeFile(const char* pathname, const char* dirName)
 	{
 		return -1;
 	}
+	char *directoryCorrente=NULL;
+	size_t sizeDirectoryCorrente=150;
+	directoryCorrente=malloc(sizeof(char)*sizeDirectoryCorrente);
+	directoryCorrente=getcwd(directoryCorrente,sizeDirectoryCorrente);
+	printf("lavoro nella directory:%s\n",directoryCorrente);
 	dirName=relativoToAssoluto(dirName);
 	printf("la cartella che utilizzo è:%s\n",dirName);
 
@@ -656,6 +656,7 @@ int writeFile(const char* pathname, const char* dirName)
 	char * datiEspulsi=NULL;
 	int entrato=0;
 	printf("CLIENT -> ENTRO NEL WHILE!!\n");
+
 	while(exit!=1)
 	{
 		int readReturnValue=riceviDati(fd_socket,&bufferRicezione,&dimBufferRicezione);
@@ -708,11 +709,20 @@ int writeFile(const char* pathname, const char* dirName)
 	}
 	printf("fine OPerazione\n");
 
+
+	int chdirReturnValue=0;
+	chdirReturnValue=chdir(dirName);
+	if(chdirReturnValue != 0)
+	{
+		//è stato settato errno
+		perror("Errore nell' utilizzo di chdir\n");
+		return -1;
+	}
 	FILE *file;
 	if(errno==0 && datiEspulsi != NULL && pathEspulso != NULL)
 	{
 		printf("faccio fopen\n\n\n\n\n");
-		file = fopen("prova.txt","w");
+		file = fopen(pathEspulso,"w");
 		if( file==NULL )
 		{
 			perror("Errore in apertura del file");
@@ -729,7 +739,13 @@ int writeFile(const char* pathname, const char* dirName)
 		fclose(file);
 	}
 
-
+//	chdirReturnValue=chdir(directoryCorrente);
+//	if(chdirReturnValue != 0)
+//	{
+//		//è stato settato errno
+//		perror("Errore nell' utilizzo di chdir\n");
+//		return -1;
+//	}
 
 
 
@@ -1234,14 +1250,14 @@ int isCurrentDirOrParentDir(char *nomeDirectory)
 					char *path =NULL;//Sistemare il discorso della free
 					path=malloc(sizeof(char)*lunghezza);
 					path=relativoToAssoluto(filename);
-
 					if(strcmp(arrayPath[posizioneArray],"")!=0)
 					{
 						posizioneArray++;
 					}
+					printf("path:%s\n",path);
 					strcpy(arrayPath[posizioneArray],path);
 
-//					free(path);
+				//	free(path);
 
 
 
