@@ -317,31 +317,30 @@ int openFile(const char* pathname, int flags)
 		return -1;
 	}
 	size_t a=strlen(daInviare);
-	sendData(fd_socket,&a,sizeof(size_t));
-	sendData(fd_socket,daInviare,strlen(daInviare));
+	inviaDati(fd_socket,&a,sizeof(size_t));
+	inviaDati(fd_socket,daInviare,strlen(daInviare));
 
 	pathname=relativoToAssoluto(pathname);
 	strcpy(daInviare,pathname);
 	a=strlen(daInviare);
-	sendData(fd_socket,&a,sizeof(size_t));
-	sendData(fd_socket,daInviare,strlen(daInviare));
+	inviaDati(fd_socket,&a,sizeof(size_t));
+	inviaDati(fd_socket,daInviare,strlen(daInviare));
 
 
 	char flags_array[3];
 	sprintf(flags_array, "%d", flags);
 	strcpy(daInviare,flags_array);
 	a=strlen(daInviare);
-	sendData(fd_socket,&a,sizeof(size_t));
-	sendData(fd_socket,daInviare,strlen(daInviare));
+	inviaDati(fd_socket,&a,sizeof(size_t));
+	inviaDati(fd_socket,daInviare,strlen(daInviare));
 
 
 
 
 //	size_t b=strlen(daInviare);
-//	sendData(fd_socket,&b,sizeof(size_t));
-//	sendData(fd_socket,daInviare,strlen(daInviare));
+//	inviaDati(fd_socket,&b,sizeof(size_t));
+//	inviaDati(fd_socket,daInviare,strlen(daInviare));
 
-	int fileTornato=0;
 	int exit=0;
 	char * pathEspulso=NULL;
 	char * datiEspulsi=NULL;
@@ -349,7 +348,7 @@ int openFile(const char* pathname, int flags)
 	while(exit!=1)
 	{
 		int readReturnValue=riceviDati(fd_socket,&bufferRicezione,&a);
-		printf("bufferRicezioneOPEN:%s\n",bufferRicezione);
+	//	printf("bufferRicezioneOPEN:%s\n",bufferRicezione);
 
 		if(readReturnValue>0)
 		{
@@ -357,7 +356,6 @@ int openFile(const char* pathname, int flags)
 			{
 				errno=EBADF;
 				perror("File descriptor non valido\n");
-				printf("esco con errore\n");
 
 				return -1;
 			}
@@ -365,7 +363,7 @@ int openFile(const char* pathname, int flags)
 			{
 				exit=1;
 				free(bufferRicezione);
-				printf("esco\n");
+//				printf("esco\n");
 			}
 			else
 			{
@@ -397,7 +395,7 @@ int openFile(const char* pathname, int flags)
 
 	if(pathEspulso!=NULL || datiEspulsi!=NULL)
 	{
-		printf("\n\n\n\nIN OPEN FILE:path espulso: %s \nDati espulsi:%s\n\n\n\n",pathEspulso,datiEspulsi);
+//		printf("\n\n\n\nIN OPEN FILE:path espulso: %s \nDati espulsi:%s\n\n\n\n",pathEspulso,datiEspulsi);
 	}
 	return 0;
 }
@@ -420,8 +418,8 @@ int readFile(const char* pathname, void** buf, size_t* size)
 
 
 	size_t a=strlen(daInviare);
-	sendData(fd_socket,&a,sizeof(size_t));
-	sendData(fd_socket,&daInviare,a);
+	inviaDati(fd_socket,&a,sizeof(size_t));
+	inviaDati(fd_socket,&daInviare,a);
 
 
 	int readReturnValue=riceviDati(fd_socket,&bufferRicezione,&a);
@@ -477,8 +475,8 @@ int readNFiles(int N, const char* dirname)
 		return -1;
 	}
 	size_t b=strlen(daInviare);
-	sendData(fd_socket,&b,sizeof(size_t));
-	sendData(fd_socket,&daInviare,b);
+	inviaDati(fd_socket,&b,sizeof(size_t));
+	inviaDati(fd_socket,&daInviare,b);
 	sprintf(appoggio, "%d", N);
 
 	strcpy(daInviare,appoggio);
@@ -488,12 +486,12 @@ int readNFiles(int N, const char* dirname)
 
 
 	size_t a=strlen(daInviare);
-	sendData(fd_socket,&a,sizeof(size_t));
-	sendData(fd_socket,&daInviare,a);
+	inviaDati(fd_socket,&a,sizeof(size_t));
+	inviaDati(fd_socket,&daInviare,a);
 	a=0;
 	short exit=0;
 	int readReturnValue=0;
-	short leggoPath=0,leggoDati=0;
+	short leggoPath=0;
 	FILE *file;
 	char *datiLetti=NULL;
 	char *pathLetto=NULL;
@@ -601,9 +599,9 @@ int writeFile(const char* pathname, const char* dirName)
 	size_t sizeDirectoryCorrente=150;
 	directoryCorrente=malloc(sizeof(char)*sizeDirectoryCorrente);
 	directoryCorrente=getcwd(directoryCorrente,sizeDirectoryCorrente);
-	printf("lavoro nella directory:%s\n",directoryCorrente);
+//	printf("lavoro nella directory:%s\n",directoryCorrente);
 	dirName=relativoToAssoluto(dirName);
-	printf("la cartella che utilizzo è:%s\n",dirName);
+//	printf("la cartella che utilizzo è:%s\n",dirName);
 
 	char * path2="";
 	path2=relativoToAssoluto(pathname);
@@ -623,8 +621,8 @@ int writeFile(const char* pathname, const char* dirName)
 
 
 	size_t a=strlen(daInviare);
-	sendData(fd_socket,&a,sizeof(size_t));
-	sendData(fd_socket,daInviare,strlen(daInviare));
+	inviaDati(fd_socket,&a,sizeof(size_t));
+	inviaDati(fd_socket,daInviare,strlen(daInviare));
 
 
 
@@ -635,13 +633,13 @@ int writeFile(const char* pathname, const char* dirName)
 //	strncat(daInviare,size_array,strlen(size_array));
 
 	size_t b=strlen(daInviare);
-	sendData(fd_socket,&b,sizeof(size_t));
-	sendData(fd_socket,daInviare,b);
+	inviaDati(fd_socket,&b,sizeof(size_t));
+	inviaDati(fd_socket,daInviare,b);
 
 
 	//writen(fd_socket,(void*)buf,1000);
-	sendData(fd_socket,&size, sizeof(size_t));
-	sendData(fd_socket,buf, size);
+	inviaDati(fd_socket,&size, sizeof(size_t));
+	inviaDati(fd_socket,buf, size);
 
 
 
@@ -650,16 +648,18 @@ int writeFile(const char* pathname, const char* dirName)
 
 
 	size_t dimBufferRicezione=0;
-	int fileTornato=0;
 	int exit=0;
 	char * pathEspulso=NULL;
 	char * datiEspulsi=NULL;
 	int entrato=0;
-	printf("CLIENT -> ENTRO NEL WHILE!!\n");
+//	printf("CLIENT -> ENTRO NEL WHILE!!\n");
 
 	while(exit!=1)
 	{
+		a=0;
+		dimBufferRicezione=0;
 		int readReturnValue=riceviDati(fd_socket,&bufferRicezione,&dimBufferRicezione);
+		printf("dimBufferRicezione:%ld\n",dimBufferRicezione);
 		printf("CLIENT -> BUFFERRicezioneWRITE:%s\n\n\n\n\n",bufferRicezione);
 
 		if(readReturnValue>0)
@@ -679,47 +679,48 @@ int writeFile(const char* pathname, const char* dirName)
 			{
 				if(entrato==0)
 				{
-					pathEspulso=malloc(sizeof(char)*a);
-					strncpy(pathEspulso, bufferRicezione,a);
+					pathEspulso=malloc(sizeof(char)*dimBufferRicezione);
+					strncpy(pathEspulso, bufferRicezione,dimBufferRicezione);
 					free(bufferRicezione);
 					entrato=1;
 				}
 				else
 				{
-					datiEspulsi=malloc(sizeof(char)*a);
-					memcpy(datiEspulsi, bufferRicezione, a);
-					exit=1;
+
+					datiEspulsi=malloc(sizeof(char)*dimBufferRicezione+1);
+					memcpy(datiEspulsi, bufferRicezione, dimBufferRicezione);
+//					exit=1;
 					free(bufferRicezione);
 				}
 			}
 		}
 		else
 		{
-			printf("Client -> Errore open\n");
+			printf("Client -> Errore close\n");
 		}
 	}
-	printf("ESCO DAL WHILE!\n");
+//	printf("ESCO DAL WHILE!\n");
 	if(pathEspulso!=NULL)
 	{
-		printf("\nIN WRITE FILE:path espulso: %s \n",pathEspulso);
+//		printf("\nIN WRITE FILE:path espulso: %s \n",pathEspulso);
 	}
 	if(datiEspulsi != NULL)
 	{
-		printf("Dati espulsi:%s\n\n\n\n",datiEspulsi);
+//		printf("Dati espulsi:%s\n\n\n\n",datiEspulsi);
 	}
-	printf("fine OPerazione\n");
+//	printf("fine OPerazione\n");
 
 
-	int chdirReturnValue=0;
-	chdirReturnValue=chdir(dirName);
-	if(chdirReturnValue != 0)
-	{
-		//è stato settato errno
-		perror("Errore nell' utilizzo di chdir\n");
-		return -1;
-	}
+//	int chdirReturnValue=0;
+//	chdirReturnValue=chdir(dirName);
+//	if(chdirReturnValue != 0)
+//	{
+//		//è stato settato errno
+//		perror("Errore nell' utilizzo di chdir\n");
+//		return -1;
+//	}
 	FILE *file;
-	if(errno==0 && datiEspulsi != NULL && pathEspulso != NULL)
+	if(errno!=0 && datiEspulsi != NULL && pathEspulso != NULL)
 	{
 		printf("faccio fopen\n\n\n\n\n");
 		file = fopen(pathEspulso,"w");
@@ -790,6 +791,7 @@ int writeFile(const char* pathname, const char* dirName)
 	return 0;
 }
 
+
 int appendToFile(const char* pathname, void* buf, size_t size, const char* dirname)
 {
 	char daInviare[200]="APPEND_TO_FILE;";
@@ -801,16 +803,16 @@ int appendToFile(const char* pathname, void* buf, size_t size, const char* dirna
 		return -1;
 	}
 	size_t b=strlen(daInviare);
-	sendData(fd_socket,&b,sizeof(size_t));
-	sendData(fd_socket,daInviare,b);
+	inviaDati(fd_socket,&b,sizeof(size_t));
+	inviaDati(fd_socket,daInviare,b);
 
 	pathname=relativoToAssoluto(pathname);
 	strcpy(daInviare,pathname);
 
 
 	size_t d=strlen(daInviare);
-	sendData(fd_socket,&d,sizeof(size_t));
-	sendData(fd_socket,daInviare,d);
+	inviaDati(fd_socket,&d,sizeof(size_t));
+	inviaDati(fd_socket,daInviare,d);
 
 	//strcat(daInviare,";");
 	strcpy(daInviare,buf);
@@ -822,8 +824,8 @@ int appendToFile(const char* pathname, void* buf, size_t size, const char* dirna
 
 
 	size_t a=strlen(daInviare);
-	sendData(fd_socket,&a,sizeof(size_t));
-	sendData(fd_socket,daInviare,a);
+	inviaDati(fd_socket,&a,sizeof(size_t));
+	inviaDati(fd_socket,daInviare,a);
 
 	int readReturnValue=riceviDati(fd_socket,&bufferRicezione,&a);
 	if(readReturnValue > 0)
@@ -849,8 +851,8 @@ int lockFile(const char* pathname)
 		return -1;
 	}
 	size_t b=strlen(daInviare);
-	sendData(fd_socket,&b,sizeof(size_t));
-	sendData(fd_socket,daInviare,b);
+	inviaDati(fd_socket,&b,sizeof(size_t));
+	inviaDati(fd_socket,daInviare,b);
 
 	pathname=relativoToAssoluto(pathname);
 	strncpy(daInviare,pathname,strlen(pathname));
@@ -859,8 +861,8 @@ int lockFile(const char* pathname)
 
 
 	size_t a=strlen(daInviare);
-	sendData(fd_socket,&a,sizeof(size_t));
-	sendData(fd_socket,daInviare,a);
+	inviaDati(fd_socket,&a,sizeof(size_t));
+	inviaDati(fd_socket,daInviare,a);
 
 
 
@@ -893,8 +895,8 @@ int unlockFile(const char* pathname)
 		}
 
 		size_t b=strlen(daInviare);
-		sendData(fd_socket,&b,sizeof(size_t));
-		sendData(fd_socket,daInviare,b);
+		inviaDati(fd_socket,&b,sizeof(size_t));
+		inviaDati(fd_socket,daInviare,b);
 
 		pathname=relativoToAssoluto(pathname);
 		strncpy(daInviare,pathname,strlen(pathname));
@@ -903,8 +905,8 @@ int unlockFile(const char* pathname)
 
 
 		size_t a=strlen(daInviare);
-		sendData(fd_socket,&a,sizeof(size_t));
-		sendData(fd_socket,daInviare,a);
+		inviaDati(fd_socket,&a,sizeof(size_t));
+		inviaDati(fd_socket,daInviare,a);
 
 
 
@@ -935,18 +937,18 @@ int closeFile(const char* pathname)
 		return -1;
 	}
 
-	size_t b=strlen(daInviare);
-	sendData(fd_socket,&b,sizeof(size_t));
-	sendData(fd_socket,daInviare,b);
+	size_t b=strlen(daInviare)+1;
+	inviaDati(fd_socket,&b,sizeof(size_t));
+	inviaDati(fd_socket,daInviare,b);
 
 	pathname=relativoToAssoluto(pathname);
 	strcpy(daInviare,pathname);
 
-	size_t a=strlen(daInviare);
-	sendData(fd_socket,&a,sizeof(size_t));
-	sendData(fd_socket,daInviare,a);
+	size_t a=strlen(daInviare)+1;
+	inviaDati(fd_socket,&a,sizeof(size_t));
+	inviaDati(fd_socket,daInviare,a);
 
-	//write(fd_socket,daInviare,200);
+	a=0;
 	int	readReturnValue=riceviDati(fd_socket,&bufferRicezione,&a);
 
 	if(readReturnValue > 0)
@@ -1026,15 +1028,15 @@ int removeFile(const char* pathname)
 		return -1;
 	}
 	size_t b=strlen(daInviare);
-	sendData(fd_socket,&b,sizeof(size_t));
-	sendData(fd_socket,daInviare,b);
+	inviaDati(fd_socket,&b,sizeof(size_t));
+	inviaDati(fd_socket,daInviare,b);
 
 	pathname=relativoToAssoluto(pathname);
 	strncpy(daInviare,pathname,strlen(pathname));
 
 	size_t a=strlen(daInviare);
-	sendData(fd_socket,&a,sizeof(size_t));
-	sendData(fd_socket,daInviare,a);
+	inviaDati(fd_socket,&a,sizeof(size_t));
+	inviaDati(fd_socket,daInviare,a);
 
 	//write(fd_socket,daInviare,200);
 	readReturnValue=riceviDati(fd_socket,&bufferRicezione,&a);

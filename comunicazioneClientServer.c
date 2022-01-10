@@ -16,8 +16,8 @@
 #include <stddef.h>
 
 
-
-ssize_t writeNBytes(int fdDaElaborare, void *v_ptr, size_t N)
+//Funzione write con un numero di bytes massimo uguale ad N
+ssize_t scriviNBytes(int fdDaElaborare, void *v_ptr, size_t N)
 {
 	char *pointer = v_ptr;
 	int valoreDiRitorno;
@@ -48,12 +48,12 @@ ssize_t writeNBytes(int fdDaElaborare, void *v_ptr, size_t N)
 		nleft -= bytesScritti;
 		pointer += bytesScritti;
 	}
-	valoreDiRitorno = N - nleft; //valoreDiRitorno >= 0
+	valoreDiRitorno = N - nleft; //valoreDiRitorno  è >= 0
 	return valoreDiRitorno;
 }
-
-//Funzione read con un numero di bytes massimo uguale ad n
-ssize_t readNBytes(int fdDaElaborare, void *v_ptr, size_t N)
+//Rinomina in italiano ( vedi relazione )
+//Funzione read con un numero di bytes massimo uguale ad N
+ssize_t leggiNBytes(int fdDaElaborare, void *v_ptr, size_t N)
 {
 	char *pointer = v_ptr;
 	size_t nleft;
@@ -98,7 +98,7 @@ int riceviDati(int fd, void *dest, size_t *sizePtr)
 //  int done = 0;
 
   // read the size
-  int a=readNBytes(fd, &size, sizeof(size));
+  int a=leggiNBytes(fd, &size, sizeof(size));
   if(a<0)
   {
 	  printf("boh\n");
@@ -115,20 +115,20 @@ int riceviDati(int fd, void *dest, size_t *sizePtr)
 
       // in this situation dest is considered as the address
       // of a pointer that we have to set to the read data
-    	char **destPtr = dest;
+    	char **puntatoreAusiliario = dest;
 
       // malloc enough space
-      *destPtr = malloc(sizeof(**destPtr) * size);
+      *puntatoreAusiliario = malloc(sizeof(**puntatoreAusiliario) * size);
 
       // we have to write into the allocated space
-      writeTo = *destPtr;
+      writeTo = *puntatoreAusiliario;
 
 
 
     // read the data if writeTo is not NULL
     //if (writeTo)
 
-    	int b=readNBytes(fd, writeTo, size);
+    	int b=leggiNBytes(fd, writeTo, size);
     	if(b<0)
     	{
     		printf("boh2\n");
@@ -158,9 +158,9 @@ int riceviDati(int fd, void *dest, size_t *sizePtr)
 //  return -1;
 }
 
-
-int sendData(int fd, const void *data, size_t size)
+//Rinomina in italiano ( vedi relazione )
+int inviaDati(int fd, const void *data, size_t size)
 {
-	int a=writeNBytes(fd, (void *)data, size);
-	return a;
+	int writeNBytesReturnValue=scriviNBytes(fd, (void *)data, size);
+	return writeNBytesReturnValue;
 }

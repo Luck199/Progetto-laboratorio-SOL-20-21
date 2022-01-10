@@ -137,7 +137,8 @@ int parser(struct struttura_coda *comandi)
 	int lettopiuuno=0;
 	int abilitaStampe;
 	int tempo=0;
-	short opzioneD=0;
+	short opzioneD=0;//flag utilizzati per sapere se l' opzione -D è stata utilizzata
+	short opzioned=0;//flag utilizzati per sapere se l' opzione -d è stata utilizzata
 	int openConnectionReturnValue;
 	int numeroFileDaLeggere=0;
 	char daInviare[150];
@@ -169,24 +170,18 @@ int parser(struct struttura_coda *comandi)
 		if(strcmp(stringa,"-h") == 0)
 		{
 			printf("Opzioni accettate da client:\n"
-					"  -h,\tstampa tutte le Opzioni accettate da client:\n"
-					"  -O,\tSets the dir for openFile eviction. If no dir is setted, the file/s will be lost"
-					"  -a,\tAccepts a list of files. The first will be a local source from where remotely append on the others"
-					"  -f,\tSets the nomesocket file path up to the specified nomesocketPath\n"
-					"  -w,\tSends to the server n files from the specified dirname directory. If n=0, sends every file in dirname\n"
-					"  -W,\tSends to the server the specified files\n"
-					"  -D,\tIf capacity misses occur on the server, save the files it gets to us in the specified dirname directory\n"
-					"  -r,\tLegge i file specificati dal server\n"
-					"  -R,\tLegge n file dal server (se n fosse uguale a zero, legge ogni file\n"
+					"  -h,\tstampa tutte le opzioni accettate da client:\n"
+					"  -f,\tSetta il nome socket a quello specificato dal linea di comando ed esegue la openConnection su esso\n"
+					"  -w,\tEsegue una richiesta di scrittura al server di n file (con n passato da linea di comando) presenti nella cartella dirname. Se n=0 li scrive tutti\n"
+					"  -W,\tEsegue una richiesta di scrittura al server dei file specificati\n"
+					"  -D,\tSe si verifica un caso di capacity misses a seguito dell' opzione -w e/o -W, i file esplusi vengono salvati in questa cartella\n"
+					"  -r,\tEsegue una richiesta di lettura al server dei file specificati\n"
+					"  -R,\tLegge n file dal server (se n fosse uguale a zero, legge ogni file)\n"
 					"  -d,\tSalva i file letti con l' opzione -r o -R nella cartella specificata\n"
-					"  -t,\t Specifica il tempo in millisecondi che intercorre tra l' invio di due richieste successive al server\n"
-					"  -l,\tEsegue il lock sui file specificati\n"
-					"  -u,\tSblocca il file specificato\n"
-					"  -s,\tChiude il file specificato\n"
-					"  -o,\tApre il file specificato senza l' utilizzo di flags\n"
-					"  -e,\tApre il file specificato utilizzando il flag O_CREATE\n"
-					"  -n,\tApre il file specificato utilizzando il flag O_LOCK\n"
-					"  -c,\t Rimuove i file specificati dal server, se presenti\n"
+					"  -t,\t Specifica il tempo in millisecondi che deve passare tra l' invio di due richieste successive al server\n"
+					"  -l,\tEsegue il lock sui file specificati, se presenti\n"
+					"  -u,\tEsegue unlock sui file specificati, se presenti ed è stata eseguita precedentemente l' operazione di lock su essi\n"
+					"  -c,\tRimuove i file specificati dal server, se presenti\n"
 					"  -p,\tStampa tutte le informazioni su ogni operazione eseguita\n"
 				  );
 			stringa=dequeue(comandi);
@@ -194,7 +189,7 @@ int parser(struct struttura_coda *comandi)
 			{
 				if(abilitaStampe==1)
 				{
-					////printf("CLIENT->Errore! a seguito del comando -h non devono essere presenti altre opzioni\n ");
+					printf("CLIENT->Errore! a seguito del comando -h non devono essere presenti altre opzioni\n ");
 				}
 				//op=0;
 			}
@@ -232,10 +227,9 @@ int parser(struct struttura_coda *comandi)
 			ritardo();
 
 			//openFile("file1.txt",O_CREATE);
-			openFile("file2.txt",CREATELOCK);
+			//openFile("file2.txt",CREATELOCK);
 
 
-//			char buffer[400]="Ale'! ale'! ale' milan ale'! forza lotta vincerai, non ti lasceremo mai.\n";
 //
 //			appendToFile("file1.txt",buffer,sizeof(buffer),"cartella");
 //			lockFile("file1.txt");
@@ -309,17 +303,16 @@ int parser(struct struttura_coda *comandi)
 			short bitConteggio=1;
 
 			int numFileLetti=0;
-			//if(numFile<=0)
-			{
-				bitConteggio=0;
-				leggiNFileDaDirectory(&numFile,dirName,arrayPath,i,bitConteggio,&numFileLetti);
+			//Conto quanti file sono effettivamente presenti all' interno della direcotry richiesta
+			bitConteggio=0;
+			leggiNFileDaDirectory(&numFile,dirName,arrayPath,i,bitConteggio,&numFileLetti);
 
 //				if(letturaDirectoryReturnValue != 0)
 //				{
 //					perror("Errore nella lettura dei file dalla directory\n");
 //				}
 
-			}
+
 
 			if(numFile2<0 || numFile2>numFileLetti)
 			{
@@ -352,7 +345,7 @@ int parser(struct struttura_coda *comandi)
 			for(i = 0; i < salvaNumFile; i++)
 			{
 //				printf("arrayPath[%d]:%s\n",i,arrayPath[i]);
-				openFile(arrayPath[i],CREATELOCK);
+				openFile(arrayPath[i],O_CREATE);
 				//writeFile(arrayPath[i],dirnameSecondarioScritture);
 				closeFile(arrayPath[i]);
 			}
@@ -367,24 +360,31 @@ int parser(struct struttura_coda *comandi)
 		}
 		if(strcmp(stringa,"-W")==0)
 		{
+			if((strncmp(dirnameSecondarioScritture,"",1)==0) && opzioneD==0)
+			{
+				if(abilitaStampe==1)
+				{
+					printf("CLIENT-> Si desidera utilizzare l' opzione -w senza l' utilizzo dell opzione -D. Arresto in corso!\n");
+					return -1;
+				}
+				continue;
+			}
 			stringa=dequeue(comandi);
 			//la stringa token conterrà mano mano tutti i singoli file ricevuti a linea di comando che dovranno essere inviati al server
 			char* token = strtok(stringa,",");
 			while (token != NULL)
 			{
-//				char * espulsi= malloc(80*sizeof(char *));
-//				strcpy(espulsi,"espulsi");
 				//openFile(token,O_CREATE);
 
-				void * buf="viva il carnevale";
-				size_t size=sizeof(buf);
+//				void * buf="viva il carnevale";
+//				size_t size=sizeof(buf);
 				openFile(token,CREATELOCK);
-
 				ritardo();
-				printf("gli passo questa cartella:%s\n",dirnameSecondarioScritture);
+//				printf("gli passo questa cartella:%s\n",dirnameSecondarioScritture);
 				writeFile(token,dirnameSecondarioScritture);
 				//appendToFile(token,buf,size,"");
-				//closeFile(token);
+				closeFile(token);
+
 				enqueueString(files,token);
 				token = strtok(NULL, ",");
 			}
@@ -414,7 +414,15 @@ int parser(struct struttura_coda *comandi)
 
 		if(strcmp(stringa,"-r")==0)
 		{
-
+			if((strncmp(dirnameSecondarioLetture,"",1)==0) && opzioned==0)
+			{
+				if(abilitaStampe==1)
+				{
+					printf("CLIENT-> Si desidera utilizzare l' opzione -w senza l' utilizzo dell opzione -D. Arresto in corso!\n");
+					return -1;
+				}
+				continue;
+			}
 			stringa=dequeue(comandi);
 			void *buf = NULL;
 			size_t size;
@@ -424,11 +432,9 @@ int parser(struct struttura_coda *comandi)
 				printf("%s\n", token);
 				int result=readFile(token,&buf,&size);
 				//printf("MENU CLIENT -> %s\n\n\n",*buf);
-				char * dirname=malloc(100*sizeof(char));
-				strcpy(dirname,"fileClient");
 
-				//dirname=relativoToAssoluto(dirname);
-				printf("dirname assoluto: %s\n",dirname);
+//				dirname=relativoToAssoluto(dirname);
+//				printf("dirname assoluto: %s\n",dirname);
 				if(result==0)
 				{
 					//printf("CLIENT -> ricevuto buffer contenente: %s, di grandezza: %ld\n",(char*)buf,size);
@@ -453,6 +459,15 @@ int parser(struct struttura_coda *comandi)
 		}
 		if(strcmp(stringa,"-R")==0)
 		{
+			if((strncmp(dirnameSecondarioScritture,"",1)==0) && opzioned==0)
+			{
+				if(abilitaStampe==1)
+				{
+					printf("CLIENT-> Si desidera utilizzare l' opzione -w senza l' utilizzo dell opzione -D. Arresto in corso!\n");
+					return -1;
+				}
+				continue;
+			}
 			stringa=dequeue(comandi);
 			lettopiuuno=1;
 			if(stringa[0]!='-')
@@ -494,9 +509,10 @@ int parser(struct struttura_coda *comandi)
 				return -1;
 			}
 			strcpy(dirnameSecondarioLetture,stringa);
+			opzioned=1;
 			if(abilitaStampe==1)
 			{
-				////printf("CLIENT-> Letto dirname secondario: %s\n",dirnameSecondario);
+				printf("CLIENT-> Letto dirname secondario: %s\n",dirnameSecondarioLetture);
 			}
 			continue;
 		}

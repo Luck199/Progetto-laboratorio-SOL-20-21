@@ -166,7 +166,6 @@ int main(int argc, char **argv)
 	//array di struct
 	allocaStrutturaFile();
 
-	visualizzaArrayFile();
 
 
 
@@ -361,8 +360,8 @@ int main(int argc, char **argv)
 						char  daInviare[200]="";
 						strncpy(daInviare,"connessione eseguita correttamente!\n",37);
 						size_t a=strlen(daInviare);
-						sendData(acceptReturnValue,&a,sizeof(size_t));
-						sendData(acceptReturnValue,&daInviare,a);
+						inviaDati(acceptReturnValue,&a,sizeof(size_t));
+						inviaDati(acceptReturnValue,&daInviare,a);
 					}
 					else if (fd == pipeGestioneWorkers[0])
 					{
@@ -371,7 +370,7 @@ int main(int argc, char **argv)
 						int fd;
 
 						accediPipeWorker();
-						HANDLE_WRNS(readNBytes(pipeGestioneWorkers[0], &fd, sizeof(fd)), sizeof(fd), ;, errore = 1;);
+						HANDLE_WRNS(leggiNBytes(pipeGestioneWorkers[0], &fd, sizeof(fd)), sizeof(fd), ;, errore = 1;);
 						lasciaPipeWorker();
 						if (errore)
 						{
@@ -404,7 +403,7 @@ int main(int argc, char **argv)
 					else if (fd == pipeGestioneSegnali[0])
 					{
 						//è arrivato un segnale, recupero il suo indice dalla pipe dedicata
-						HANDLE_WRNS(readNBytes(pipeGestioneSegnali[0], &segnale, sizeof(segnale));, sizeof(segnale), ;, errore = 1;);
+						HANDLE_WRNS(leggiNBytes(pipeGestioneSegnali[0], &segnale, sizeof(segnale));, sizeof(segnale), ;, errore = 1;);
 
 						if (errore != 0)
 						{
@@ -610,6 +609,7 @@ int main(int argc, char **argv)
 	accediCodaComandi();
 	free(codaFileDescriptor);
 	lasciaCodaComandi();
+	short verificaSeStrutturaVuota=0;
 	printf("Stampe finali:\n");
 	printf("-> Numero di file massimo memorizzato nel server: %d\n",numMaxFilePresenti);
 	printf("-> Dimensione massima in Mbytes raggiunta dal file storage: %d\n",(int)maxMemoriaRaggiunta);
@@ -617,10 +617,15 @@ int main(int argc, char **argv)
 	printf("-> lista dei file contenuti nello storage al momento della chiusura del server:\n");
 	for(i=0;i<num_max_file;i++)
 	{
-		if(strcmp(array_file[i].path,"vuota")!=0)
+		if(strcmp(array_file[i].path,"vuoto")!=0)
 		{
+			verificaSeStrutturaVuota=1;
 			printf("\t-> %s\n",array_file[i].path);
 		}
+	}
+	if(verificaSeStrutturaVuota==0)
+	{
+		printf("\t-> non sono presenti file nella struttura dati\n");
 	}
 
 
@@ -726,7 +731,7 @@ static void *gestoreSegnali(void *argument)
 
 	if (tipoSegnale)
 	{
-		HANDLE_WRNS(writeNBytes(pipe, &tipoSegnale, sizeof(tipoSegnale)), sizeof(tipoSegnale), NOOP, perror("invio dati al thread main fallito");)
+		HANDLE_WRNS(scriviNBytes(pipe, &tipoSegnale, sizeof(tipoSegnale)), sizeof(tipoSegnale), NOOP, perror("invio dati al thread main fallito");)
 	}
 
 	pthread_exit(NULL);
