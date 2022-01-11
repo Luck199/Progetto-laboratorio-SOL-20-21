@@ -348,7 +348,7 @@ int openFile(const char* pathname, int flags)
 	while(exit!=1)
 	{
 		int readReturnValue=riceviDati(fd_socket,&bufferRicezione,&a);
-	//	printf("bufferRicezioneOPEN:%s\n",bufferRicezione);
+		printf("bufferRicezioneOPEN:%s\n",bufferRicezione);
 
 		if(readReturnValue>0)
 		{
@@ -378,7 +378,6 @@ int openFile(const char* pathname, int flags)
 				{
 					datiEspulsi=malloc(sizeof(char)*a);
 					memcpy(datiEspulsi, bufferRicezione, a);
-					exit=1;
 					free(bufferRicezione);
 				}
 //
@@ -388,6 +387,7 @@ int openFile(const char* pathname, int flags)
 		else
 		{
 			printf("Client -> Errore open\n");
+			return -1;
 		}
 	//
 	}
@@ -474,6 +474,20 @@ int readNFiles(int N, const char* dirname)
 	{
 		return -1;
 	}
+	char *directoryCorrente=NULL;
+	size_t sizeDirectoryCorrente=150;
+	directoryCorrente=malloc(sizeof(char)*sizeDirectoryCorrente);
+	directoryCorrente=getcwd(directoryCorrente,sizeDirectoryCorrente);
+	printf("READNFILE: lavoro nella directory:%s\n",directoryCorrente);
+	dirname=relativoToAssoluto(dirname);
+	printf("la cartella che utilizzo è:%s\n",dirname);
+	char * dirNameSalvato=malloc(sizeof(char)*(strlen(dirname)+1));
+	strncpy(dirNameSalvato,dirname,strlen(dirname)+1);
+
+
+
+
+
 	size_t b=strlen(daInviare);
 	inviaDati(fd_socket,&b,sizeof(size_t));
 	inviaDati(fd_socket,&daInviare,b);
@@ -492,7 +506,7 @@ int readNFiles(int N, const char* dirname)
 	short exit=0;
 	int readReturnValue=0;
 	short leggoPath=0;
-	FILE *file;
+//	FILE *file;
 	char *datiLetti=NULL;
 	char *pathLetto=NULL;
 	while(exit!=1)
@@ -503,8 +517,8 @@ int readNFiles(int N, const char* dirname)
 		}
 		a=0;
 		readReturnValue=riceviDati(fd_socket,&bufferRicezione,&a);
-		printf("a:%ld\n",a);
-		printf("bufferRicezione:%s\n",bufferRicezione);
+//		printf("a:%ld\n",a);
+		printf("READ_N_FILE bufferRicezione:%s\n",bufferRicezione);
 		if(readReturnValue>0)
 		{
 			if(strncmp(bufferRicezione,"READ_N_FILE: riscontrato errore",32)==0)
@@ -543,25 +557,85 @@ int readNFiles(int N, const char* dirname)
 //					}
 					datiLetti=malloc(sizeof(char)*a);
 					memcpy(datiLetti,bufferRicezione,a);
-					if(errno==0)
-					{
-						printf("faccio fopen\n\n\n\n\n");
+					printf("READ_N_FILE:Voglio andare in questa cartella:%s\n",dirNameSalvato);
 
-						file = fopen(pathLetto,"w");
-						if( file==NULL )
+//					if(errno==-5)
+					{
+
+
+
+
+
+
+						FILE *file;
+//						if(errno=0 && datiEspulsi != NULL && pathEspulso != NULL)
 						{
-							perror("Errore in apertura del file");
-							return -1;
-						}
-						else
-						{
-							int w = fwrite(datiLetti, sizeof(char), a, file);
-							if(w<0)
+							int chdirReturnValue=0;
+//							printf("Voglio andare in questa cartella:%s\n",dirNameSalvato);
+							chdirReturnValue=chdir(dirNameSalvato);
+							if(chdirReturnValue != 0)
 							{
-								printf("CLIENT -> ERRORE fwrite\n");
+								//è stato settato errno
+								perror("Errore nell' utilizzo di chdir\n");
+								return -1;
 							}
+							char* token1;
+							char * pathRelativo;
+							char* rest = pathLetto;
+
+							while ((token1 = strtok_r(rest, "/", &rest))!=NULL)
+							{
+//								printf("%s\n", token1);
+								pathRelativo=token1;
+
+							}
+
+							printf("faccio fopen\n\n\n\n\n");
+							file = fopen(pathRelativo,"w");
+							if( file==NULL )
+							{
+								perror("Errore in apertura del file");
+								return -1;
+							}
+							else
+							{
+								printf("Scrivo i dati:%s\n",datiLetti);
+								int w = fwrite(datiLetti, sizeof(char), a, file);
+								if(w<0)
+								{
+									printf("CLIENT -> ERRORE fwrite\n");
+								}
+							}
+							fclose(file);
+//							printf("Torno in questa directory:%s\n",directoryCorrente);
+							chdirReturnValue=chdir(directoryCorrente);
+							if(chdirReturnValue != 0)
+							{
+								//è stato settato errno
+								perror("Errore nell' utilizzo di chdir\n");
+								return -1;
+							}
+
 						}
-						fclose(file);
+
+
+//						printf("faccio fopen\n\n\n\n\n");
+//
+//						file = fopen(pathLetto,"w");
+//						if( file==NULL )
+//						{
+//							perror("Errore in apertura del file");
+//							return -1;
+//						}
+//						else
+//						{
+//							int w = fwrite(datiLetti, sizeof(char), a, file);
+//							if(w<0)
+//							{
+//								printf("CLIENT -> ERRORE fwrite\n");
+//							}
+//						}
+//						fclose(file);
 						numFile++;
 					}
 
@@ -601,8 +675,9 @@ int writeFile(const char* pathname, const char* dirName)
 	directoryCorrente=getcwd(directoryCorrente,sizeDirectoryCorrente);
 //	printf("lavoro nella directory:%s\n",directoryCorrente);
 	dirName=relativoToAssoluto(dirName);
-//	printf("la cartella che utilizzo è:%s\n",dirName);
-
+	printf("la cartella che utilizzo è:%s\n",dirName);
+	char * dirNameSalvato=malloc(sizeof(char)*(strlen(dirName)+1));
+	strncpy(dirNameSalvato,dirName,strlen(dirName)+1);
 	char * path2="";
 	path2=relativoToAssoluto(pathname);
 
@@ -653,7 +728,7 @@ int writeFile(const char* pathname, const char* dirName)
 	char * datiEspulsi=NULL;
 	int entrato=0;
 //	printf("CLIENT -> ENTRO NEL WHILE!!\n");
-
+size_t dimEspulsi=0;
 	while(exit!=1)
 	{
 		a=0;
@@ -689,6 +764,7 @@ int writeFile(const char* pathname, const char* dirName)
 
 					datiEspulsi=malloc(sizeof(char)*dimBufferRicezione+1);
 					memcpy(datiEspulsi, bufferRicezione, dimBufferRicezione);
+					dimEspulsi=dimBufferRicezione;
 //					exit=1;
 					free(bufferRicezione);
 				}
@@ -711,19 +787,30 @@ int writeFile(const char* pathname, const char* dirName)
 //	printf("fine OPerazione\n");
 
 
-//	int chdirReturnValue=0;
-//	chdirReturnValue=chdir(dirName);
-//	if(chdirReturnValue != 0)
-//	{
-//		//è stato settato errno
-//		perror("Errore nell' utilizzo di chdir\n");
-//		return -1;
-//	}
 	FILE *file;
-	if(errno!=0 && datiEspulsi != NULL && pathEspulso != NULL)
+	if(errno==0 && datiEspulsi != NULL && pathEspulso != NULL)
 	{
+		int chdirReturnValue=0;
+		printf("Voglio andare in questa cartella:%s\n",dirNameSalvato);
+		chdirReturnValue=chdir(dirNameSalvato);
+		if(chdirReturnValue != 0)
+		{
+			//è stato settato errno
+			perror("Errore nell' utilizzo di chdir\n");
+			return -1;
+		}
+		char* token1;
+		char * pathRelativo;
+		char* rest = pathEspulso;
+
+		while ((token1 = strtok_r(rest, "/", &rest))!=NULL)
+		{
+			printf("%s\n", token1);
+			pathRelativo=token1;
+		}
+
 		printf("faccio fopen\n\n\n\n\n");
-		file = fopen(pathEspulso,"w");
+		file = fopen(pathRelativo,"w");
 		if( file==NULL )
 		{
 			perror("Errore in apertura del file");
@@ -731,45 +818,24 @@ int writeFile(const char* pathname, const char* dirName)
 		}
 		else
 		{
-			int w = fwrite(datiEspulsi, sizeof(char), a, file);
+			printf("Scrivo i dati:%s\n",datiEspulsi);
+			int w = fwrite(datiEspulsi, sizeof(char), dimEspulsi, file);
 			if(w<0)
 			{
 				printf("CLIENT -> ERRORE fwrite\n");
 			}
 		}
 		fclose(file);
+		printf("Torno in questa directory\n",directoryCorrente);
+		chdirReturnValue=chdir(directoryCorrente);
+		if(chdirReturnValue != 0)
+		{
+			//è stato settato errno
+			perror("Errore nell' utilizzo di chdir\n");
+			return -1;
+		}
+
 	}
-
-//	chdirReturnValue=chdir(directoryCorrente);
-//	if(chdirReturnValue != 0)
-//	{
-//		//è stato settato errno
-//		perror("Errore nell' utilizzo di chdir\n");
-//		return -1;
-//	}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -802,6 +868,20 @@ int appendToFile(const char* pathname, void* buf, size_t size, const char* dirna
 	{
 		return -1;
 	}
+
+
+	char *directoryCorrente=NULL;
+	size_t sizeDirectoryCorrente=150;
+	directoryCorrente=malloc(sizeof(char)*sizeDirectoryCorrente);
+	directoryCorrente=getcwd(directoryCorrente,sizeDirectoryCorrente);
+	printf("lavoro nella directory:%s\n",directoryCorrente);
+	dirname=relativoToAssoluto(dirname);
+	printf("la cartella che utilizzo è:%s\n",dirname);
+	char * dirNameSalvato=malloc(sizeof(char)*(strlen(dirname)+1));
+	strncpy(dirNameSalvato,dirname,strlen(dirname)+1);
+
+
+
 	size_t b=strlen(daInviare);
 	inviaDati(fd_socket,&b,sizeof(size_t));
 	inviaDati(fd_socket,daInviare,b);
@@ -827,16 +907,129 @@ int appendToFile(const char* pathname, void* buf, size_t size, const char* dirna
 	inviaDati(fd_socket,&a,sizeof(size_t));
 	inviaDati(fd_socket,daInviare,a);
 
-	int readReturnValue=riceviDati(fd_socket,&bufferRicezione,&a);
-	if(readReturnValue > 0)
+
+
+
+
+
+	size_t dimBufferRicezione=0;
+	int exit=0;
+	char * pathEspulso=NULL;
+	char * datiEspulsi=NULL;
+	int entrato=0;
+	//printf("CLIENT -> ENTRO NEL WHILE!!\n");
+	size_t dimEspulsi=0;
+	while(exit!=1)
 	{
-	//	printf("tutto ok\n");
-		printf("CLIENT-> risposta server: %s\n",bufferRicezione);
+		a=0;
+		dimBufferRicezione=0;
+		int readReturnValue=riceviDati(fd_socket,&bufferRicezione,&dimBufferRicezione);
+		printf("CLIENT -> BUFFERRicezioneAppend:%s\n\n\n\n\n",bufferRicezione);
+
+		if(readReturnValue>0)
+		{
+			if(strncmp(bufferRicezione,"APPEND_TO_FILE: riscontrato errore",36)==0)
+			{
+				errno=EBADF;
+				return -1;
+			}
+			if(strncmp(bufferRicezione,"APPEND_TO_FILE eseguita correttamente!",41)==0)
+			{
+				exit=1;
+				free(bufferRicezione);
+				printf("CLIENT -> esco\n");
+			}
+			else
+			{
+				if(entrato==0)
+				{
+					pathEspulso=malloc(sizeof(char)*dimBufferRicezione);
+					strncpy(pathEspulso, bufferRicezione,dimBufferRicezione);
+					free(bufferRicezione);
+					entrato=1;
+				}
+				else
+				{
+
+					datiEspulsi=malloc(sizeof(char)*dimBufferRicezione+1);
+					memcpy(datiEspulsi, bufferRicezione, dimBufferRicezione);
+					dimEspulsi=dimBufferRicezione;
+	//						exit=1;
+					free(bufferRicezione);
+				}
+			}
+		}
+		else
+		{
+			printf("Client -> Errore append\n");
+		}
 	}
-	else
-	{
-		printf("CLIENT -> errore in operazione lock \n");
-	}
+	//	printf("ESCO DAL WHILE!\n");
+		if(pathEspulso!=NULL)
+		{
+	//		printf("\nIN WRITE FILE:path espulso: %s \n",pathEspulso);
+		}
+		if(datiEspulsi != NULL)
+		{
+	//		printf("Dati espulsi:%s\n\n\n\n",datiEspulsi);
+		}
+	//	printf("fine OPerazione\n");
+
+
+		FILE *file;
+//		if(errno==0 && datiEspulsi != NULL && pathEspulso != NULL)
+		{
+			int chdirReturnValue=0;
+			printf("Voglio andare in questa cartella:%s\n",dirNameSalvato);
+			chdirReturnValue=chdir(dirNameSalvato);
+			if(chdirReturnValue != 0)
+			{
+				//è stato settato errno
+				perror("Errore nell' utilizzo di chdir\n");
+				return -1;
+			}
+			char* token1;
+			char * pathRelativo;
+			char* rest = pathEspulso;
+
+			while ((token1 = strtok_r(rest, "/", &rest))!=NULL)
+			{
+				printf("%s\n", token1);
+				pathRelativo=token1;
+			}
+
+			printf("faccio fopen\n\n\n\n\n");
+			file = fopen(pathRelativo,"w");
+			if( file==NULL )
+			{
+				perror("Errore in apertura del file");
+				return -1;
+			}
+			else
+			{
+				printf("Scrivo i dati:%s\n",datiEspulsi);
+				int w = fwrite(datiEspulsi, sizeof(char), dimEspulsi, file);
+				if(w<0)
+				{
+					printf("CLIENT -> ERRORE fwrite\n");
+				}
+			}
+			fclose(file);
+			printf("Torno in questa directory\n",directoryCorrente);
+			chdirReturnValue=chdir(directoryCorrente);
+			if(chdirReturnValue != 0)
+			{
+				//è stato settato errno
+				perror("Errore nell' utilizzo di chdir\n");
+				return -1;
+			}
+
+		}
+
+
+
+
+
 	return 1;
 }
 
@@ -886,45 +1079,35 @@ int lockFile(const char* pathname)
 int unlockFile(const char* pathname)
 {
 	int readReturnValue=0;
-		char *bufferRicezione=NULL;
-		char daInviare[200]="UNLOCK_FILE;";
-		statoFd=statoFileDescriptor();
-		if(statoFd < 0)
-		{
-			return -1;
-		}
+	char *bufferRicezione=NULL;
+	char daInviare[200]="UNLOCK_FILE;";
+	statoFd=statoFileDescriptor();
+	if(statoFd < 0)
+	{
+		return -1;
+	}
 
-		size_t b=strlen(daInviare);
-		inviaDati(fd_socket,&b,sizeof(size_t));
-		inviaDati(fd_socket,daInviare,b);
+	size_t b=strlen(daInviare);
+	inviaDati(fd_socket,&b,sizeof(size_t));
+	inviaDati(fd_socket,daInviare,b);
 
-		pathname=relativoToAssoluto(pathname);
-		strncpy(daInviare,pathname,strlen(pathname));
+	pathname=relativoToAssoluto(pathname);
+	strncpy(daInviare,pathname,strlen(pathname));
 
+	size_t a=strlen(daInviare);
+	inviaDati(fd_socket,&a,sizeof(size_t));
+	inviaDati(fd_socket,daInviare,a);
 
-
-
-		size_t a=strlen(daInviare);
-		inviaDati(fd_socket,&a,sizeof(size_t));
-		inviaDati(fd_socket,daInviare,a);
-
-
-
-
-
-
-
-		//write(fd_socket,daInviare,200);
-		readReturnValue=riceviDati(fd_socket,&bufferRicezione,&a);
-		if(readReturnValue > 0)
-		{
-			printf("CLIENT-> risposta server per file %s: %s\n",pathname,bufferRicezione);
-		}
-		else
-		{
-			printf("CLIENT -> errore in operazione lock \n");
-		}
-		return 0;
+	readReturnValue=riceviDati(fd_socket,&bufferRicezione,&a);
+	if(readReturnValue > 0)
+	{
+		printf("CLIENT-> risposta server per file %s: %s\n",pathname,bufferRicezione);
+	}
+	else
+	{
+		printf("CLIENT -> errore in operazione lock \n");
+	}
+	return 0;
 }
 
 int closeFile(const char* pathname)
@@ -1038,7 +1221,6 @@ int removeFile(const char* pathname)
 	inviaDati(fd_socket,&a,sizeof(size_t));
 	inviaDati(fd_socket,daInviare,a);
 
-	//write(fd_socket,daInviare,200);
 	readReturnValue=riceviDati(fd_socket,&bufferRicezione,&a);
 	if(readReturnValue > 0)
 	{

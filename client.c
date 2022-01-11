@@ -227,7 +227,7 @@ int parser(struct struttura_coda *comandi)
 			ritardo();
 
 			//openFile("file1.txt",O_CREATE);
-			//openFile("file2.txt",CREATELOCK);
+//			openFile("file2.txt",CREATELOCK);
 
 
 //
@@ -345,7 +345,7 @@ int parser(struct struttura_coda *comandi)
 			for(i = 0; i < salvaNumFile; i++)
 			{
 //				printf("arrayPath[%d]:%s\n",i,arrayPath[i]);
-				openFile(arrayPath[i],O_CREATE);
+//				openFile(arrayPath[i],O_CREATE);
 				//writeFile(arrayPath[i],dirnameSecondarioScritture);
 				closeFile(arrayPath[i]);
 			}
@@ -375,13 +375,20 @@ int parser(struct struttura_coda *comandi)
 			while (token != NULL)
 			{
 				//openFile(token,O_CREATE);
-
+				printf("ciclo\n");
 //				void * buf="viva il carnevale";
 //				size_t size=sizeof(buf);
 				openFile(token,CREATELOCK);
+//				lockFile(token);
 				ritardo();
 //				printf("gli passo questa cartella:%s\n",dirnameSecondarioScritture);
-				writeFile(token,dirnameSecondarioScritture);
+//				writeFile(token,dirnameSecondarioScritture);
+				ritardo();
+//				openFile(token,CREATELOCK);
+//				void * buffer="questi sono byte aggiunti\n";
+//				appendToFile(token,&buffer,sizeof(buffer),dirnameSecondarioScritture);
+//				ritardo();
+
 				//appendToFile(token,buf,size,"");
 				closeFile(token);
 
@@ -459,7 +466,7 @@ int parser(struct struttura_coda *comandi)
 		}
 		if(strcmp(stringa,"-R")==0)
 		{
-			if((strncmp(dirnameSecondarioScritture,"",1)==0) && opzioned==0)
+			if((strncmp(dirnameSecondarioLetture,"",1)==0) && opzioned==0)
 			{
 				if(abilitaStampe==1)
 				{
@@ -494,7 +501,7 @@ int parser(struct struttura_coda *comandi)
 				}
 			}
 			ritardo();
-			readNFiles(numeroFileDaLeggere, "cartella");
+			readNFiles(numeroFileDaLeggere, dirnameSecondarioLetture);
 			continue;
 		}
 		if(strcmp(stringa,"-d")==0)
@@ -560,7 +567,7 @@ int parser(struct struttura_coda *comandi)
 			}
 			if(abilitaStampe==1)
 			{
-				////printf("CLIENT-> file correttamente aggiunti alla lista!\n");
+				printf("CLIENT-> file correttamente aggiunti alla lista!\n");
 			}
 			ritardo();
 			//printf("CLIENT-> INVIO RICHIESTA LOCK\n");
@@ -583,11 +590,9 @@ int parser(struct struttura_coda *comandi)
 			}
 			if(abilitaStampe==1)
 			{
-				////printf("CLIENT-> file correttamente aggiunti alla lista!\n");
+//				printf("CLIENT-> file correttamente aggiunti alla lista!\n");
 			}
 			ritardo();
-			//printf("CLIENT-> INVIO RICHIESTA UNLOCK\n");
-			//unlockFile(daInviare);
 			continue;
 		}
 

@@ -51,7 +51,6 @@ ssize_t scriviNBytes(int fdDaElaborare, void *v_ptr, size_t N)
 	valoreDiRitorno = N - nleft; //valoreDiRitorno  è >= 0
 	return valoreDiRitorno;
 }
-//Rinomina in italiano ( vedi relazione )
 //Funzione read con un numero di bytes massimo uguale ad N
 ssize_t leggiNBytes(int fdDaElaborare, void *v_ptr, size_t N)
 {
@@ -105,13 +104,12 @@ int riceviDati(int fd, void *dest, size_t *sizePtr)
 	  return -1;
   }
   *sizePtr=size;
-  //printf("sizeletta:%ld\n",size);
   //if (sizeRead)
   {
     // default behaviour: write to dest
     void *writeTo = dest;
 
-   // if (alloc)
+   //if (alloc)
 
       // in this situation dest is considered as the address
       // of a pointer that we have to set to the read data
@@ -158,7 +156,6 @@ int riceviDati(int fd, void *dest, size_t *sizePtr)
 //  return -1;
 }
 
-//Rinomina in italiano ( vedi relazione )
 int inviaDati(int fd, const void *data, size_t size)
 {
 	int writeNBytesReturnValue=scriviNBytes(fd, (void *)data, size);
