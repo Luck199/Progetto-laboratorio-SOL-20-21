@@ -39,38 +39,8 @@
 
 
 
-#define NOOP ;
 
-#define CLOSE(FD, S) \
-  errno = 0;         \
-  int c = close(FD); \
-  if (c == -1)       \
-  {                  \
-    perror(S);       \
-  }
-#define HANDLE_WRN(A, S, OK, NE, IZ, IE, D) \
-  errno = 0;                                \
-  int r = A;                                \
-  if (r == S)                               \
-  {                                         \
-    OK                                      \
-  }                                         \
-  else if (r == 0)                          \
-  {                                         \
-    IZ                                      \
-  }                                         \
-  else if (r == -1)                         \
-  {                                         \
-    IE                                      \
-  }                                         \
-  else if (r < S)                           \
-  {                                         \
-    NE                                      \
-  }                                         \
-  else                                      \
-  {                                         \
-    D                                       \
-  }
+
 
 #define HANDLE_WRNS(A, S, OK, KO) \
   HANDLE_WRN(A, S, OK, KO, KO, KO, KO)
@@ -268,7 +238,7 @@ int main(int argc, char **argv)
 	fd_hwm = 0;
 	fd_set set, read_set;
 
-	// determine the higher fd for now
+	//tengo memorizzato l' fd più grande
 	if (fd_skt > fd_hwm)
 	{
 		fd_hwm = fd_skt;
@@ -731,7 +701,7 @@ static void *gestoreSegnali(void *argument)
 
 	if (tipoSegnale)
 	{
-		HANDLE_WRNS(scriviNBytes(pipe, &tipoSegnale, sizeof(tipoSegnale)), sizeof(tipoSegnale), NOOP, perror("invio dati al thread main fallito");)
+		scriviNBytes(pipe, &tipoSegnale, sizeof(tipoSegnale));
 	}
 
 	pthread_exit(NULL);
