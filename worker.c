@@ -618,8 +618,6 @@ void* vitaWorker(void*  idWorker)
 			if(chiudiConnessione == 1)
 			{
 				int menoUno = -1;
-				accediPipeWorker();
-				scriviNBytes(pipeGestioneWorkers[1], &menoUno, sizeof(menoUno));
 				if(fdDaElaborare!=-1)
 				{
 					close(fdDaElaborare);

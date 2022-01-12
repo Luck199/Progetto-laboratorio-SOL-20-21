@@ -20,14 +20,6 @@
 #include "apiServer.h"
 #include "gestioneFile.h"
 
-#define E_SQ_MALLOC 1
-#define E_SQ_MUTEX_LOCK 2
-#define E_SQ_GENERAL 3
-#define E_SQ_EMPTY_QUEUE 4
-#define E_SQ_MUTEX_COND 5
-#define E_SQ_QUEUE_DELETED 6
-#define E_SQ_NO_QUEUE 7
-#define E_SQ_NULL_ELEMENT 8
 
 
 #define MAXPIPE 2
@@ -40,19 +32,6 @@
 
 
 
-
-
-#define HANDLE_WRNS(A, S, OK, KO) \
-  HANDLE_WRN(A, S, OK, KO, KO, KO, KO)
-
-
-#define AAIN(code, message) \
-  if (code == NULL)         \
-  {                         \
-    perror(message);        \
-    exit(EXIT_FAILURE);     \
-  }
-
 #define HUP 1
 #define QUIT_INT 2
 
@@ -61,9 +40,9 @@ void inizializzaScritturaLog(char *nomeLogFile);
 void creaCreatoreThreadWorkers();
 void* creaThreadWorkers();
 void creaWorkers(int idWorker);
-static void *gestoreSegnali(void *arg);
-static void createDetachSigHandlerThread(int pipe);
-static void maskSIGPIPEAndHandledSignals();
+static void *gestoreSegnali(void *argument);
+static void creatoreThreadGestoreSegnali(int pipe);
+static void mascheraSegnali();
 
 
 pthread_cond_t endServer = PTHREAD_COND_INITIALIZER;
@@ -112,7 +91,6 @@ int main(int argc, char **argv)
 	//masterWorkersPipe è una pipe che utilizzano thread main e thread worker per comunicare:
 	//tramite la cella in posizione 0 il thread main legge quali fileDescriptor sono pronti per essere impostati nell' insieme fd_set
 	//su 1 i thread workers scrivono tali fileDescriptor
-	//int pipeGestioneWorkers[MAXPIPE];
 
 
 	int bindReturnValue;
@@ -146,24 +124,22 @@ int main(int argc, char **argv)
 	inizializzaScritturaLog(nomeLogFile);
 
 	//configuro la gestione dei segnali
-	error_handling(pipe(pipeGestioneSegnali), "SERVER-> la creazione della pipe per i segnali ha riscontrato un errore\n");
+	int pipeReturnValue=0;
+	pipeReturnValue=pipe(pipeGestioneSegnali);
+	if((pipeReturnValue != 0) && (errno !=0))
+	{
+		perror("SERVER -> errore nell' operazione pipe\n");
+	}
 	strncpy(stringaToLog,"pipe per gestione dei segnali creata correttamente.",MAXLUNGHEZZA);
 	scriviSuLog(stringaToLog, 0);
 
 
 
-
-	error_handling(pipe(pipeGestioneWorkers), "SERVER-> la creazione della pipe per comunicare con i thread worker ha riscontrato un errore\n");
-	strncpy(stringaToLog,"pipe per la gestione dei thread workers creata correttamente.",MAXLUNGHEZZA);
-	scriviSuLog(stringaToLog, 0);
-
-
-
 	//Mando in esecuzione il thread che si occuperà della gestione dei segnali
-	createDetachSigHandlerThread(pipeGestioneSegnali[1]);
+	creatoreThreadGestoreSegnali(pipeGestioneSegnali[1]);
 
 
-	maskSIGPIPEAndHandledSignals();
+	mascheraSegnali();
 	strncpy(stringaToLog,"thread che si occuperà di gestire i segnali creato in maniera corretta.",MAXLUNGHEZZA);
 	scriviSuLog(stringaToLog, 0);
 
@@ -238,16 +214,10 @@ int main(int argc, char **argv)
 	fd_hwm = 0;
 	fd_set set, read_set;
 
-	//tengo memorizzato l' fd più grande
+	// determine the higher fd for now
 	if (fd_skt > fd_hwm)
 	{
 		fd_hwm = fd_skt;
-	}
-	if (pipeGestioneWorkers[0] > fd_hwm)
-	{
-		accediPipeWorker();
-		fd_hwm = pipeGestioneWorkers[0];
-		lasciaPipeWorker();
 	}
 	if (pipeGestioneSegnali[0] > fd_hwm)
 	{
@@ -256,9 +226,6 @@ int main(int argc, char **argv)
 
 	FD_ZERO(&set);
 	FD_SET(fd_skt, &set);
-	accediPipeWorker();
-	FD_SET(pipeGestioneWorkers[0], &set);
-	lasciaPipeWorker();
 	FD_SET(pipeGestioneSegnali[0], &set);
 
 
@@ -328,52 +295,24 @@ int main(int argc, char **argv)
 							fd_hwm = acceptReturnValue;
 						}
 						char  daInviare[200]="";
+						int inviaDatiReturnValue=0;
 						strncpy(daInviare,"connessione eseguita correttamente!\n",37);
 						size_t a=strlen(daInviare);
-						inviaDati(acceptReturnValue,&a,sizeof(size_t));
-						inviaDati(acceptReturnValue,&daInviare,a);
-					}
-					else if (fd == pipeGestioneWorkers[0])
-					{
-						//Un client è stato servito: recupero il suo indice
-
-						int fd;
-
-						accediPipeWorker();
-						HANDLE_WRNS(leggiNBytes(pipeGestioneWorkers[0], &fd, sizeof(fd)), sizeof(fd), ;, errore = 1;);
-						lasciaPipeWorker();
-						if (errore)
+						inviaDatiReturnValue=inviaDati(acceptReturnValue,&a,sizeof(size_t));
+						if(inviaDatiReturnValue <= 0)
 						{
-							perror("SERVER-> Errore nella lettura dalla pipe per gestione dei worker\n");
-							strncpy(stringaToLog,"Errore riscontrato nella lettura dalla pipe per la gestione dei workers.",MAXLUNGHEZZA);
-							scriviSuLog(stringaToLog, 0);
-							exit(EXIT_FAILURE);
+							perror("SERVER -> errore nell' operazione inviaDati");
 						}
-						else
+						inviaDatiReturnValue=inviaDati(acceptReturnValue,&daInviare,a);
+						if(inviaDatiReturnValue <= 0)
 						{
-							strncpy(stringaToLog,"Lettura dalla pipe per la gestione dei workers avvenuta in maniera corretta.",MAXLUNGHEZZA);
-							scriviSuLog(stringaToLog, 0);
-							if (fd == -1)
-							{
-								//un client si è disconnesso, quindi decremento il numero di quelli connessi
-		    						//clientConnessi--;
-//		    						strncpy(stringaToLog,"Un client si è disconnesso, adesso il totale ammonta a",MAXLUNGHEZZA);
-//		    						scriviSuLog(stringaToLog,1,clientConnessi);
-							}
-							else
-							{
-								FD_SET(fd, &set);
-								if (fd > fd_hwm)
-								{
-									fd_hwm = fd;
-								}
-							}
+							perror("SERVER -> errore nell' operazione inviaDati");
 						}
 					}
 					else if (fd == pipeGestioneSegnali[0])
 					{
 						//è arrivato un segnale, recupero il suo indice dalla pipe dedicata
-						HANDLE_WRNS(leggiNBytes(pipeGestioneSegnali[0], &segnale, sizeof(segnale));, sizeof(segnale), ;, errore = 1;);
+						leggiNBytes(pipeGestioneSegnali[0], &segnale, sizeof(segnale));
 
 						if (errore != 0)
 						{
@@ -398,70 +337,30 @@ int main(int argc, char **argv)
 							fd_hwm--;
 						}
 
-						// control flow flags
-						int shouldClose = 0;
-						int shouldExit = 0;
 
-						int *fileDescriptorPointer = malloc(sizeof(*fileDescriptorPointer));
-						if (fileDescriptorPointer == NULL)
+						//diviso in due volte per via del primo inserimento
+						if(primaVolta==0)
 						{
-							shouldClose = 1;
+							accediCodaComandi();
+							codaFileDescriptor->fileDescriptor=fd;
+							contatoreCodaFd++;
+							pthread_cond_signal(&CVFileDescriptor);
+							primaVolta=1;
+							lasciaCodaComandi();
 						}
 						else
 						{
-							//invio il fd ai thread workers, con l' ausilio della pipe dedicata
-							*fileDescriptorPointer = fd;
-
-							//diviso in due volte per via del primo inserimento
-							if(primaVolta==0)
-							{
-								accediCodaComandi();
-								//printf("prima volta che inserisco fd\n");
-								codaFileDescriptor->fileDescriptor=fd;
-								contatoreCodaFd++;
-								pthread_cond_signal(&CVFileDescriptor);
-
-								//printf("numero fd presenti in coda: %d\n",contatoreCodaFd);
-								//StampaLista_Interi(codaFileDescriptor);
-								primaVolta=1;
-								lasciaCodaComandi();
-							}
-							else
-							{
-								//printf("seconda volta\n");
-								enqueueCodaFileDescriptor(codaFileDescriptor, fd);
-							}
-							if (errore == E_SQ_MUTEX_COND || errore == E_SQ_MUTEX_LOCK)
-							{
-								perror("Mutex error");
-								shouldClose = 1;
-								shouldExit = 1;
-							}
-							else if (errore != 0)
-							{
-								shouldClose = 1;
-							}
+							//dalla seconda volta in poi
+							enqueueCodaFileDescriptor(codaFileDescriptor, fd);
 						}
-
-						if (shouldClose)
-						{
-							close(fd);
-						}
-
-						if (shouldExit)
-						{
-							exit(EXIT_FAILURE);
-						}
-						free(fileDescriptorPointer);
 					}
 				}
 			}
 		}
 	}
-
+	//Effettuo l' operazione di broadcast per svegliare eventuali thread che sono in wait
 	accediCodaComandi();
 	pthread_cond_broadcast(&(CVFileDescriptor));
-	printf("fatta broadcast!\n");
 	broadcast=1;
 	lasciaCodaComandi();
 
@@ -470,8 +369,7 @@ int main(int argc, char **argv)
 	int guasto=0;
 	if(segnale == QUIT_INT)
 	{
-		//////printf("Segnale di quit o di int\n");
-//		accediCodaComandi();
+		//Se entro qui dentro significa che è arrivato il segnale  SIGINT o SIGQUIT
 		while(getNumClient()>0)
 		{
 			fdNew=dequeueCodaFileDescriptor(codaFileDescriptor,&guasto);
@@ -502,28 +400,9 @@ int main(int argc, char **argv)
 			}
 
 		}
-//		lasciaCodaComandi();
 	}
 
-	//gestione worker all' arrivo di un segnale di terminazione leggera
 
-//	if(segnale == HUP)
-//	{
-//
-//		//accediCodaComandi();
-//		//attesa fino a  che i thread non hanno terminato
-//		pthread_mutex_lock(&lockClientConnessi);
-//		while(getNumClient() > 0)
-//		{
-//			printf("\n\ncucù\n\n\n");
-//
-//			printf("ASPETTO CHE I CLIENT SI TOLGANO DI CULO\n");
-//			pthread_cond_wait(&allClientExitCond, &lockClientConnessi);
-//			printf("CLIENT ASPETTATI\n");
-//		}
-//		pthread_mutex_unlock(&lockClientConnessi);
-//
-//	}
 	for (i=0;i<thread_workers;i++)
 	{
 		printf("SERVER-> Attendo il worker {%d}\n", workers[i].id_worker);
@@ -536,14 +415,6 @@ int main(int argc, char **argv)
 		printf("SERVER-> Atteso il worker {%d} \n", workers[i].id_worker);
 	}
 
-
-
-//	joinReturnValue=pthread_join(tidWorker, NULL);
-//	if(joinReturnValue != 0)
-//	{
-//		strncpy(stringaToLog,"La funzione pthread_join per l' attesa del thread worker ha riscontrato un errore.",MAXLUNGHEZZA);
-//		scriviSuLog(stringaToLog, 0);
-//	}
 
 
 	joinReturnValue=pthread_join(tidCreatoreWorkers,NULL);
@@ -587,7 +458,7 @@ int main(int argc, char **argv)
 	printf("-> lista dei file contenuti nello storage al momento della chiusura del server:\n");
 	for(i=0;i<num_max_file;i++)
 	{
-		if(strcmp(array_file[i].path,"vuoto")!=0)
+		if(strncmp(array_file[i].path,"vuoto",6)!=0)
 		{
 			verificaSeStrutturaVuota=1;
 			printf("\t-> %s\n",array_file[i].path);
@@ -626,8 +497,8 @@ void inizializzaScritturaLog(char *nomeLogFile)
 	if((logFile = fopen(nomeLogFile, "w")) == NULL)
 	{
 		perror("SERVER-> Error fopen");
-//		strncpy(stringaToLog,"La funzione fopen per file di log ha riscontrato un errore.",MAXLUNGHEZZA);
-//		scriviSuLog(stringaToLog,0);
+		strncpy(stringaToLog,"La funzione fopen per file di log ha riscontrato un errore.",MAXLUNGHEZZA);
+		scriviSuLog(stringaToLog,0);
 		exit(EXIT_FAILURE);
 	}
 	strncpy(stringaToLog,"Funzione fopen per file di log riuscita correttamente.",MAXLUNGHEZZA);
@@ -639,6 +510,8 @@ void inizializzaScritturaLog(char *nomeLogFile)
 static void *gestoreSegnali(void *argument)
 {
 	char stringaToLog[MAXLUNGHEZZA];
+	int sigEmptySetReturnValue=0;
+	int sigAddSetReturnValue=0;
 	sigset_t pset;
 	int *pipePtr = argument;
 	int pipe = *pipePtr;
@@ -647,26 +520,59 @@ static void *gestoreSegnali(void *argument)
 	free(pipePtr);
 
 	//azzero la maschera puntata da pset
-	error_handling(sigemptyset(&pset), "SERVER-> errore nell' azzerare la maschera puntata da pset")
+	sigEmptySetReturnValue=sigemptyset(&pset);
+	if(sigEmptySetReturnValue == -1)
+	{
+		perror("SERVER -> errore nell' operazione sigEmptySet\n");
+	}
 
 	//metto a 1 la posizione del segnale indicato come secondo parametro nella maschera pset
-	error_handling(sigaddset(&pset, SIGINT), "SERVER-> addset SIGINT: operazione fallita")
-	error_handling(sigaddset(&pset, SIGQUIT), "SERVER-> addset SIGQUIT: operazione fallita")
-	error_handling(sigaddset(&pset, SIGHUP), "SERVER-> addset SIGHUP: operazione fallita")
-	error_handling(sigaddset(&pset, SIGTSTP), "SERVER-> addset SIGTSTP: operazione fallita")
-	error_handling(sigaddset(&pset, SIGTERM), "SERVER-> addset SIGTERM: operazione fallita")
+	sigAddSetReturnValue=sigaddset(&pset, SIGINT);
+	if(sigAddSetReturnValue==-1)
+	{
+		perror("SERVER -> errore nell' operazione sigAddSet\n");
+	}
+	sigAddSetReturnValue=sigaddset(&pset, SIGQUIT);
+	if(sigAddSetReturnValue==-1)
+	{
+		perror("SERVER -> errore nell' operazione sigAddSet\n");
+	}
 
+	sigAddSetReturnValue=sigaddset(&pset, SIGHUP);
+	if(sigAddSetReturnValue==-1)
+	{
+		perror("SERVER -> errore nell' operazione sigAddSet\n");
+	}
+	sigAddSetReturnValue=sigaddset(&pset, SIGTSTP);
+	if(sigAddSetReturnValue==-1)
+	{
+		perror("SERVER -> errore nell' operazione sigAddSet\n");
+	}
+	sigAddSetReturnValue=sigaddset(&pset, SIGTERM);
+	if(sigAddSetReturnValue==-1)
+	{
+		perror("SERVER -> errore nell' operazione sigAddSet\n");
+	}
+	int pthreadSigmaskReturnValue=0;
 	//applico la maschero pset
-	error_handling(pthread_sigmask(SIG_SETMASK, &pset, NULL), "SERVER-> il settaggio della nuova maschera dei segnali ha riscontrato un errore\n")
+	pthreadSigmaskReturnValue=pthread_sigmask(SIG_SETMASK, &pset, NULL);
+	if(pthreadSigmaskReturnValue!=0)
+	{
+		perror("SERVER -> errore nell' operazione pthread_sigmask\n");
+	}
 
-
+	int sigwaitReturnValue=0;
 
 	//Mi metto in attesa dell' arrivo di un segnale
-	error_handling(sigwait(&pset, &numeroSegnale), "SERVER-> suspension of execution of the signal handler thread has failed")
+	sigwaitReturnValue=sigwait(&pset, &numeroSegnale);
 
+	if(sigwaitReturnValue!=0)
+	{
+		perror("SERVER -> errore nell' operazione sigwait");
+	}
 	if (numeroSegnale == SIGTSTP || numeroSegnale == SIGTERM)
 	{
-		//////printf("SERVER-> arresto in corso\n");
+		//Nel caso di arrivo del segnale SIGSTP o SIGTERM termino.
 		exit(EXIT_FAILURE);
 	}
 	else if (numeroSegnale == SIGQUIT || numeroSegnale == SIGINT)
@@ -693,7 +599,7 @@ static void *gestoreSegnali(void *argument)
 	}
 	else
 	{
-		////printf("SERVER-> segnale di indice %d non gestito!\n", numeroSegnale);
+		//Questo segnale non è gestito
 		strncpy(stringaToLog,"Arrivato segnale non gestito, il cui indice è",MAXLUNGHEZZA);
 		scriviSuLog(stringaToLog,1,numeroSegnale);
 		exit(EXIT_FAILURE);
@@ -709,36 +615,73 @@ static void *gestoreSegnali(void *argument)
 
 
 
-static void createDetachSigHandlerThread(int pipe)
+static void creatoreThreadGestoreSegnali(int pipe)
 {
 	int *puntatorePipe = malloc(sizeof(*puntatorePipe));
-	AAIN(puntatorePipe, "SERVER-> la creazione dell' thread per la gestione dei segnali ha riscontrato un errore\n")
 	*puntatorePipe = pipe;
-	error_handling(pthread_create(&threadGestoreSegnali, NULL, gestoreSegnali, puntatorePipe), "SERVER-> la creazione dell' thread per la gestione dei segnali ha riscontrato un errore\n")
+	if(	pthread_create(&threadGestoreSegnali, NULL, gestoreSegnali, puntatorePipe)!=0)
+	{
+		perror("SERVER-> Errore nella funzione pthread_create\n");
+		exit(EXIT_FAILURE);
+	}
 }
 
 
-static void maskSIGPIPEAndHandledSignals()
+static void mascheraSegnali()
 {
 	struct sigaction sga;
-
+	int sigEmptySetReturnValue=0;
+	int sigAddSetReturnValue=0;
 	//Maschero tutti i segnali
 	sigset_t pset;
-	error_handling(sigfillset(&pset), "SERVER-> il settaggio dei segnali ha risocntrato un errore\n");
-	error_handling(pthread_sigmask(SIG_SETMASK, &pset, NULL), "SERVER-> il settaggio della nuova maschera dei segnali ha riscontrato un errore\n")
-
+	int sigFillSetReturnValue=0;
+	int pthreadSigMaskReturnValue=0;
+	sigFillSetReturnValue=sigfillset(&pset);
+	if(sigFillSetReturnValue == -1)
+	{
+		perror("SERVER -> errore nell' operazione sigfillset\n");
+	}
+	pthreadSigMaskReturnValue=pthread_sigmask(SIG_SETMASK, &pset, NULL);
+	if(pthreadSigMaskReturnValue != 0 )
+	{
+		perror("SERVER -> errore nell' operazione pthread_sigmask\n");
+	}
 	//Ignoro il segnale SIGPIPE
 	memset(&sga, 0, sizeof(sga));
 	sga.sa_handler = SIG_IGN;
 	error_handling(sigaction(SIGPIPE, &sga, NULL), "SERVER-> il mascheramento del segnale SIGPIPE ha risocntrato un errore\n")
 
-	// mask the signals handled by the dedicated signal handler thread
-	error_handling(sigemptyset(&pset), "SERVER-> set of the POSIX signal set has failed");
-	error_handling(sigaddset(&pset, SIGINT), "SERVER-> addset SIGINT: operazione fallita")
-	error_handling(sigaddset(&pset, SIGQUIT), "SERVER-> addset SIGQUIT: operazione fallita")
-	error_handling(sigaddset(&pset, SIGTSTP), "SERVER-> addset SIGTSTP: operazione fallita")
-	error_handling(sigaddset(&pset, SIGTERM), "SERVER-> addset SIGTERM: operazione fallita")
-	error_handling(sigaddset(&pset, SIGHUP), "SERVER-> addset SIGHUP: operazione fallita")
+	// maschero i segnali gestiti dal thread
+	sigEmptySetReturnValue=sigemptyset(&pset);
+	if(sigEmptySetReturnValue==-1)
+	{
+		perror("SERVER-> l' operazione sigEmptySet ha riscontrato un errore\n");
+	}
+	sigAddSetReturnValue=sigaddset(&pset, SIGINT);
+	if(sigAddSetReturnValue==-1)
+	{
+		perror("SERVER-> l' operazione sigaddset ha riscontrato un errore\n");
+	}
+	sigAddSetReturnValue=sigaddset(&pset, SIGQUIT);
+	if(sigAddSetReturnValue==-1)
+	{
+		perror("SERVER-> l' operazione sigaddset ha riscontrato un errore\n");
+	}
+	sigAddSetReturnValue=sigaddset(&pset, SIGTSTP);
+	if(sigAddSetReturnValue==-1)
+	{
+		perror("SERVER-> l' operazione sigaddset ha riscontrato un errore\n");
+	}
+	sigAddSetReturnValue=sigaddset(&pset, SIGTERM);
+	if(sigAddSetReturnValue==-1)
+	{
+		perror("SERVER-> l' operazione sigaddset ha riscontrato un errore\n");
+	}
+	sigAddSetReturnValue=sigaddset(&pset, SIGHUP);
+	if(sigAddSetReturnValue==-1)
+	{
+		perror("SERVER-> l' operazione sigaddset ha riscontrato un errore\n");
+	}
 
 	//ristabilisco gli altri segnali
 	pthread_sigmask(SIG_SETMASK, &pset, NULL);
@@ -756,10 +699,7 @@ void creaWorkers(int idWorker)
 		scriviSuLog(stringaToLog,0);
 		exit(EXIT_FAILURE);
 	}
-	else
-	{
 
-	}
 }
 
 
@@ -768,7 +708,6 @@ void creaWorkers(int idWorker)
 void* creaThreadWorkers()
 {
 	int i;
-	////printf("SERVER-> crea thread workers\n");
 	for(i=0;i<thread_workers; i++)
 	{
 		creaWorkers(i);
@@ -787,10 +726,5 @@ void creaCreatoreThreadWorkers()
 		perror("SERVER-> Errore nella funzione pthread_create\n");
 		strncpy(stringaToLog,"La creazione del thread creatore dei thread workers ha riscontrato un problema",MAXLUNGHEZZA);
 		scriviSuLog(stringaToLog,0);
-	}
-	else
-	{
-		////printf("SERVER-> Creato creatore\n");
-
 	}
 }

@@ -39,7 +39,6 @@ int contatoreCodaFd=0;
 struct codaInteri *codaFileDescriptor;
 int segnaleChiusuraHup = 0;
 
-int pipeGestioneWorkers[2];
 
 int fdInCoda=0;
 int clientConnessi=0;
