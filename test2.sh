@@ -1,10 +1,7 @@
-./client "-p -f sockfile -t 200  -D /home/luca/workspace2/FileStorageServer/salvataggio/fileEspulsi -W file2.txt,file1.txt" &
-
-#./client "-p -f sockfile -t 100 -D /home/luca/workspace2/FileStorageServer/salvataggio/ciao2 -w /home/luca/workspace2/FileStorageServer/salvataggio 2" &
-#./client "-p -f sockfile -t 200 -W test1.txt" &
-#./client "-p -f sockfile  -W " &
-#./client "-p -f sockfile  -W debiti.txt" &
-#valgrind  --leak-check=full --show-leak-kinds=all -s --track-origins=yes ./server config.txt &
+#!/bin/bash
+./client "-p -f sockfile -t 200  -D /home/luca/workspace2/FileStorageServer/salvataggio/fileEspulsi -W file1.txt,file2.txt,file3.txt" &
+./client "-p -f sockfile -t 200  -D /home/luca/workspace2/FileStorageServer/salvataggio/fileEspulsi -W file4.txt,file5.txt,file6.txt,file7.txt" &
+./client "-p -f sockfile -t 200  -D /home/luca/workspace2/FileStorageServer/salvataggio/fileEspulsi -W file8.txt,file9.txt,file10.txt,file11.txt" &
 ./server config2.txt &
 PID_SERVER=$!
 sleep 3

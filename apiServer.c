@@ -152,6 +152,7 @@ int openConnection(const char *sockname, int msec, const struct timespec abstime
 	request.tv_nsec=(msec % 1000) * 1000000L;
 
 	fd_socket=socket(AF_UNIX, SOCK_STREAM, 0);
+
 	while (connect(fd_socket,(struct sockaddr*)&sa, sizeof(sa)) == -1 )
 	{
 		if (errno == ENOENT)
@@ -271,12 +272,11 @@ int closeConnection(const char* sockname)
 }
 
 
-
 int openFile(const char* pathname, int flags)
 {
+
 	printf("CLIENT-> faccio open File\n");
 	char * bufferRicezione=NULL;
-	int inviaDatiReturnValue=0;
 	char daInviare[200]="OPEN_FILE;";
 
 	if (flags < 0 || flags > 2)
@@ -289,17 +289,12 @@ int openFile(const char* pathname, int flags)
 	{
 		return -1;
 	}
-	size_t a=strlen(daInviare);
-	inviaDatiReturnValue=inviaDati(fd_socket,&a,sizeof(size_t));
-	if(inviaDatiReturnValue < 0 || errno != 0)
-	{
-		perror("Errore funzione inviaDati\n");
-	}
-	inviaDatiReturnValue=inviaDati(fd_socket,daInviare,strlen(daInviare));
-	if(inviaDatiReturnValue < 0 || errno != 0)
-	{
-		perror("Errore funzione inviaDati\n");
-	}
+		size_t a=strlen(daInviare);
+	inviaDati(fd_socket,&a,sizeof(size_t));
+
+
+	inviaDati(fd_socket,daInviare,strlen(daInviare));
+
 	pathname=relativoToAssoluto(pathname);
 	strcpy(daInviare,pathname);
 	a=strlen(daInviare);
@@ -323,9 +318,7 @@ int openFile(const char* pathname, int flags)
 	while(exit!=1)
 	{
 		int readReturnValue=riceviDati(fd_socket,&bufferRicezione,&a);
-		printf("bufferRicezioneOPEN:%s\n",bufferRicezione);
-
-		if(readReturnValue>0 && errno == 0)
+				if(readReturnValue>0)
 		{
 			if(strncmp(bufferRicezione,"OPEN_FILE: riscontrato errore",50)==0)
 			{
@@ -373,6 +366,7 @@ int openFile(const char* pathname, int flags)
 	return 0;
 }
 
+
 int readFile(const char* pathname, void** buf, size_t* size)
 {
 	const char puntoVirgola[2] = ";";
@@ -398,9 +392,9 @@ int readFile(const char* pathname, void** buf, size_t* size)
 	int readReturnValue=riceviDati(fd_socket,&bufferRicezione,&a);
 	if(errno==EINVAL)
 	{
-		printf("\n\n\n\neccolo!\n\n\n");
+		return -1;
 	}
-	if(readReturnValue > 0 && errno == 0)
+	if(readReturnValue > 0)
 	{
 		printf("CLIENT-> risposta server: %s\n",bufferRicezione);
 		FILE *file;
@@ -492,7 +486,7 @@ int readNFiles(int N, const char* dirname)
 		readReturnValue=riceviDati(fd_socket,&bufferRicezione,&a);
 //		printf("a:%ld\n",a);
 		printf("READ_N_FILE bufferRicezione:%s\n",bufferRicezione);
-		if(readReturnValue>0 && errno == 0)
+		if(readReturnValue>0 )
 		{
 			if(strncmp(bufferRicezione,"READ_N_FILE: riscontrato errore",32)==0)
 			{
@@ -534,12 +528,6 @@ int readNFiles(int N, const char* dirname)
 
 //					if(errno==-5)
 					{
-
-
-
-
-
-
 						FILE *file;
 //						if(errno=0 && datiEspulsi != NULL && pathEspulso != NULL)
 						{
@@ -633,183 +621,187 @@ int readNFiles(int N, const char* dirname)
 }
 
 
-int writeFile(const char* pathname, const char* dirName)
+int writeFile(const char* pathname, const char* dirname)
 {
 	char daInviare[200]="WRITE_FILE;";
-	char *bufferRicezione=NULL;
-	statoFd=statoFileDescriptor();
-	if(statoFd < 0)
-	{
-		return -1;
-	}
-	char *directoryCorrente=NULL;
-	size_t sizeDirectoryCorrente=150;
-	directoryCorrente=malloc(sizeof(char)*sizeDirectoryCorrente);
-	directoryCorrente=getcwd(directoryCorrente,sizeDirectoryCorrente);
-//	printf("lavoro nella directory:%s\n",directoryCorrente);
-	dirName=relativoToAssoluto(dirName);
-	printf("la cartella che utilizzo è:%s\n",dirName);
-	char * dirNameSalvato=malloc(sizeof(char)*(strlen(dirName)+1));
-	strncpy(dirNameSalvato,dirName,strlen(dirName)+1);
-	char * path2="";
-	path2=relativoToAssoluto(pathname);
-
-
-	//recupero il file da poter inviare
-	void *buf = NULL;
-	size_t size = 0;
-
-	int recuperaFileReturnValue=0;
-	recuperaFileReturnValue=recuperaFile(path2, &buf, &size);
-	if(recuperaFileReturnValue == -1)
-	{
-		printf("Errore nel recupero del file\n ");
-		return -1;
-	}
-
-
-	size_t a=strlen(daInviare);
-	inviaDati(fd_socket,&a,sizeof(size_t));
-	inviaDati(fd_socket,daInviare,strlen(daInviare));
-
-
-
-	strncpy(daInviare,path2,strlen(path2));
-//	char size_array[10];
-//	sprintf(size_array, "%ld", size);
-//	strncat(daInviare,";",2);
-//	strncat(daInviare,size_array,strlen(size_array));
-
-	size_t b=strlen(daInviare);
-	inviaDati(fd_socket,&b,sizeof(size_t));
-	inviaDati(fd_socket,daInviare,b);
-
-
-	//writen(fd_socket,(void*)buf,1000);
-	inviaDati(fd_socket,&size, sizeof(size_t));
-	inviaDati(fd_socket,buf, size);
-
-
-
-
-
-
-
-	size_t dimBufferRicezione=0;
-	int exit=0;
-	char * pathEspulso=NULL;
-	char * datiEspulsi=NULL;
-	int entrato=0;
-//	printf("CLIENT -> ENTRO NEL WHILE!!\n");
-size_t dimEspulsi=0;
-	while(exit!=1)
-	{
-		a=0;
-		dimBufferRicezione=0;
-		int readReturnValue=riceviDati(fd_socket,&bufferRicezione,&dimBufferRicezione);
-		printf("dimBufferRicezione:%ld\n",dimBufferRicezione);
-		printf("CLIENT -> BUFFERRicezioneWRITE:%s\n\n\n\n\n",bufferRicezione);
-
-		if(readReturnValue>0 && errno == 0)
+		char *bufferRicezione=NULL;
+		statoFd=statoFileDescriptor();
+		if(statoFd < 0)
 		{
-			if(strncmp(bufferRicezione,"WRITE_FILE: riscontrato errore",30)==0)
+			return -1;
+		}
+		char *directoryCorrente=NULL;
+		size_t sizeDirectoryCorrente=150;
+		directoryCorrente=malloc(sizeof(char)*sizeDirectoryCorrente);
+		directoryCorrente=getcwd(directoryCorrente,sizeDirectoryCorrente);
+	//	printf("lavoro nella directory:%s\n",directoryCorrente);
+		dirname=relativoToAssoluto(dirname);
+		printf("la cartella che utilizzo è:%s\n",dirname);
+		char * dirNameSalvato=malloc(sizeof(char)*(strlen(dirname)+1));
+		strncpy(dirNameSalvato,dirname,strlen(dirname)+1);
+		char * path2="";
+		path2=relativoToAssoluto(pathname);
+
+
+		//recupero il file da poter inviare
+		void *buf = NULL;
+		size_t size = 0;
+
+		int recuperaFileReturnValue=0;
+		recuperaFileReturnValue=recuperaFile(path2, &buf, &size);
+		if(recuperaFileReturnValue == -1)
+		{
+			printf("Errore nel recupero del file\n ");
+			return -1;
+		}
+
+
+		size_t a=strlen(daInviare);
+		inviaDati(fd_socket,&a,sizeof(size_t));
+		inviaDati(fd_socket,daInviare,strlen(daInviare));
+
+
+
+		strncpy(daInviare,path2,strlen(path2));
+	//	char size_array[10];
+	//	sprintf(size_array, "%ld", size);
+	//	strncat(daInviare,";",2);
+	//	strncat(daInviare,size_array,strlen(size_array));
+
+		size_t b=strlen(daInviare);
+		inviaDati(fd_socket,&b,sizeof(size_t));
+		inviaDati(fd_socket,daInviare,b);
+
+
+		//writen(fd_socket,(void*)buf,1000);
+		inviaDati(fd_socket,&size, sizeof(size_t));
+		inviaDati(fd_socket,buf, size);
+
+
+
+
+
+
+
+		size_t dimBufferRicezione=0;
+		int exit=0;
+		char * pathEspulso=NULL;
+		char * datiEspulsi=NULL;
+		int entrato=0;
+	//	printf("CLIENT -> ENTRO NEL WHILE!!\n");
+	size_t dimEspulsi=0;
+
+		while(exit!=1)
+		{
+			int readReturnValue=riceviDati(fd_socket,&bufferRicezione,&a);
+
+			if(readReturnValue>0)
 			{
-				errno=EBADF;
-				return -1;
-			}
-			if(strncmp(bufferRicezione,"WRITE_FILE eseguita correttamente!",35)==0)
-			{
-				exit=1;
-				free(bufferRicezione);
-				printf("CLIENT -> esco\n");
-			}
-			else
-			{
-				if(entrato==0)
+				if(strncmp(bufferRicezione,"WRITE_FILE: riscontrato errore",30)==0)
 				{
-					pathEspulso=malloc(sizeof(char)*dimBufferRicezione);
-					strncpy(pathEspulso, bufferRicezione,dimBufferRicezione);
+					errno=EBADF;
+
+					return -1;
+
+				}
+				if(strncmp(bufferRicezione,"WRITE_FILE eseguita correttamente!",35)==0)
+				{
+					exit=1;
 					free(bufferRicezione);
-					entrato=1;
 				}
 				else
 				{
+					if(entrato==0)
+					{
+						dimEspulsi=a;
 
-					datiEspulsi=malloc(sizeof(char)*dimBufferRicezione+1);
-					memcpy(datiEspulsi, bufferRicezione, dimBufferRicezione);
-					dimEspulsi=dimBufferRicezione;
-//					exit=1;
-					free(bufferRicezione);
+						pathEspulso=malloc(sizeof(char)*dimEspulsi);
+						strncpy(pathEspulso, bufferRicezione,dimEspulsi);
+						free(bufferRicezione);
+						entrato=1;
+					}
+					else
+					{
+						dimEspulsi=a;
+						datiEspulsi=malloc(sizeof(char)*dimEspulsi);
+						memcpy(datiEspulsi, bufferRicezione, dimEspulsi);
+						free(bufferRicezione);
+					}
 				}
 			}
-		}
-		else
-		{
-			printf("Client -> Errore close\n");
-		}
-	}
-//	printf("ESCO DAL WHILE!\n");
-	if(pathEspulso!=NULL)
-	{
-//		printf("\nIN WRITE FILE:path espulso: %s \n",pathEspulso);
-	}
-	if(datiEspulsi != NULL)
-	{
-//		printf("Dati espulsi:%s\n\n\n\n",datiEspulsi);
-	}
-//	printf("fine OPerazione\n");
-
-
-	FILE *file;
-	if(errno==0 && datiEspulsi != NULL && pathEspulso != NULL)
-	{
-		int chdirReturnValue=0;
-		printf("Voglio andare in questa cartella:%s\n",dirNameSalvato);
-		chdirReturnValue=chdir(dirNameSalvato);
-		if(chdirReturnValue != 0)
-		{
-			//è stato settato errno
-			perror("Errore nell' utilizzo di chdir\n");
-			return -1;
-		}
-		char* token1;
-		char * pathRelativo;
-		char* rest = pathEspulso;
-
-		while ((token1 = strtok_r(rest, "/", &rest))!=NULL)
-		{
-			printf("%s\n", token1);
-			pathRelativo=token1;
-		}
-
-		printf("faccio fopen\n\n\n\n\n");
-		file = fopen(pathRelativo,"w");
-		if( file==NULL )
-		{
-			perror("Errore in apertura del file");
-			return -1;
-		}
-		else
-		{
-			printf("Scrivo i dati:%s\n",datiEspulsi);
-			int w = fwrite(datiEspulsi, sizeof(char), dimEspulsi, file);
-			if(w<0)
+			else
 			{
-				printf("CLIENT -> ERRORE fwrite\n");
+				printf("Client -> Errore write\n");
+				return -1;
 			}
 		}
-		fclose(file);
-		printf("Torno in questa directory\n",directoryCorrente);
-		chdirReturnValue=chdir(directoryCorrente);
-		if(chdirReturnValue != 0)
-		{
-			//è stato settato errno
-			perror("Errore nell' utilizzo di chdir\n");
-			return -1;
-		}
 
-	}
-	return 0;
+
+
+
+
+
+
+	//	printf("ESCO DAL WHILE!\n");
+		if(pathEspulso!=NULL)
+		{
+	//		printf("\nIN WRITE FILE:path espulso: %s \n",pathEspulso);
+		}
+		if(datiEspulsi != NULL)
+		{
+	//		printf("Dati espulsi:%s\n\n\n\n",datiEspulsi);
+		}
+	//	printf("fine OPerazione\n");
+
+
+		FILE *file;
+		if(errno==0 && datiEspulsi != NULL && pathEspulso != NULL)
+		{
+			int chdirReturnValue=0;
+			printf("Voglio andare in questa cartella:%s\n",dirNameSalvato);
+			chdirReturnValue=chdir(dirNameSalvato);
+			if(chdirReturnValue != 0)
+			{
+				//è stato settato errno
+				perror("Errore nell' utilizzo di chdir\n");
+				return -1;
+			}
+			char* token1;
+			char * pathRelativo;
+			char* rest = pathEspulso;
+
+			while ((token1 = strtok_r(rest, "/", &rest))!=NULL)
+			{
+				pathRelativo=token1;
+			}
+
+			file = fopen(pathRelativo,"w");
+			if( file==NULL )
+			{
+				perror("Errore in apertura del file");
+				return -1;
+			}
+			else
+			{
+				//printf("Scrivo i dati:%s\n",datiEspulsi);
+				int w = fwrite(datiEspulsi, sizeof(char), dimEspulsi, file);
+				if(w<0)
+				{
+					printf("CLIENT -> ERRORE fwrite\n");
+				}
+			}
+			fclose(file);
+			printf("Torno in questa directory\n",directoryCorrente);
+			chdirReturnValue=chdir(directoryCorrente);
+			if(chdirReturnValue != 0)
+			{
+				//è stato settato errno
+				perror("Errore nell' utilizzo di chdir\n");
+				return -1;
+			}
+
+		}
+		return 0;
 }
 
 
@@ -881,7 +873,7 @@ int appendToFile(const char* pathname, void* buf, size_t size, const char* dirna
 		int readReturnValue=riceviDati(fd_socket,&bufferRicezione,&dimBufferRicezione);
 		printf("CLIENT -> BUFFERRicezioneAppend:%s\n\n\n\n\n",bufferRicezione);
 
-		if(readReturnValue>0 && errno == 0)
+		if(readReturnValue>0 )
 		{
 			if(strncmp(bufferRicezione,"APPEND_TO_FILE: riscontrato errore",36)==0)
 			{
@@ -1020,7 +1012,7 @@ int lockFile(const char* pathname)
 
 	//write(fd_socket,daInviare,200);
 	readReturnValue=riceviDati(fd_socket,&bufferRicezione,&a);
-	if(readReturnValue > 0 && errno == 0)
+	if(readReturnValue > 0 )
 	{
 		printf("CLIENT-> risposta server per file %s: %s\n",pathname,bufferRicezione);
 	}
@@ -1054,7 +1046,7 @@ int unlockFile(const char* pathname)
 	inviaDati(fd_socket,daInviare,a);
 
 	readReturnValue=riceviDati(fd_socket,&bufferRicezione,&a);
-	if(readReturnValue > 0 && errno == 0)
+	if(readReturnValue > 0)
 	{
 		printf("CLIENT-> risposta server per file %s: %s\n",pathname,bufferRicezione);
 	}
@@ -1089,7 +1081,7 @@ int closeFile(const char* pathname)
 	a=0;
 	int	readReturnValue=riceviDati(fd_socket,&bufferRicezione,&a);
 
-	if(readReturnValue > 0 && errno == 0)
+	if(readReturnValue > 0)
 	{
 		if(strncmp(bufferRicezione,"CLOSE_FILE: riscontrato errore",50))
 		{
@@ -1177,7 +1169,7 @@ int removeFile(const char* pathname)
 	inviaDati(fd_socket,daInviare,a);
 
 	readReturnValue=riceviDati(fd_socket,&bufferRicezione,&a);
-	if(readReturnValue > 0 && errno == 0)
+	if(readReturnValue > 0 )
 	{
 		printf("CLIENT-> risposta server per file %s: %s\n",pathname,bufferRicezione);
 	}
@@ -1192,75 +1184,72 @@ int removeFile(const char* pathname)
 int recuperaFile(const char *path, void **fileBuffer, size_t *size)
 {
 
-  FILE *filePointer = NULL;
-  *fileBuffer = NULL;
+	FILE *filePointer = NULL;
+	*fileBuffer = NULL;
 
-  //printf("path:%s\n\n\n",path);
-  // control flow flags
-  int error = 0;
-  int chiudi = 0;
-  int freeBuf = 0;
+	int error = 0;
+	int chiudi = 0;
+	int freeBuf = 0;
 
-  // open the file
-  filePointer = fopen(path, "r");
-  if(filePointer == NULL)
-  {
-	  perror("SERVER -> Error fopen");
-	  return -1;
-  }
-  // go to the end of the file
-  fseek(filePointer, 0L, SEEK_END);
+	//eseguo operazione open
+	filePointer = fopen(path, "r");
+	if(filePointer == NULL)
+	{
+		perror("SERVER -> Error fopen");
+		return -1;
+	}
+
+	fseek(filePointer, 0L, SEEK_END);
 
 
-  //mi salvo la grandezza del file
-  *size = ftell(filePointer);
+	//mi salvo la grandezza del file
+	*size = ftell(filePointer);
 
-  //riporto il puntatore del file all' inizio di esso
-  errno = 0;
-  rewind(filePointer);
-  if (errno)
-  {
-	  perror("Client -> ERRORE OPERAZIONE REWIND");
-  }
+	//riporto il puntatore del file all' inizio di esso
+	errno = 0;
+	rewind(filePointer);
+	if (errno)
+	{
+		perror("Client -> ERRORE OPERAZIONE REWIND");
+	}
 
 
-  //alloco lo spazio necessario
+	//alloco lo spazio necessario
 
-  *fileBuffer = malloc(sizeof(char) * (*size));
-  //fare controllo se sono riuscito ad allocare abbastanza memoria
+	*fileBuffer = malloc(sizeof(char) * (*size));
+	//fare controllo se sono riuscito ad allocare abbastanza memoria
 
-  //inserisco il file nel buffer
-  if (!error)
-  {
-	  int readSize = fread(*fileBuffer, sizeof(char), *size, filePointer);
-	  if (readSize < *size)
-	  {
-		  perror("readLocalFile internal error: fread");
-		  return -1;
-	  }
+	//inserisco il file nel buffer
+	if (errno == 0)
+	{
+		int readSize = fread(*fileBuffer, sizeof(char), *size, filePointer);
+		if (readSize < *size)
+		{
+			perror("readLocalFile internal error: fread");
+			return -1;
+		}
 
-	  chiudi = 1;
-  }
+		chiudi = 1;
+	}
 
-  if (chiudi)
-  {
-	  errno = 0;
-	  fclose(filePointer);
-	  if (errno)
-	  {
-		  perror("Client -> ERRORE OPERAZIONE FCLOSE");
-		  return -1;
-	  }
-  }
+	if (chiudi)
+	{
+		errno = 0;
+		fclose(filePointer);
+		if (errno)
+		{
+			perror("Client -> ERRORE OPERAZIONE FCLOSE");
+			return -1;
+		}
+	}
 
-  if (freeBuf)
-  {
-	  free(*fileBuffer);
-	  *fileBuffer = NULL;
-  }
+	if (freeBuf)
+	{
+		free(*fileBuffer);
+		*fileBuffer = NULL;
+	}
 
-  //printf("successfully read the file %s from disk of size %zd\n", path, *size);
-  return 0;
+	return 0;
 
 }
 

@@ -46,13 +46,15 @@ clean:
 	-rm sockfile
 	-rm server
 	-rm client
-	echo tutto pulito
 	 
 test1:	
 	make all
 	./test1.sh
 	
-testClient:
-	make client
-	./testClient.sh
+test2:	
+	make all
+	./test2.sh
 	
+test3:	
+	make all
+	./test3.sh

@@ -134,6 +134,7 @@ void enqueueString(struct struttura_coda *coda,char * stringa)
 
 int parser(struct struttura_coda *comandi)
 {
+
 	int lettopiuuno=0;
 	int abilitaStampe;
 	int tempo=0;
@@ -147,6 +148,7 @@ int parser(struct struttura_coda *comandi)
 
 	char * stringa=(char*)malloc(80*sizeof(char));
 	struct struttura_coda *files = malloc(sizeof(struct struttura_coda));
+
 	do
 	{
 		//elimino il primo comando dalla lista per poterlo eseguire
@@ -215,25 +217,17 @@ int parser(struct struttura_coda *comandi)
 			{
 				////printf("CLIENT-> Letto nome nomesocket: %s\n",nomesocket);
 			}
-//			(void)unlink(nomesocket);
 			ritardo();
+
 			openConnectionReturnValue=openConnection(nomesocket,100,abstime);
 			if(openConnectionReturnValue == -1)
 			{
 					perror("CLIENT-> Errore nell' apertura della connessione\n");
 					return -1;
 			}
-			//strncpy(daInviare,"WRITE_FILE;",150);
+
 			ritardo();
 
-			//openFile("file1.txt",O_CREATE);
-//			openFile("file2.txt",CREATELOCK);
-
-
-//
-//			appendToFile("file1.txt",buffer,sizeof(buffer),"cartella");
-//			lockFile("file1.txt");
-			//openFile("file2.txt",O_LOCK);
 			continue;
 		}
 		if(strcmp(stringa,"-w")==0)
@@ -263,7 +257,7 @@ int parser(struct struttura_coda *comandi)
 			strncpy(dirName,stringa,lunghezzaStringa);
 			if(abilitaStampe==1)
 			{
-				////printf("CLIENT-> Letto dirname: %s\n",dirname);
+				printf("CLIENT-> Letto dirname: %s\n",dirName);
 			}
 			stringa=dequeue(comandi);
 
@@ -288,7 +282,7 @@ int parser(struct struttura_coda *comandi)
 				numFile2 = 0;
 				if(abilitaStampe==1)
 				{
-					////printf("CLIENT-> numero file: %d\n",numFile);
+					printf("CLIENT-> numero file: %d\n",numFile);
 				}
 			}
 
@@ -332,11 +326,8 @@ int parser(struct struttura_coda *comandi)
 			i=0;
 
 			int letturaDirectoryReturnValue=0;
-//			printf("dirname:%s\n",dirName);
-//			printf("richiedo -w nella cartella %s , di %d file, i vale %d\n",dirName,numFile2,i);
 			int salvaNumFile=numFile2;
 			letturaDirectoryReturnValue=leggiNFileDaDirectory(&numFile2,dirName,arrayPath,i,bitConteggio,&numFileLetti);
-//			printf("il dirname secondario è il seguente:%s\n",dirnameSecondarioScritture);
 
 			if(letturaDirectoryReturnValue != 0)
 			{
@@ -344,13 +335,21 @@ int parser(struct struttura_coda *comandi)
 			}
 			for(i = 0; i < salvaNumFile; i++)
 			{
-//				printf("arrayPath[%d]:%s\n",i,arrayPath[i]);
-//				openFile(arrayPath[i],O_CREATE);
-				//writeFile(arrayPath[i],dirnameSecondarioScritture);
-				closeFile(arrayPath[i]);
+				char* token1;
+				char * pathRelativo;
+				char* rest = arrayPath[i];
+
+				while ((token1 = strtok_r(rest, "/", &rest))!=NULL)
+				{
+					//printf("%s\n", token1);
+					pathRelativo=token1;
+				}
+				//printf("path ora:%s",pathRelativo);
+				openFile(pathRelativo,CREATELOCK);
+//				writeFile(pathRelativo,dirnameSecondarioScritture);
+				closeFile(pathRelativo);
 			}
 
-			//strncpy(daInviare,"WRITE_FILE;",150);
 			ritardo();
 
 
@@ -360,6 +359,7 @@ int parser(struct struttura_coda *comandi)
 		}
 		if(strcmp(stringa,"-W")==0)
 		{
+
 			if((strncmp(dirnameSecondarioScritture,"",1)==0) && opzioneD==0)
 			{
 				if(abilitaStampe==1)
@@ -375,20 +375,18 @@ int parser(struct struttura_coda *comandi)
 			while (token != NULL)
 			{
 				//openFile(token,O_CREATE);
-				printf("ciclo\n");
 //				void * buf="viva il carnevale";
 //				size_t size=sizeof(buf);
 				openFile(token,CREATELOCK);
-//				lockFile(token);
+
 				ritardo();
 //				printf("gli passo questa cartella:%s\n",dirnameSecondarioScritture);
-//				writeFile(token,dirnameSecondarioScritture);
+				writeFile(token,dirnameSecondarioScritture);
 				ritardo();
 //				openFile(token,CREATELOCK);
 //				void * buffer="questi sono byte aggiunti\n";
 //				appendToFile(token,&buffer,sizeof(buffer),dirnameSecondarioScritture);
 //				ritardo();
-
 				//appendToFile(token,buf,size,"");
 				closeFile(token);
 

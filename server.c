@@ -405,14 +405,14 @@ int main(int argc, char **argv)
 
 	for (i=0;i<thread_workers;i++)
 	{
-		printf("SERVER-> Attendo il worker {%d}\n", workers[i].id_worker);
+		//printf("SERVER-> Attendo il worker {%d}\n", workers[i].id_worker);
 		joinReturnValue=pthread_join(workers[i].threadId, NULL);
 		if(joinReturnValue != 0)
 		{
 			strncpy(stringaToLog,"La funzione pthread_join per l' attesa dei thread workers ha riscontrato un errore.",MAXLUNGHEZZA);
 			scriviSuLog(stringaToLog, 0);
 		}
-		printf("SERVER-> Atteso il worker {%d} \n", workers[i].id_worker);
+		//printf("SERVER-> Atteso il worker {%d} \n", workers[i].id_worker);
 	}
 
 
@@ -486,7 +486,6 @@ int main(int argc, char **argv)
 	deallocaStrutturaFile();
 
 	printf("SERVER-> finito Server, i client connessi risultano: %d\n",clientConnessi);
-	printf("Sono passati dal server: %d client\n",clientTotali);
 	return 0;
 }
 
@@ -577,7 +576,7 @@ static void *gestoreSegnali(void *argument)
 	}
 	else if (numeroSegnale == SIGQUIT || numeroSegnale == SIGINT)
 	{
-		printf("SERVER-> Arrivato SIGQUIT o SIGINT\n");
+		//printf("SERVER-> Arrivato SIGQUIT o SIGINT\n");
 		strncpy(stringaToLog,"Arrivato segnale SIGQUIT o segnale SIGINT",MAXLUNGHEZZA);
 		scriviSuLog(stringaToLog,0);
 		tipoSegnale = QUIT_INT;
@@ -588,7 +587,7 @@ static void *gestoreSegnali(void *argument)
 	}
 	else if (numeroSegnale == SIGHUP)
 	{
-		printf("SERVER-> arrivato SIGHUP\n");
+		//printf("SERVER-> arrivato SIGHUP\n");
 		strncpy(stringaToLog,"Arrivato segnale SIGHUP",MAXLUNGHEZZA);
 		scriviSuLog(stringaToLog,0);
 		tipoSegnale = 1;

@@ -99,7 +99,7 @@ void* vitaWorker(void*  idWorker)
 		lasciaCodaComandi();
 		if(getSegnale() == 2 || (getSegnale() == 1 && getNumClient()==0))
 		{
-			printf("TERMINO\n");
+			//printf("TERMINO\n");
 			stop=1;
 			break;
 		}
@@ -198,7 +198,7 @@ void* vitaWorker(void*  idWorker)
 							int readReturnValue2=riceviDati(fdDaElaborare,&path,&dimPath);
 							if(readReturnValue2<0)
 							{
-								printf("errore\n");
+								perror("WORKER -> errore riceviDati\n");
 							}
 
 
@@ -210,7 +210,7 @@ void* vitaWorker(void*  idWorker)
 							int readReturnValue3=riceviDati(fdDaElaborare,&flag_array,&dimFlagArray);
 							if(readReturnValue3<0)
 							{
-								printf("errore\n");
+								perror("WORKER -> errore riceviDati\n");
 							}
 
 							flag=atoi(flag_array);
@@ -341,9 +341,9 @@ void* vitaWorker(void*  idWorker)
 						free(bufferRicezione);
 
 					}
-					if(strncmp(bufferRicezione,"CLOSE_FILE",daLeggere)==0)
+					if(strncmp(bufferRicezione,"CLOSE_FILE",daLeggere+1)==0)
 					{
-						printf("Arrivata operazione CLOSE_FILE\n");
+						//printf("Arrivata operazione CLOSE_FILE\n");
 						int closeFileServerReturnValue=0;
 
 						size_t dimPath=0;
@@ -455,7 +455,7 @@ void* vitaWorker(void*  idWorker)
 
 					if(strncmp(bufferRicezione,"READ_FILE",daLeggere)==0)
 					{
-						printf("Arrivata operazione READ_FILE\n");
+						//printf("Arrivata operazione READ_FILE\n");
 						char * buffer2;
 						char * path;
 						path=strtok_r(NULL, puntoVirgola, &rest);
@@ -473,7 +473,7 @@ void* vitaWorker(void*  idWorker)
 						lasciaStrutturaFile();
 						if(indice==-1)
 						{
-							printf("mando errore\n");
+							//printf("mando errore\n");
 							strncpy(result,"errore",7);
 							size_t a=strlen(result)+1;
 							inviaDati(fdDaElaborare,&a,sizeof(size_t));
@@ -517,7 +517,7 @@ void* vitaWorker(void*  idWorker)
 						{
 							N=numFilePresenti;
 						}
-						printf("WORKER-> N= %d\n\n",N);
+						//("WORKER-> N= %d\n\n",N);
 
 
 //						int fileLettiEffettivi=0;
@@ -539,7 +539,7 @@ void* vitaWorker(void*  idWorker)
 							lungPath=strlen(array_file[i].path);
 							inviaDati(fdDaElaborare,&lungPath,sizeof(size_t));
 							inviaDati(fdDaElaborare,path,lungPath);
-							printf("\n\n\nil worker invia il file %s\n\n\n",path);
+							//printf("\n\n\nil worker invia il file %s\n\n\n",path);
 
 
 							dimFile=array_file[i].dimensione;
@@ -566,7 +566,7 @@ void* vitaWorker(void*  idWorker)
 
 					if(strncmp(bufferRicezione,"WRITE_FILE",daLeggere)==0)
 					{
-						printf("Arrivata operazione WRITE_FILE\n");
+						//printf("Arrivata operazione WRITE_FILE\n");
 						//
 						//
 						int writeFileServerReturnValue=-1;
@@ -576,14 +576,15 @@ void* vitaWorker(void*  idWorker)
 
 						if(path == NULL)
 						{
-							printf("errore!!!!!!");
+							perror("WORKER -> errore riceviDati");
 							writeFileServerReturnValue=-1;
 						}
-						printf("il worker esegue write file sul file %s \n",path);
+						//printf("il worker esegue write file sul file %s \n",path);
 
 						size_t sizeFile=0;
 						void * dati= NULL;
 						riceviDati(fdDaElaborare, &dati, &sizeFile);
+						printf("dim:%d\n\n\n\n",sizeFile);
 						accediStrutturaFile();
 						writeFileServerReturnValue=writeFileServer(path,dati,sizeFile,fdDaElaborare);
 						lasciaStrutturaFile();

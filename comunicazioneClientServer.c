@@ -34,6 +34,7 @@ ssize_t scriviNBytes(int fdDaElaborare, void *v_ptr, size_t N)
 				//è stato riscontrato un errore, ritorno -1
 				return -1;
 			}
+
 			else
 			{
 				//Errore, ritorno quello che sono riuscito a leggere fino ad ora
@@ -50,6 +51,8 @@ ssize_t scriviNBytes(int fdDaElaborare, void *v_ptr, size_t N)
 	}
 	valoreDiRitorno = N - nleft; //valoreDiRitorno  è >= 0
 	return valoreDiRitorno;
+
+
 }
 //Funzione read con un numero di bytes massimo uguale ad N
 ssize_t leggiNBytes(int fdDaElaborare, void *v_ptr, size_t N)
@@ -69,6 +72,7 @@ ssize_t leggiNBytes(int fdDaElaborare, void *v_ptr, size_t N)
 				//è stato riscontrato un errore, ritorno -1
 				return -1;
 			}
+
 			else
 			{
 				//Errore, ritorno quello che sono riuscito a leggere fino ad ora
@@ -85,6 +89,7 @@ ssize_t leggiNBytes(int fdDaElaborare, void *v_ptr, size_t N)
 	}
 	valoreDiRitorno = N - nleft; //valoreDiRitorno >= 0
   	return valoreDiRitorno;
+
 }
 
 int riceviDati(int fd, void *dest, size_t *sizePtr)

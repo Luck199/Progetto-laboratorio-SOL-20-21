@@ -35,7 +35,8 @@ sommaWrite=0
 maxMem=0
 maxConnessioni=0
 stringaMem="maxMemoriaRaggiunta: "
-
+readmedia=0
+sizemedia=0
 #operazioniEseguitePerThread[8]
 while IFS= read -r line 
 do
@@ -97,27 +98,35 @@ fi
 if [ "$write" -ne 0 ]; then 
 writemedia=$(($sommaWrite/$write))
 fi
+	echo -e "numero di read eseguite:${read}"
+	echo -e "size media delle letture: ${readmedia}"
+	echo -e "numero write eseguite: ${write}"
+	echo -e "write media: ${writemedia}"
+	echo -e "numero lock eseguite: ${lock}"
+	echo -e "numero unlock eseguite: ${unlock}"
+	echo -e "numero open con flag lock eseguite: ${openlock}"
+	echo -e "numero close file eseguite: ${close}"
+	echo -e "massima memoria raggiunta: ${maxMem}"
 
 #	echo -e "numero thread: ${numThread}"
 #	echo -e "numero close file eseguite: ${close}"
 #	echo -e "write:${write}"
 #	echo -e "sommaWrite: ${sommaWrite}"
-#	echo -e "write media: ${writemedia}"
-#	echo -e "massima memoria raggiunta: ${maxMem}"
-#	echo -e "read:${read}"
+
+
+	
 #	echo -e "sommaRead: ${sommaRead}"
-#	echo -e "read media: ${readmedia}"
-#	echo -e "numero lock eseguite: ${lock}"
-#	echo -e "numero unlock eseguite: ${unlock}"
-#	echo -e "numero open con flag lock eseguite: ${openlock}"
-#	echo -e "numero close file eseguite: ${close}"
+
+
+
 #	echo -e "numero read eseguite: ${read}"
-#	echo -e "numero write eseguite: ${write}"
+
 #	echo -e "numero richieste eseguite: ${richiesteServite}"
 	echo -e "numero rimpiazzi eseguiti: ${numRimpiazzi}"
-#	echo -e "numero max connessioni contemporanee: ${maxConnessioni}"
-#	for ((i=0; i<=8; i++)); do
-#	echo "numero operazioni eseguite dal thread ${i}: ${operazioniEseguitePerThread[${i}]}"
+	for ((i=0; i<=8; i++)); do
+		echo "numero operazioni eseguite dal thread ${i}: ${operazioniEseguitePerThread[${i}]}"
+	done
+	echo -e "numero max connessioni contemporanee: ${maxConnessioni}"
 #done
 
 #exec 3<&- #chiudo il file del file descriptor 3
