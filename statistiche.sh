@@ -37,10 +37,15 @@ maxConnessioni=0
 stringaMem="maxMemoriaRaggiunta: "
 readmedia=0
 sizemedia=0
+numMaxFilePresenti=0
+stringaNumFile="numMaxFilePresenti: "
 #operazioniEseguitePerThread[8]
 while IFS= read -r line 
 do
   	#echo ${line}
+  	if [ ${line%% *} = "numMaxFilePresenti:" ]; then          #conto quante lockFile sono state eseguite
+		numMaxFilePresenti=${line/${stringaNumFile}}
+	fi
   	if [ ${line%% *} = "OPEN_FILE_LOCK:" ]; then          #conto quante lockFile sono state eseguite
 		openlock=$((openlock+1))
 	fi
@@ -61,8 +66,6 @@ do
 	fi
 	if [ ${line%% *} = "READ_FILE_di_byte:" ]; then          #conto quante read sono state eseguite
 		read=$((read+1))
-#		echo "ciao"
-#		echo ${line}
 		appoggioRead=${line/${stringaRead}}
 		sommaRead=$(($sommaRead + $appoggioRead))
 	fi
@@ -101,29 +104,16 @@ fi
 	echo -e "numero di read eseguite:${read}"
 	echo -e "size media delle letture: ${readmedia}"
 	echo -e "numero write eseguite: ${write}"
-	echo -e "write media: ${writemedia}"
+	echo -e "size media write : ${writemedia}"
 	echo -e "numero lock eseguite: ${lock}"
 	echo -e "numero unlock eseguite: ${unlock}"
 	echo -e "numero open con flag lock eseguite: ${openlock}"
 	echo -e "numero close file eseguite: ${close}"
 	echo -e "massima memoria raggiunta: ${maxMem}"
 
-#	echo -e "numero thread: ${numThread}"
-#	echo -e "numero close file eseguite: ${close}"
-#	echo -e "write:${write}"
-#	echo -e "sommaWrite: ${sommaWrite}"
-
-
-	
-#	echo -e "sommaRead: ${sommaRead}"
-
-
-
-#	echo -e "numero read eseguite: ${read}"
-
-#	echo -e "numero richieste eseguite: ${richiesteServite}"
+	echo -e "numero massimo di file memorizzati: ${numMaxFilePresenti}"
 	echo -e "numero rimpiazzi eseguiti: ${numRimpiazzi}"
-	for ((i=0; i<=8; i++)); do
+	for ((i=0; i<8; i++)); do
 		echo "numero operazioni eseguite dal thread ${i}: ${operazioniEseguitePerThread[${i}]}"
 	done
 	echo -e "numero max connessioni contemporanee: ${maxConnessioni}"

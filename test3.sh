@@ -1,33 +1,35 @@
 #!/bin/bash
 
-#./client "-p -f sockfile -t 0  -D /home/luca/workspace2/FileStorageServer/salvataggio/fileEspulsi -W file2.txt,file1.txt" &
-
 
 ./server config3.txt &
-PID_SERVER=$!
+SERVER_PID=$!
 
-#wait $PID_SERVER
 
-CLIENTS_PID=$!
+
+PID_CLIENTS=$!
 
 ID=0
-
-CLS=()
-for i in {1..10}; do
+IDCLIENT=()
+for i in {1..13}; do
     ID=${i}
     export ID
-    ./client.sh &
-    CLS+=($!)
+    ./creazioneClient.sh &
+    IDCLIENT+=($!)
 done
 
-sleep 5
 
-kill -SIGQUIT $SERVER_PID
-wait $CLIENTS_PID
+sleep 30
 
-for i in "${CLS[@]}"; do
+kill -SIGINT $SERVER_PID
+
+
+wait $PID_CLIENTS
+
+for i in "${IDCLIENT[@]}"; do
     kill -9 ${i}
     wait ${i}
 done
 
-./statistiche.sh
+./statistiche.sh log.txt
+exit 0
+

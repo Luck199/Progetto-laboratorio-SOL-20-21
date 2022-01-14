@@ -14,9 +14,6 @@ extern int clientConnessi;
 extern int threadInAttesa;
 extern FILE *logFile;
 extern struct codaInteri *codaFileDescriptor;
-//masterWorkersPipe è una pipe che utilizzano thread main e thread worker per comunicare:
-//tramite la cella in posizione 0 il thread main legge quali fileDescriptor sono pronti per essere impostati nell' insieme fd_set
-//su 1 i thread workers scrivono tali fileDescriptor
 extern int pipeGestioneWorkers[2];
 extern int segnaleChiusuraHup;
 extern int segnale_globale;
@@ -53,10 +50,8 @@ extern struct info_file
     char *path;
     short fileAperto;
     char * byteFile;
-    long data;
     short O_LOCK;
     short O_CREATE;
-    //char *data;
     size_t dimensione;
 
     FILE * puntatoreFile;
@@ -67,7 +62,6 @@ extern struct info_file
 
     pthread_mutex_t lockFile;
     pthread_cond_t fileConditionVariable;
-//    pthread_cond_t go;
 }*array_file;
 
 extern struct info_file *array_file;

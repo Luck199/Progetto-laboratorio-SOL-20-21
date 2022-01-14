@@ -51,7 +51,7 @@ pthread_cond_t allClientExitCond = PTHREAD_COND_INITIALIZER;//condition variable
 
 pthread_cond_t CVFileDescriptor = PTHREAD_COND_INITIALIZER;//condition VAriable
 pthread_mutex_t lockSegnali=PTHREAD_MUTEX_INITIALIZER;
-struct struttura_workers *workers;
+struct struttura_workers *workers;//struttura per l' array dei thread workers, contenente l' identificatore e il thread ID
 
 
 struct info_file *array_file;
@@ -126,8 +126,6 @@ void decrementaNumClient()
 		pthread_exit(&err);
 	}
 	clientConnessi--;
-	printf("SERVER-> Sconnesso Client! Sono connessi %d client\n",clientConnessi);
-	////printf("numero fd presenti in coda: %d, numero client connessi: %d\n",contatoreCodaFd,clientConnessi);
 
 	//Verifico se non sono presenti client connessi
 	//e se fosse arrivato segnale sighup; in caso positivo
@@ -157,8 +155,6 @@ void incrementaNumClient()
 	{
 		numMaxconnessioniContemporanee=clientConnessi;
 	}
-	printf("SERVER-> Sono connessi %d client\n",clientConnessi);
-	////printf("numero fd presenti in coda: %d, numero client connessi: %d\n",contatoreCodaFd,clientConnessi);
 	pthread_mutex_unlock(&lockClientConnessi);
 }
 
@@ -192,10 +188,7 @@ void scriviSuLog(char * stringa, int count, ...)
 	va_list ap;
 	va_start (ap, count); // inizializzo la lista
 	int sum = 0;
-//	for (int i=0; i<count; i++)
-//	{
-		sum += va_arg (ap, int); // il prossimo
-//	}
+	sum += va_arg (ap, int); //seleziono il prossimo elemento
 	if(count == 0)
 	{
 		fprintf(logFile, "%s \n" ,stringa);
@@ -220,7 +213,6 @@ void accediCodaComandi()
 		perror("lock coda comandi\n");
 		pthread_exit(&err);
 	}
-	//printf("SERVER-> Assunto lock coda comandi\n");
 }
 
 //Funzione che permette di rilasciare il lock relativa alla struttura dati contenente le casse.
@@ -232,7 +224,6 @@ void lasciaCodaComandi()
 		perror("unlock coda comandi\n");
 		pthread_exit(&err);
 	}
-	//printf("SERVER-> Rilasciato lock coda comandi\n");
 }
 
 void accediPipeWorker()
@@ -243,7 +234,6 @@ void accediPipeWorker()
 		perror("lock pipe worker\n");
 		pthread_exit(&errore);
 	}
-	//printf("SERVER-> Assunto lock pipe worker\n");
 }
 
 void lasciaPipeWorker()
@@ -254,12 +244,7 @@ void lasciaPipeWorker()
 		perror("lock pipe worker\n");
 		pthread_exit(&errore);
 	}
-	//////printf("SERVER-> Rilasciato lock pipe worker\n");
 }
-
-
-
-
 
 
 void enqueueCodaFileDescriptor(struct codaInteri *codaFileDescriptor, int fileDescriptorPointer)
@@ -267,9 +252,7 @@ void enqueueCodaFileDescriptor(struct codaInteri *codaFileDescriptor, int fileDe
 	accediCodaComandi();
 	enqueue_Interi(codaFileDescriptor,fileDescriptorPointer);
 	contatoreCodaFd++;
-	//printf("contatoreCodaFd: %d\n",contatoreCodaFd);
 	pthread_cond_signal(&CVFileDescriptor);
-	//StampaLista_Interi(codaFileDescriptor);
 	lasciaCodaComandi();
 }
 
@@ -280,20 +263,14 @@ int dequeueCodaFileDescriptor(struct codaInteri *codaFileDescriptor, int *stop)
 	accediCodaComandi();
 	int errore=0;
 	fdDaElaborare=dequeue_Interi(codaFileDescriptor, &errore);
-	//printf("fd pescato:%d\n",fdDaElaborare);
 	if(errore==1)
 	{
 		*stop=1;
-		//perror("ERRORE\n");
-		//printf("contatoreCodaFd: %d\n",contatoreCodaFd);
 	}
 	if(fdDaElaborare!=-1)
 	{
 		contatoreCodaFd--;
-		//printf("contatoreCodaFd: %d\n",contatoreCodaFd);
 	}
-
-	//StampaLista_Interi(codaFileDescriptor);
 	lasciaCodaComandi();
 
 	return fdDaElaborare;
@@ -308,7 +285,6 @@ void accediSegnali()
 		perror("lock coda comandi\n");
 		pthread_exit(&err);
 	}
-//	printf("SERVER-> Assunto lock segnali\n");
 }
 
 
@@ -320,7 +296,6 @@ void lasciaSegnali()
 		perror("lock coda comandi\n");
 		pthread_exit(&err);
 	}
-//	printf("SERVER-> Lasciato lock segnali\n");
 }
 
 int getSegnale()

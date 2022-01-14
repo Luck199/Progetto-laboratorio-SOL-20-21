@@ -30,8 +30,6 @@ int filePiuVecchio;
 int numMaxFilePresenti;
 float maxMemoriaRaggiunta;
 int numVolteAlgoritmoRimpiazzo;
-char * cartellaClient;
-char * cartellaServer;
 
 
 void allocaStrutturaFile()
@@ -50,7 +48,6 @@ void allocaStrutturaFile()
 		array_file[i].path=(char*)malloc(sizeof(char)*MAXSTRING);
 		strncpy(array_file[i].path,"vuoto",6);
 
-		array_file[i].data=0;
 		array_file[i].fileAperto=0;
 		array_file[i].dimensione=0;
 		array_file[i].lettoriAttivi=0;
@@ -120,9 +117,7 @@ void visualizzaArrayFile()
 //	printf("memoria disponibile: %d\n",memoriaDisponibile);
 //	printf("numero dei file ancora inseribili: %d\n",numFileDisponibili);
 //
-	//***********************************
-	//Tale procedura dà errore con valgrind, non utilizzare in progetto finale
-	//***********************************
+
 	for(i=0;i<num_max_file;i++)
 	{
 		//printf("path[%d]:%s\n",i,array_file[i].path);
@@ -245,7 +240,6 @@ void applicaFifo(int fdDaElaborare, int daSalvare)
 			dimEspulso=array_file[i].dimensione;
 			strncpy(array_file[i].path,"vuoto",6);
 
-			array_file[i].data=0;
 //			daLiberare=array_file[i].dimensione;
 
 			array_file[i].dimensione=0;
@@ -501,7 +495,6 @@ int applicaRemove(char *path)
 			//elimino il file che ho richiesto
 			//printf("elimino il file %s\n",array_file[i].path);
 			strncpy(array_file[i].path,"vuoto",6);
-			array_file[i].data=0;
 			daLiberare=array_file[i].dimensione;
 			array_file[i].dimensione=0;
 			array_file[i].O_LOCK = 0;
@@ -554,14 +547,9 @@ int removeFileServer(char * path, int fdDaElaborare)
 		//printf("non puoi rimuovere un file che non hai aperto te! \n");
 		return -1;
 	}
-	if(array_file[indiceFile].puntatoreFile !=NULL)
+	if(array_file[indiceFile].fileAperto == 1)
 	{
 		closeFileServer(path,fdDaElaborare);
-	}
-	if(array_file[indiceFile].fileAperto != 0)
-	{
-		//printf("non puoi rimuovere un file aperto! \n");
-		return -1;
 	}
 
 	//printf("file da eliminare presente!\n\n\n\n\n\n\n\n");
@@ -611,9 +599,9 @@ int appendToFileServer(char* path,char* buf, size_t size, int fdDaElaborare)
 		//openFileServer(array_file[indiceFile].path,1, fdDaElaborare);
 	}
 
-	size_t modificaDiMemoria=0;
+//	size_t modificaDiMemoria=0;
 	//è necessario riallocare memoria, ne rialloco tanta quanto appena necessario
-	modificaDiMemoria=size+array_file[indiceFile].dimensione;
+//	modificaDiMemoria=size+array_file[indiceFile].dimensione;
 	array_file[indiceFile].byteFile=realloc(array_file[indiceFile].byteFile, (array_file[indiceFile].dimensione+size+1)*sizeof(char));
 //	if(array_file[indiceFile].byteFile != NULL)
 //	{
@@ -621,7 +609,7 @@ int appendToFileServer(char* path,char* buf, size_t size, int fdDaElaborare)
 //	}
 //	array_file[indiceFile].byteFile=malloc(sizeof(char) * (size+array_file[indiceFile].dimensione+1));
 
-	int espelliFile=0;
+//	int espelliFile=0;
 	int daSalvare=-1;
 	daSalvare=indiceFile;
 //	in questo caso per fare spazio al filemi interessa solamente aumentare la memoria disponibile,
@@ -702,7 +690,7 @@ int writeFileServer(char* path, char  * dati, size_t sizeFile, int fdDaElaborare
 	 */
 	if((indiceFile == -1))
 	{
-		printf("si vuole scrivere nella memoria di un file non presente, errore!\n");
+		//printf("si vuole scrivere nella memoria di un file non presente, errore!\n");
 		return -1;
 	}
 
@@ -714,11 +702,7 @@ int writeFileServer(char* path, char  * dati, size_t sizeFile, int fdDaElaborare
 	}
 //	size_t modificaDiMemoria=0;
 
-//	if((array_file[indiceFile].dimensione-6+sizeFile)>dim_memoria)
-//	{
-//		printf("Non si può allocare questa porzione di memoria\n");
-//		return -1;
-//	}
+
 	if(array_file[indiceFile].dimensione<sizeFile)
 	{
 		//è necessario riallocare memoria, ne rialloco tanta quanto appena necessario

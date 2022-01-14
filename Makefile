@@ -25,7 +25,7 @@ worker.o: worker.c worker.h  utility.h coda.h gestioneFile.h comunicazioneClient
 utility.o: utility.c utility.h coda.o coda.h gestioneFile.h
 	$(CC) $(CFLAGS) -c $<	
 	
-client.o: client.c client.h utility.h coda.h
+client.o: client.c client.h utility.h coda.h apiServer.h
 	$(CC) $(CFLAGS) -c $<
 		
 coda.o: coda.c coda.h

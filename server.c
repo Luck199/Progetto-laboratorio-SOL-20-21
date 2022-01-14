@@ -56,14 +56,6 @@ int segnale=0;
 pthread_t tidCreatoreWorkers;
 struct sockaddr_un sa;
 
-// ABORT_ABRUPTLY_IF_NON_ZERO
-#define error_handling(codice, messaggio) \
-  if (codice != 0)             \
-  {                          \
-    perror(messaggio);         \
-    exit(EXIT_FAILURE);      \
-  }
-
 int fd_skt;
 
 int main(int argc, char **argv)
@@ -214,7 +206,7 @@ int main(int argc, char **argv)
 	fd_hwm = 0;
 	fd_set set, read_set;
 
-	// determine the higher fd for now
+	//determino l' fd più grande
 	if (fd_skt > fd_hwm)
 	{
 		fd_hwm = fd_skt;
@@ -312,7 +304,7 @@ int main(int argc, char **argv)
 					else if (fd == pipeGestioneSegnali[0])
 					{
 						//è arrivato un segnale, recupero il suo indice dalla pipe dedicata
-						leggiNBytes(pipeGestioneSegnali[0], &segnale, sizeof(segnale));
+						readn(pipeGestioneSegnali[0], &segnale, sizeof(segnale));
 
 						if (errore != 0)
 						{
@@ -470,6 +462,9 @@ int main(int argc, char **argv)
 	}
 
 
+	strncpy(stringaToLog,"numMaxFilePresenti",MAXLUNGHEZZA);
+	scriviSuLog(stringaToLog,1,numMaxFilePresenti);
+
 	strncpy(stringaToLog,"maxMemoriaRaggiunta",MAXLUNGHEZZA);
 	scriviSuLog(stringaToLog,1,(int)maxMemoriaRaggiunta);
 
@@ -485,7 +480,7 @@ int main(int argc, char **argv)
 	fclose(logFile);
 	deallocaStrutturaFile();
 
-	printf("SERVER-> finito Server, i client connessi risultano: %d\n",clientConnessi);
+//	printf("SERVER-> finito Server, i client connessi risultano: %d\n",clientConnessi);
 	return 0;
 }
 
@@ -606,7 +601,7 @@ static void *gestoreSegnali(void *argument)
 
 	if (tipoSegnale)
 	{
-		scriviNBytes(pipe, &tipoSegnale, sizeof(tipoSegnale));
+		writen(pipe, &tipoSegnale, sizeof(tipoSegnale));
 	}
 
 	pthread_exit(NULL);
@@ -648,8 +643,12 @@ static void mascheraSegnali()
 	//Ignoro il segnale SIGPIPE
 	memset(&sga, 0, sizeof(sga));
 	sga.sa_handler = SIG_IGN;
-	error_handling(sigaction(SIGPIPE, &sga, NULL), "SERVER-> il mascheramento del segnale SIGPIPE ha risocntrato un errore\n")
-
+	int sigActionreturnValue=0;
+	sigActionreturnValue=sigaction(SIGPIPE, &sga, NULL);
+	if(sigActionreturnValue == -1)
+	{
+		perror("SERVER -> errore nell' operazioen sigaction");
+	}
 	// maschero i segnali gestiti dal thread
 	sigEmptySetReturnValue=sigemptyset(&pset);
 	if(sigEmptySetReturnValue==-1)
@@ -683,7 +682,12 @@ static void mascheraSegnali()
 	}
 
 	//ristabilisco gli altri segnali
-	pthread_sigmask(SIG_SETMASK, &pset, NULL);
+	int pthreadSigmaskReturnValue=0;
+	pthreadSigmaskReturnValue=pthread_sigmask(SIG_SETMASK, &pset, NULL);
+	if(pthreadSigmaskReturnValue != 0)
+	{
+		perror("SERVER -> errore nell' operazione pthread_sigmask");
+	}
 }
 
 
