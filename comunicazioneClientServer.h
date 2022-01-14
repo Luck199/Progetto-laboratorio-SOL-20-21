@@ -19,10 +19,10 @@
 #include <stddef.h>
 
 
-ssize_t scriviNBytes(int fdDaElaborare, void *v_ptr, size_t N);
-ssize_t leggiNBytes(int fdDaElaborare, void *v_ptr, size_t N);
-int riceviDati(int fd, void *dest, size_t *sizePtr);
-int inviaDati(int fd, const void *data, size_t size);
+ssize_t writen(int fdDaElaborare, void *v_ptr, size_t N);
+ssize_t readn(int fdDaElaborare, void *v_ptr, size_t N);
+int riceviDati(int fdDaElaborare, void *dest, size_t *sizePtr);
+int inviaDati(int fdDaElaborare, const void *data, size_t size);
 
 
 #endif /* COMUNICAZIONECLIENTSERVER_H_ */

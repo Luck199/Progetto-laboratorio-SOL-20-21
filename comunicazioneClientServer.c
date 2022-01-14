@@ -17,7 +17,7 @@
 
 
 //Funzione write con un numero di bytes massimo uguale ad N
-ssize_t scriviNBytes(int fdDaElaborare, void *v_ptr, size_t N)
+ssize_t writen(int fdDaElaborare, void *v_ptr, size_t N)
 {
 	char *pointer = v_ptr;
 	int valoreDiRitorno;
@@ -55,7 +55,7 @@ ssize_t scriviNBytes(int fdDaElaborare, void *v_ptr, size_t N)
 
 }
 //Funzione read con un numero di bytes massimo uguale ad N
-ssize_t leggiNBytes(int fdDaElaborare, void *v_ptr, size_t N)
+ssize_t readn(int fdDaElaborare, void *v_ptr, size_t N)
 {
 	char *pointer = v_ptr;
 	size_t nleft;
@@ -87,82 +87,45 @@ ssize_t leggiNBytes(int fdDaElaborare, void *v_ptr, size_t N)
 		nleft -= bytesLetti;
 		pointer += bytesLetti;
 	}
-	valoreDiRitorno = N - nleft; //valoreDiRitorno >= 0
-  	return valoreDiRitorno;
+	valoreDiRitorno = N - nleft; 
+  	return valoreDiRitorno;//ritorno un valore maggiore o uguale a zero
 
 }
 
-int riceviDati(int fd, void *dest, size_t *sizePtr)
+int riceviDati(int fdDaElaborare, void *dest, size_t *sizePtr)
 {
-  size_t size = 0;
+	size_t size = 0;
 
-  // control flow flags
-//  int sizeRead = 0;
-//  int error = 0;
-//  int done = 0;
+	//Leggo dal socket la grandezza del file che riceverò
+	int a=readn(fdDaElaborare, &size, sizeof(size));
+	if(a<0)
+	{
+		printf("Errore funzione leggiNBytes\n");
+		return -1;
+	}
+	*sizePtr=size;
+	void *dati = dest;
+	char **puntatoreAusiliario = dest;
 
-  // read the size
-  int a=leggiNBytes(fd, &size, sizeof(size));
-  if(a<0)
-  {
-	  printf("boh\n");
-	  return -1;
-  }
-  *sizePtr=size;
-  //if (sizeRead)
-  {
-    // default behaviour: write to dest
-    void *writeTo = dest;
+	//alloco lo spazio in cui leggerò il vero e proprio dato
+	*puntatoreAusiliario = malloc(sizeof(**puntatoreAusiliario) * size);
+  
+	dati = *puntatoreAusiliario;
+	int b=readn(fdDaElaborare, dati, size);
+	if(b<0)
+	{
+		printf("Errore funzione leggiNBytes\n");
+		return -1;
+	}	
 
-   //if (alloc)
+	return b;
 
-      // in this situation dest is considered as the address
-      // of a pointer that we have to set to the read data
-    	char **puntatoreAusiliario = dest;
-
-      // malloc enough space
-      *puntatoreAusiliario = malloc(sizeof(**puntatoreAusiliario) * size);
-
-      // we have to write into the allocated space
-      writeTo = *puntatoreAusiliario;
-
-
-
-    // read the data if writeTo is not NULL
-    //if (writeTo)
-
-    	int b=leggiNBytes(fd, writeTo, size);
-    	if(b<0)
-    	{
-    		printf("boh2\n");
-    		return -1;
-    	}
-
-    	return b;
-
-//    else
-//    {
-//      error = 1;
-//    }
-  }
-
-//  if (done)
-//  {
-//    // return the size as well
-//    sizePtr ? *sizePtr = size : 0;
-//    return 0;
-//  }
-
-//  if (error)
-//  {
-//    perror("getData has failed");
-//    return -1;
-//  }
-//  return -1;
 }
 
-int inviaDati(int fd, const void *data, size_t size)
+
+
+int inviaDati(int fdDaElaborare, const void *data, size_t size)
 {
-	int writeNBytesReturnValue=scriviNBytes(fd, (void *)data, size);
+	int writeNBytesReturnValue=writen(fdDaElaborare, (void *)data, size);
 	return writeNBytesReturnValue;
 }

@@ -1,6 +1,7 @@
 //header file contente i prototipi delle varie api per interagire con il server
 int isCurrentDirOrParentDir(char *nomeDirectory);
 int leggiNFileDaDirectory(int *numFile2,const char *dirName, char** arrayPath, int posizioneArray, short bitConteggio, int *numeroFileLetti);
+extern int abilitaStampe;
 
 
 
