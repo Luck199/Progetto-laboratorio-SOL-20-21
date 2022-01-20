@@ -375,15 +375,17 @@ int openFile(const char* pathname, int flags)
 			{
 				if(entrato==0)
 				{
-					pathEspulso=malloc(sizeof(char)*a);
-					strncpy(pathEspulso, bufferRicezione,a);
+					pathEspulso=malloc(sizeof(char)*(a+1));
+					printf("pathEspulsoFinto:%s\n",bufferRicezione);
+
+					strncpy(pathEspulso, bufferRicezione,(a+1));
 					free(bufferRicezione);
 					entrato=1;
 				}
 				else
 				{
-					datiEspulsi=malloc(sizeof(char)*a);
-					memcpy(datiEspulsi, bufferRicezione, a);
+					datiEspulsi=malloc(sizeof(char)*(a+1));
+					memcpy(datiEspulsi, bufferRicezione, (a+1));
 					free(bufferRicezione);
 				}
 			}
@@ -400,7 +402,7 @@ int openFile(const char* pathname, int flags)
 	}
 	if(pathEspulso!=NULL)
 	{
-		printf("pathEspulso:%s\ndatiEspulsi:%s\n",pathEspulso,datiEspulsi);
+//		printf("pathEspulso:%s\n",pathEspulso);
 	}
 
 
@@ -450,7 +452,7 @@ int readFile(const char* pathname, void** buf, size_t* size)
 //		if(errno==0)
 		{
 			printf("faccio fopen\n\n\n\n\n");
-			file = fopen("foto.jpg","w");
+			file = fopen("pappa1.txt","w");
 			if( file==NULL )
 			{
 				perror("Client -> Errore in apertura del file");
@@ -698,7 +700,7 @@ int writeFile(const char* pathname, const char* dirname)
 	writen(fd_socket,&op,sizeof(op));
 
 
-	strncpy(daInviare,path2,strlen(path2));
+	strncpy(daInviare,path2,strlen(path2)+1);
 	//	char size_array[10];
 	//	sprintf(size_array, "%ld", size);
 	//	strncat(daInviare,";",2);
@@ -724,7 +726,7 @@ int writeFile(const char* pathname, const char* dirname)
 	while(exit!=1)
 	{
 		int readReturnValue=riceviDati(fd_socket,&bufferRicezione,&a);
-
+		printf("BUFFERRICEZIONEWRITE:%s\n\n\n\n",bufferRicezione);
 		if(readReturnValue>0)
 		{
 			if(strncmp(bufferRicezione,"WRITE_FILE: riscontrato errore",30)==0)
@@ -744,16 +746,16 @@ int writeFile(const char* pathname, const char* dirname)
 				if(entrato==0)
 				{
 					dimEspulsi=a;
-					pathEspulso=malloc(sizeof(char)*dimEspulsi);
-					strncpy(pathEspulso, bufferRicezione,dimEspulsi);
+					pathEspulso=malloc(sizeof(char)*(a+1));
+					strncpy(pathEspulso, bufferRicezione,(a+1));
 					free(bufferRicezione);
 					entrato=1;
 				}
 				else
 				{
 					dimEspulsi=a;
-					datiEspulsi=malloc(sizeof(char)*dimEspulsi);
-					memcpy(datiEspulsi, bufferRicezione, dimEspulsi);
+					datiEspulsi=malloc(sizeof(char)*(a+1));
+					memcpy(datiEspulsi, bufferRicezione, (a+1));
 					free(bufferRicezione);
 				}
 			}
@@ -771,6 +773,7 @@ int writeFile(const char* pathname, const char* dirname)
 	FILE *file;
 	if(errno==0 && datiEspulsi != NULL && pathEspulso != NULL && dirname!=NULL)
 	{
+		printf("SONO IN SCRITTURA FILE ESPULSI\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
 		int chdirReturnValue=0;
 		chdirReturnValue=chdir(dirNameSalvato);
 		if(chdirReturnValue != 0)
@@ -1323,7 +1326,36 @@ int isCurrentDirOrParentDir(char *nomeDirectory)
 
 
 	 int leggiTuttiIFile = *numFile2 <= 0;
+	 printf("dirName in funzione: %s\n",dirName);
 	 DIR *dir = opendir(dirName);
+	 if(errno==EACCES)
+	 {
+		 printf("ERRNO=EACCES");
+	 }
+	 if(errno==EBADF)
+	 	 {
+	 		 printf("ERRNO=EBADF");
+	 	 }
+	 if(errno==EMFILE)
+	 	 {
+	 		 printf("ERRNO=EMFILE");
+	 	 }
+	 if(errno==ENFILE)
+	 	 {
+	 		 printf("ERRNO=ENFILE");
+	 	 }
+	 if(errno==ENOENT)
+	 	 {
+	 		 printf("ERRNO=ENOENT");
+	 	 }
+	 if(errno==ENOMEM)
+	 	 {
+	 		 printf("ERRNO=ENOMEM");
+	 	 }
+	 if(errno==ENOTDIR)
+		 	 {
+		 		 printf("ERRNO=ENOTDIR");
+		 	 }
 	 if(dir==NULL)
 	 {
 		 if(abilitaStampe==1)
@@ -1390,6 +1422,7 @@ int isCurrentDirOrParentDir(char *nomeDirectory)
 						 return -1;
 					 }
 				 }
+				 printf("chiusa directory\n\n\n\n\n");
 			 }
 			 else
 			 {
@@ -1437,6 +1470,8 @@ int isCurrentDirOrParentDir(char *nomeDirectory)
 
 
 	 closedir(dir);
+	 printf("chiusa dir\n");
+
 	 return 0;
 }
 

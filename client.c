@@ -262,11 +262,11 @@ int parser(struct struttura_coda *comandi)
 //			}
 			int lunghezzaStringa= strlen(stringa)+1;
 			strncpy(dirName,stringa,lunghezzaStringa);
-
+			printf("dirName:%s\n",dirName);
 //			stringa=dequeue(comandi);
 			char* token = strtok(dirName, ",");
-//			printf("token:%s\n",token);
-			strncpy(dirName,token,strlen(token)+1);
+			printf("token:%s\n",token);
+//			strncpy(dirName,token,strlen(token)+1);
 			if(abilitaStampe==1)
 			{
 				printf("CLIENT-> Letto dirname: %s\n",dirName);
@@ -282,15 +282,17 @@ int parser(struct struttura_coda *comandi)
 				if(strncmp(token2,"n",2)==0)
 				{
 					token2 = strtok(NULL,"=");
-					printf("token2= %s \n",token2);
+//					printf("token2= %s \n",token2);
 					numFile2=atoi(token2);
 					printf("CLIENT -> numero:%d\n",numFile2);
 					if(errno!=0)
 					{
 						printf("errno:%d\n",errno);
 						numFile2=0;
+						break;
 					}
-					token = strtok(NULL, ",");
+					break;
+//					token = strtok(NULL, ",");
 
 				}
 				else
@@ -303,18 +305,11 @@ int parser(struct struttura_coda *comandi)
 					break;
 				}
 
-//				printf("numeroFIle:%s\n",token);
-//				numFile2=atoi(token);
-//				if(errno!=0)
-//				{
-//					numFile2=0;
-//				}
-//				printf("numeroFIle:%d\n",numFile2);
 //
 //				token = strtok(NULL, ",");
 
 			}
-			printf("presenteErrore=%d\n",presenteErrore);
+//			printf("presenteErrore=%d\n",presenteErrore);
 			if(presenteErrore==1)
 			{
 				printf("Esco\n");
@@ -358,7 +353,10 @@ int parser(struct struttura_coda *comandi)
 			int numFileLetti=0;
 			//Conto quanti file sono effettivamente presenti all' interno della direcotry richiesta
 			bitConteggio=0;
-//			int letturaDirectoryReturnValue=leggiNFileDaDirectory(&numFile,dirName,arrayPath,i,bitConteggio,&numFileLetti);
+
+			int letturaDirectoryReturnValue=leggiNFileDaDirectory(&numFile2,dirName,arrayPath,i,bitConteggio,&numFileLetti);
+
+			printf("NElla directory %s ci sono %d file \n",dirName,numFileLetti);
 
 //			if(letturaDirectoryReturnValue != 0)
 //			{
@@ -366,14 +364,14 @@ int parser(struct struttura_coda *comandi)
 //			}
 
 
-
-			if(numFile2<0 || numFile2>numFileLetti)
+			if(numFile2<=0 || numFile2>numFileLetti)
 			{
 				numFile2=numFileLetti;
 
 			}
 			bitConteggio=1;
 
+//			printf("Sono nell' opzione -w: il dirname è:%s e n:%d",dirName,numFile2);
 
 			arrayPath = malloc(numFile2 * sizeof(char *));
 			for(i=0; i<numFile2; i++)
@@ -383,8 +381,15 @@ int parser(struct struttura_coda *comandi)
 			}
 
 			i=0;
-
+//
 			int salvaNumFile=numFile2;
+			char *directoryCorrente=NULL;
+				size_t sizeDirectoryCorrente=150;
+				directoryCorrente=malloc(sizeof(char)*sizeDirectoryCorrente);
+				directoryCorrente=getcwd(directoryCorrente,sizeDirectoryCorrente);
+			printf("CLIENT: lavoro nella directory:%s\n",directoryCorrente);
+
+//			printf("dirname prima della seconda %s\n",dirName);
 //			letturaDirectoryReturnValue=leggiNFileDaDirectory(&numFile2,dirName,arrayPath,i,bitConteggio,&numFileLetti);
 //
 //			if(letturaDirectoryReturnValue != 0)
@@ -417,7 +422,7 @@ int parser(struct struttura_coda *comandi)
 			while (token != NULL)
 			{
 				openFile(token,CREATELOCK);
-				ritardo();
+//				ritardo();
 
 				void *buf = NULL;
 				size_t *size=0;
@@ -497,7 +502,7 @@ int parser(struct struttura_coda *comandi)
 
 		if(strcmp(stringa,"-r")==0)
 		{
-			readNFiles(3,"/home/luca/workspace2/FileStorageServer/salvataggio/fileEspulsi");
+//			readNFiles(-5,"salvataggio/fileEspulsi");
 
 
 			if((strncmp(dirnameSecondarioLetture,"",1)==0) && opzioned==0)
@@ -509,28 +514,28 @@ int parser(struct struttura_coda *comandi)
 				}
 				continue;
 			}
-//			stringa=dequeue(comandi);
-//			void *buf = NULL;
+			stringa=dequeue(comandi);
+			void *buf = NULL;
 //			size_t size;
-//			char* token = strtok(stringa, ",");
-//			while (token != NULL)
-//			{
-//				//printf("%s\n", token);
-////				lockFile(token);
-//				int result=readFile(token,&buf,&size);
-////				unlockFile(token);
-//				if(result==0 && abilitaStampe==1)
-//				{
-////					printf("CLIENT -> ricevuto buffer contenente: %s, di grandezza: %ld\n",(char*)buf,size);
-//					printf("CLIENT -> readFile eseguita correttamente\n");
-//				}
-//				else if(abilitaStampe==1)
-//				{
-//					printf("CLIENT-> la readFile ha riscontrato un errore\n");
-//				}
-//				enqueueString(files,token);
-//				token = strtok(NULL, ",");
-//			}
+			char* token = strtok(stringa, ",");
+			while (token != NULL)
+			{
+				//printf("%s\n", token);
+				lockFile(token);
+				int result=readFile(token,&buf,&size);
+				unlockFile(token);
+				if(result==0 && abilitaStampe==1)
+				{
+//					printf("CLIENT -> ricevuto buffer contenente: %s, di grandezza: %ld\n",(char*)buf,size);
+					printf("CLIENT -> readFile eseguita correttamente\n");
+				}
+				else if(abilitaStampe==1)
+				{
+					printf("CLIENT-> la readFile ha riscontrato un errore\n");
+				}
+				enqueueString(files,token);
+				token = strtok(NULL, ",");
+			}
 //
 ////			closeFile("debiti.txt");
 //			ritardo();
@@ -574,7 +579,6 @@ int parser(struct struttura_coda *comandi)
 				}
 				if(abilitaStampe==1)
 				{
-					printf("Buonasera\n\n\n");
 					printf("CLIENT->numero di file letto: %d\n",numeroFileDaLeggere);
 				}
 			}
@@ -587,7 +591,7 @@ int parser(struct struttura_coda *comandi)
 				}
 			}
 			ritardo();
-//			readNFiles(numeroFileDaLeggere, dirnameSecondarioLetture);
+			readNFiles(numeroFileDaLeggere, dirnameSecondarioLetture);
 			continue;
 		}
 		if(strcmp(stringa,"-d")==0)

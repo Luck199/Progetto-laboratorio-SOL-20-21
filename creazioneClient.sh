@@ -2,7 +2,7 @@ comandiClients=(
 
    #"  -f sockfile -D /home/luca/workspace2/FileStorageServer/salvataggio/fileEspulsi -d /home/luca/workspace2/FileStorageServer/salvataggio/fileLetti -W file102.txt -u file102.txt -r file102.txt -c file102.txt -W file101.txt,prova.txt -R 2 -l config.txt -u config.txt"
  	#" -f sockfile -D /home/luca/workspace2/FileStorageServer/salvataggio/fileEspulsi -d /home/luca/workspace2/FileStorageServer/salvataggio/fileLetti -W file1.txt -r file1.txt -R 2 -c file1.txt -w /home/luca/workspace2/FileStorageServer/salvataggio 2" 
-	"-f sockfile   -W file1.txt,file2.txt,file3.txt " 
+	"-f sockfile  -D salvataggio/fileEspulsi -W file1.txt,file2.txt,file3.txt " 
 	#"-f sockfile  -D /home/luca/workspace2/FileStorageServer/salvataggio/fileEspulsi -W file4.txt,file5.txt,file6.txt,file7.txt" 
 	#"-f sockfile  -D /home/luca/workspace2/FileStorageServer/salvataggio/fileEspulsi -W file8.txt,file9.txt,file10.txt,file11.txt" 
 	#"-f sockfile  -D /home/luca/workspace2/FileStorageServer/salvataggio/fileEspulsi -W file12.txt,file13.txt,file14.txt,file15.txt"

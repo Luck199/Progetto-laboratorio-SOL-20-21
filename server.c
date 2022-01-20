@@ -305,7 +305,6 @@ int main(int argc, char **argv)
 					{
 						//è arrivato un segnale, recupero il suo indice dalla pipe dedicata
 						readn(pipeGestioneSegnali[0], &segnale, sizeof(segnale));
-
 						if (errore != 0)
 						{
 							perror("SERVER-> Errore nella lettura della pipe utilizzata per la gestione dei segnali\n");
@@ -328,8 +327,6 @@ int main(int argc, char **argv)
 						{
 							fd_hwm--;
 						}
-
-
 						//diviso in due volte per via del primo inserimento
 						if(primaVolta==0)
 						{
@@ -350,6 +347,8 @@ int main(int argc, char **argv)
 			}
 		}
 	}
+	printf("TERMINOOOOOOOOOOOOOOO\n\n\n\n\n\n");
+
 	//Effettuo l' operazione di broadcast per svegliare eventuali thread che sono in wait
 	accediCodaComandi();
 	pthread_cond_broadcast(&(CVFileDescriptor));
@@ -393,7 +392,6 @@ int main(int argc, char **argv)
 
 		}
 	}
-
 
 	for (i=0;i<thread_workers;i++)
 	{
@@ -450,7 +448,7 @@ int main(int argc, char **argv)
 	printf("-> lista dei file contenuti nello storage al momento della chiusura del server:\n");
 	for(i=0;i<num_max_file;i++)
 	{
-		if(strncmp(array_file[i].path,"vuoto",6)!=0)
+		if(strncmp(array_file[i].path,"",1)!=0)
 		{
 			verificaSeStrutturaVuota=1;
 			printf("\t-> %s\n",array_file[i].path);
@@ -479,7 +477,8 @@ int main(int argc, char **argv)
 
 	fclose(logFile);
 	deallocaStrutturaFile();
-
+	printf("***************\n");
+	printf("FINE SERVER!!!\n");
 //	printf("SERVER-> finito Server, i client connessi risultano: %d\n",clientConnessi);
 	return 0;
 }

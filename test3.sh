@@ -1,35 +1,33 @@
 #!/bin/bash
 
-
-./server config3.txt &
+ ./server config3.txt &
 SERVER_PID=$!
 
 
 
-PID_CLIENTS=$!
+sleep 3
+
+CLIENTS_PID=$!
 
 ID=0
-IDCLIENT=()
+
+CLS=()
 for i in {1..10}; do
     ID=${i}
     export ID
     ./creazioneClient.sh &
-    IDCLIENT+=($!)
+    CLS+=($!)
 done
-
 
 sleep 10
 
 kill -SIGINT $SERVER_PID
+#wait $CLIENTS_PID
 
-
-#wait $PID_CLIENTS
-
-for i in "${IDCLIENT[@]}"; do
+for i in "${CLS[@]}"; do
     kill -9 ${i}
     wait ${i}
 done
-
 ./statistiche.sh log.txt
 exit 0
 

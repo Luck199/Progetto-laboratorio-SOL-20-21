@@ -5,8 +5,8 @@ valgrind  --leak-check=full ./server config.txt &
 PID_SERVER=$!
 #./client " -p -f sockfile -t 200 -W file1.txt" &
 #./client " -p -f sockfile -t 200 -w salvataggio/fileLetti,cuccurù" &
-./client " -p -f sockfile -D salvataggio/fileEspulsi -t 10000 -W file1.txt,file2.txt,file3.txt" &
-#./client " -p -f sockfile -D salvataggio/fileEspulsi -t 0 -W file4.txt,file5.txt,file6.txt" &
+#./client " -p -f sockfile -D salvataggio/fileEspulsi -t 0 -d salvataggio/fileLetti -W file1.txt,file2.txt,file3.txt  -R n=6 -l file1.txt,file2.txt,file3.txt -c file1.txt,file2.txt,file3.txt   " &
+./client " -p -f sockfile -D salvataggio/fileEspulsi -t 0 -w salvataggio/fileEspulsi,n=8" &
 #./client " -p -f sockfile -D salvataggio/fileEspulsi -t 0 -W file74.txt,file81.txt,file78.txt" &
 #./client " -p -f sockfile -D salvataggio/fileEspulsi -t 200 -W " &
 #./client " -p -f sockfile -t 200 -W file3.txt" &
