@@ -10,7 +10,7 @@ PID_CLIENTS=$!
 
 ID=0
 IDCLIENT=()
-for i in {1..13}; do
+for i in {1..10}; do
     ID=${i}
     export ID
     ./creazioneClient.sh &

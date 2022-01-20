@@ -120,9 +120,9 @@ void visualizzaArrayFile()
 
 	for(i=0;i<num_max_file;i++)
 	{
-		//printf("path[%d]:%s\n",i,array_file[i].path);
+		printf("path[%d]:%s\n",i,array_file[i].path);
 //		printf("posizione: %d -> file : %s\n",i,array_file[i].path);
-		//printf("dimensione in byte: %ld\n",array_file[i].dimensione);
+		printf("dimensione in byte: %ld\n",array_file[i].dimensione);
 		//printf("data e ora di inserimento: %ld\n",array_file[i].data);
 
 	}
@@ -151,7 +151,17 @@ int aggiungiFile(char * path, char * buf, size_t sizeFile, int fdDaElaborare)
 			posizioneLibera=(posizioneLibera+1) % num_max_file;
 		}
 
-		if(strlen(array_file[posizioneLibera].path)<(strlen(path)+1) && array_file[posizioneLibera].path!=NULL)
+
+		size_t lunghezzaPathInStruttura=0;
+		size_t lunghezzaPathNuovo=0;
+		lunghezzaPathInStruttura=strlen(array_file[posizioneLibera].path);
+		lunghezzaPathNuovo=strlen(path);
+//		printf("path:%s\n",path);
+		if(array_file[posizioneLibera].path!=NULL)
+		{
+			printf("dentro\n");
+		}
+		if(((strlen(array_file[posizioneLibera].path)+1)<(strlen(path)+1) ) && array_file[posizioneLibera].path!=NULL)
 		{
 			free(array_file[posizioneLibera].path);
 			array_file[posizioneLibera].path=malloc(sizeof(char)*(strlen(path)+1));
@@ -390,8 +400,8 @@ int openFileServer(char *path, int flag, int fdDaElaborare)
 	{
 		char * bufNuovoFile=malloc(sizeof(char)*6);
 
-		strncpy(bufNuovoFile,"vuoto",6);//il buffer del nuovo file sarà chiaramente vuoto
-		indiceFile=aggiungiFile(path,bufNuovoFile,6, fdDaElaborare);
+		strncpy(bufNuovoFile,"vuoto",strlen("vuoto"));//il buffer del nuovo file sarà chiaramente vuoto
+		indiceFile=aggiungiFile(path,bufNuovoFile,5, fdDaElaborare);
 
 		free(bufNuovoFile);
 	}
@@ -404,7 +414,7 @@ int openFileServer(char *path, int flag, int fdDaElaborare)
 		assumiLockFileScrittura(indiceFile,fdDaElaborare);
 	}
 
-//	printf("file %s acquisito dal client %d\n",array_file[indiceFile].path,array_file[indiceFile].identificatoreClient);
+	printf("file %s acquisito dal client %d\n",array_file[indiceFile].path,array_file[indiceFile].identificatoreClient);
 	array_file[indiceFile].puntatoreFile=fopen(array_file[indiceFile].path, "a");
 
 
@@ -416,7 +426,7 @@ int openFileServer(char *path, int flag, int fdDaElaborare)
 		return -1;
 	}
 	array_file[indiceFile].fileAperto=1;
-
+visualizzaArrayFile();
 	return 1;
 }
 
@@ -449,6 +459,7 @@ int closeFileServer(char *path,int fdDaElaborare)
 		//Nel caso in cui si stia entranto in questo if vuol dire che si è richiesta un' operazioen di unlock su un file su cui
 		//non si era eseguita l' operazione di lock
 		//printf("UNLOCK_CLOSE: errore\n");
+		return -1;
 	}
 	return 1;
 }
@@ -571,7 +582,7 @@ int removeFileServer(char * path, int fdDaElaborare)
 int appendToFileServer(char* path,char* buf, size_t size, int fdDaElaborare)
 {
 	int indiceFile=0;
-	indiceFile=cercaFile(path);
+//	indiceFile=cercaFile(path);
 	/**
 	 * per scrivere su un file, verifico che :
 	 * -> il file sia presente in memoria
@@ -602,7 +613,7 @@ int appendToFileServer(char* path,char* buf, size_t size, int fdDaElaborare)
 //	size_t modificaDiMemoria=0;
 	//è necessario riallocare memoria, ne rialloco tanta quanto appena necessario
 //	modificaDiMemoria=size+array_file[indiceFile].dimensione;
-	array_file[indiceFile].byteFile=realloc(array_file[indiceFile].byteFile, (array_file[indiceFile].dimensione+size+1)*sizeof(char));
+	array_file[indiceFile].byteFile=realloc(array_file[indiceFile].byteFile, (size+1)*sizeof(char));
 //	if(array_file[indiceFile].byteFile != NULL)
 //	{
 //		free(array_file[indiceFile].byteFile);
@@ -671,10 +682,7 @@ int readNFileServer(int N,  int fdDaElaborare)
 		//devo leggere tutti i file in quella cartella
 //		tuttiFilePresenti=1;
 	}
-
-
 	return fileLetti;
-
 }
 
 int writeFileServer(char* path, char  * dati, size_t sizeFile, int fdDaElaborare)
@@ -708,11 +716,12 @@ int writeFileServer(char* path, char  * dati, size_t sizeFile, int fdDaElaborare
 		//è necessario riallocare memoria, ne rialloco tanta quanto appena necessario
 //		modificaDiMemoria=sizeFile+array_file[indiceFile].dimensione;
 //		realloc(array_file[indiceFile].byteFile, (array_file[indiceFile].dimensione+sizeFile)*sizeof(char));
-		if(array_file[indiceFile].byteFile != NULL)
-		{
-			free(array_file[indiceFile].byteFile);
-		}
-		array_file[indiceFile].byteFile=malloc(sizeof(char) * (sizeFile+100));
+//		if(array_file[indiceFile].byteFile != NULL)
+//		{
+//			free(array_file[indiceFile].byteFile);
+//		}
+//		array_file[indiceFile].byteFile=malloc(sizeof(char) * (sizeFile));
+		array_file[indiceFile].byteFile=realloc(array_file[indiceFile].byteFile,sizeof(char)*(sizeFile));
 	}
 	int daSalvare=-1;
 	daSalvare=indiceFile;
@@ -723,14 +732,14 @@ int writeFileServer(char* path, char  * dati, size_t sizeFile, int fdDaElaborare
 
 	memcpy(array_file[indiceFile].byteFile , dati, sizeFile);
 //	//printf("DatiInseriti:%s\n",array_file[indiceFile].byteFile);
-	memoriaDisponibile=memoriaDisponibile-sizeFile;
+	memoriaDisponibile=memoriaDisponibile-sizeFile+1;
 
 	if((maxMemoriaRaggiunta)<(dim_memoria-memoriaDisponibile))
 	{
-		maxMemoriaRaggiunta=maxMemoriaRaggiunta-array_file[indiceFile].dimensione+sizeFile;
+		maxMemoriaRaggiunta=maxMemoriaRaggiunta-array_file[indiceFile].dimensione+sizeFile-1;
 	}
-
-	array_file[indiceFile].dimensione=sizeFile;
+	printf("il file %s nel server contiene :%s\n",array_file[indiceFile].path,array_file[indiceFile].byteFile);
+	array_file[indiceFile].dimensione=sizeFile-1;
 //	printf("grandezzaFile:%ld\n",array_file[indiceFile].dimensione);
 //	visualizzaArrayFile();
 

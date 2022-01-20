@@ -8,6 +8,7 @@
 ./client "-p -f sockfile -D /home/luca/workspace2/FileStorageServer/salvataggio/fileEspulsi -W file55.txt,file56.txt,file57.txt,file58.txt,file59.txt" &
 ./client "-p -f sockfile -D /home/luca/workspace2/FileStorageServer/salvataggio/fileEspulsi -W file60.txt,file61.txt,file62.txt,file63.txt,file64.txt  -d /home/luca/workspace2/FileStorageServer/salvataggio/fileLetti -R 2" &
 ./server config2.txt &
+
 PID_SERVER=$!
 sleep 3
 kill -SIGHUP $PID_SERVER
