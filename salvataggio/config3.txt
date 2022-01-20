@@ -1,0 +1,5 @@
+thread_workers 8
+dim_memoria 33554432
+num_max_file 100
+socket_file ./sockfile
+logfile log.txt
