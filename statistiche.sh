@@ -39,6 +39,7 @@ readmedia=0
 sizemedia=0
 numMaxFilePresenti=0
 stringaNumFile="numMaxFilePresenti: "
+writemedia=0
 #operazioniEseguitePerThread[8]
 while IFS= read -r line 
 do

@@ -25,7 +25,6 @@ int is_valid_list(struct struttura_coda* head)
 
 int enqueue(struct struttura_coda* head, char * opzione)
 {
-
 	if (!is_valid_list(head))
 	{
 		//printf("Errore, testa della lista uguale a null");

@@ -5,7 +5,7 @@ extern int clientTotali;
 extern int contatoreCodaFd;
 extern int thread_workers;
 extern int fdInCoda;
-extern int dim_memoria;
+extern long dim_memoria;
 extern char name_socket[100];
 extern int num_max_file;
 extern int ricevutoSIGHUP;
@@ -59,6 +59,7 @@ extern struct info_file
 
     size_t lettoriAttivi;
     size_t scrittoriAttivi;
+    struct enqueue_Interi *codaLock;
 
     pthread_mutex_t lockFile;
     pthread_cond_t fileConditionVariable;

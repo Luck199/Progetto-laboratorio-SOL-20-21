@@ -28,7 +28,7 @@ int clientTotali=0;
 int thread_workers;
 int threadInAttesa=0;
 int segnale_globale=0;
-int dim_memoria;
+long dim_memoria;
 int broadcast=0;
 char name_socket[100];
 int num_max_file;

@@ -38,7 +38,7 @@ do
     
     i=$(( RANDOM % ${#comandiClients[@]}))
     ./client "${comandiClients[i]}"
-    sleep 4
+    #sleep 4
 
 done
 

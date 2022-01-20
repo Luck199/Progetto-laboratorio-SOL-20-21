@@ -398,7 +398,10 @@ int openFile(const char* pathname, int flags)
 		}
 	//
 	}
-
+	if(pathEspulso!=NULL)
+	{
+		printf("pathEspulso:%s\ndatiEspulsi:%s\n",pathEspulso,datiEspulsi);
+	}
 
 
 	return 0;
@@ -480,6 +483,7 @@ int readNFiles(int N, const char* dirname)
 {
 	char * bufferRicezione=NULL;
 	char daInviare[200]="READ_N_FILE;";
+	char * dirNameSalvato=NULL;
 	char appoggio[20];
 	int numFile=0;
 	statoFd=statoFileDescriptor();
@@ -496,11 +500,14 @@ int readNFiles(int N, const char* dirname)
 	directoryCorrente=malloc(sizeof(char)*sizeDirectoryCorrente);
 	directoryCorrente=getcwd(directoryCorrente,sizeDirectoryCorrente);
 //	printf("READNFILE: lavoro nella directory:%s\n",directoryCorrente);
-	dirname=relativoToAssoluto(dirname);
-//	printf("la cartella che utilizzo è:%s\n",dirname);
-	char * dirNameSalvato=malloc(sizeof(char)*(strlen(dirname)+1));
-	strncpy(dirNameSalvato,dirname,strlen(dirname)+1);
-
+	if(dirname != NULL)
+	{
+		dirname=relativoToAssoluto(dirname);
+		//	printf("la cartella che utilizzo è:%s\n",dirname);
+		dirNameSalvato=malloc(sizeof(char)*(strlen(dirname)+1));
+		strncpy(dirNameSalvato,dirname,strlen(dirname)+1);
+	}
+	printf("dirname:%s\n",dirname);
 
 
 
@@ -544,7 +551,7 @@ int readNFiles(int N, const char* dirname)
 			else if(strncmp(bufferRicezione,"READ_N_FILE: eseguita operazione",32)==0)
 			{
 				//errno=EBADF;
-//				printf("FINE READ_N_FILE!\n");
+				printf("FINE READ_N_FILE!\n");
 				exit=1;
 			}
 			else
@@ -645,6 +652,7 @@ int writeFile(const char* pathname, const char* dirname)
 {
 	char daInviare[200]="WRITE_FILE;";
 	char *bufferRicezione=NULL;
+	char * dirNameSalvato=NULL;
 	statoFd=statoFileDescriptor();
 	if(statoFd < 0)
 	{
@@ -655,9 +663,13 @@ int writeFile(const char* pathname, const char* dirname)
 	directoryCorrente=malloc(sizeof(char)*sizeDirectoryCorrente);
 	directoryCorrente=getcwd(directoryCorrente,sizeDirectoryCorrente);
 	//	printf("lavoro nella directory:%s\n",directoryCorrente);
-//	dirname=relativoToAssoluto(dirname);
-	char * dirNameSalvato=malloc(sizeof(char)*(strlen(dirname)+1));
-	strncpy(dirNameSalvato,dirname,strlen(dirname)+1);
+	if(dirname != NULL)
+	{
+		dirname=relativoToAssoluto(dirname);
+		dirNameSalvato=malloc(sizeof(char)*(strlen(dirname)+1));
+		strncpy(dirNameSalvato,dirname,strlen(dirname)+1);
+	}
+	printf("CLIENT -> dirname:%s\n",dirname);
 	char * path2="";
 //	printf("path2:%s\n",path2);
 	path2=relativoToAssoluto(pathname);
@@ -696,7 +708,7 @@ int writeFile(const char* pathname, const char* dirname)
 	inviaDati(fd_socket,&b,sizeof(size_t));
 	inviaDati(fd_socket,daInviare,b);
 	size=size+1;
-	printf("Client->size:%ld\n",size);
+//	printf("Client->size:%ld\n",size);
 //	printf("CLIENT -> buf:%s\n",buf);
 	inviaDati(fd_socket,&size,sizeof(size_t));
 	inviaDati(fd_socket,buf, size);
@@ -757,7 +769,7 @@ int writeFile(const char* pathname, const char* dirname)
 	}
 
 	FILE *file;
-	if(errno==0 && datiEspulsi != NULL && pathEspulso != NULL)
+	if(errno==0 && datiEspulsi != NULL && pathEspulso != NULL && dirname!=NULL)
 	{
 		int chdirReturnValue=0;
 		chdirReturnValue=chdir(dirNameSalvato);
@@ -842,7 +854,7 @@ int appendToFile(const char* pathname, void* buf, size_t size, const char* dirna
 	inviaDati(fd_socket,daInviare,d);
 
 	//strcat(daInviare,";");
-	printf("CLIENT -> BUFFER:%s\n\n\n\n",buf);
+//	printf("CLIENT -> BUFFER:%s\n\n\n\n",buf);
 	strcpy(daInviare,buf);
 	d=strlen(buf)+1;
 	inviaDati(fd_socket,&d,sizeof(size_t));

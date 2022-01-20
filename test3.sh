@@ -18,12 +18,12 @@ for i in {1..10}; do
 done
 
 
-sleep 30
+sleep 10
 
 kill -SIGINT $SERVER_PID
 
 
-wait $PID_CLIENTS
+#wait $PID_CLIENTS
 
 for i in "${IDCLIENT[@]}"; do
     kill -9 ${i}
