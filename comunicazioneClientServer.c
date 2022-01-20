@@ -16,6 +16,10 @@
 #include <stddef.h>
 
 
+
+
+
+
 //Funzione write con un numero di bytes massimo uguale ad N
 ssize_t writen(int fdDaElaborare, void *v_ptr, size_t N)
 {
@@ -55,19 +59,19 @@ ssize_t writen(int fdDaElaborare, void *v_ptr, size_t N)
 
 }
 //Funzione read con un numero di bytes massimo uguale ad N
-ssize_t readn(int fdDaElaborare, void *v_ptr, size_t N)
+ssize_t readn(int fdDaElaborare, void *v_ptr, size_t n)
 {
-	char *pointer = v_ptr;
+	char *ptr = v_ptr;
 	size_t nleft;
-	ssize_t bytesLetti;
-	int valoreDiRitorno;
+	ssize_t nread;
+//	int valoreDiRitorno;
 
-	nleft = N;
+	nleft = n;
 	while (nleft > 0)
 	{
-		if ((bytesLetti = read(fdDaElaborare, pointer, nleft)) < 0)
+		if ((nread = read(fdDaElaborare, ptr, nleft)) < 0)
 		{
-			if (nleft == N)
+			if (nleft == n)
 			{
 				//è stato riscontrato un errore, ritorno -1
 				return -1;
@@ -79,16 +83,15 @@ ssize_t readn(int fdDaElaborare, void *v_ptr, size_t N)
 				break;
 			}
 		}
-		else if (bytesLetti == 0)
+		else if (nread == 0)
 		{
 			//EOF
 			break;
 		}
-		nleft -= bytesLetti;
-		pointer += bytesLetti;
+		nleft -= nread;
+		ptr += nread;
 	}
-	valoreDiRitorno = N - nleft; 
-  	return valoreDiRitorno;//ritorno un valore maggiore o uguale a zero
+  	return (n-nleft);//ritorno un valore maggiore o uguale a zero
 
 }
 

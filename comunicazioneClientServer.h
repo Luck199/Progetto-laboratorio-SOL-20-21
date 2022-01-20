@@ -24,5 +24,15 @@ ssize_t readn(int fdDaElaborare, void *v_ptr, size_t N);
 int riceviDati(int fdDaElaborare, void *dest, size_t *sizePtr);
 int inviaDati(int fdDaElaborare, const void *data, size_t size);
 
+#define OPENFILE 100
+#define CLOSEFILE 101
+#define LOCKFILE 102
+#define UNLOCKFILE 103
+#define READFILE 104
+#define READNFILE 105
+#define WRITEFILE 106
+#define APPENDTOFILE 107
+#define REMOVEFILE 108
+
 
 #endif /* COMUNICAZIONECLIENTSERVER_H_ */

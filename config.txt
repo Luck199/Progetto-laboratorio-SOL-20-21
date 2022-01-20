@@ -1,5 +1,5 @@
 thread_workers 1
 dim_memoria 134217728
-num_max_file 10000
+num_max_file 10
 socket_file ./sockfile
 logfile log.txt

@@ -353,34 +353,42 @@ int parser(struct struttura_coda *comandi)
 		if(strcmp(stringa,"-W")==0)
 		{
 
-			if((strncmp(dirnameSecondarioScritture,"",1)==0) && opzioneD==0)
-			{
-				if(abilitaStampe==1)
-				{
-					printf("CLIENT-> Si desidera utilizzare l' opzione -w senza l' utilizzo dell opzione -D. Arresto in corso!\n");
-					return -1;
-				}
-				continue;
-			}
+//			if((strncmp(dirnameSecondarioScritture,"",1)==0) && opzioneD==0)
+//			{
+//				if(abilitaStampe==1)
+//				{
+//					printf("CLIENT-> Si desidera utilizzare l' opzione -w senza l' utilizzo dell opzione -D. Arresto in corso!\n");
+//					return -1;
+//				}
+//				continue;
+//			}
 			stringa=dequeue(comandi);
 			//la stringa token conterrà mano mano tutti i singoli file ricevuti a linea di comando che dovranno essere inviati al server
 			char* token = strtok(stringa,",");
 			while (token != NULL)
 			{
-				//openFile(token,O_CREATE);
+				openFile(token,CREATELOCK);
 //				void * buf="viva il carnevale";
 //				size_t size=sizeof(buf);
-				openFile(token,CREATELOCK);
-
-				ritardo();
-				writeFile(token,dirnameSecondarioScritture);
-				ritardo();
 //				openFile(token,CREATELOCK);
-//				void * buffer="questi sono byte aggiunti\n";
-//				appendToFile(token,&buffer,sizeof(buffer),dirnameSecondarioScritture);
+//				lockFile(token);
+//				unlockFile(token);
+//				ritardo();
+//				writeFile(token,"");
+//				ritardo();
+//				openFile(token,CREATELOCK);
+				void *buf = NULL;
+				size_t *size=0;
+				writeFile(token,"");
+//
+				void * buffer="questi sono byte aggiunti";
+				appendToFile(token,buffer,sizeof(buffer),"");
+				int result=readFile(token,&buf,&size);
+
 //				ritardo();
 				closeFile(token);
-
+//				lockFile(token);
+//				removeFile(token);
 				enqueueString(files,token);
 				token = strtok(NULL, ",");
 			}
@@ -455,7 +463,7 @@ int parser(struct struttura_coda *comandi)
 			{
 				if(abilitaStampe==1)
 				{
-					printf("CLIENT-> Si desidera utilizzare l' opzione -w senza l' utilizzo dell opzione -D. Arresto in corso!\n");
+					printf("CLIENT-> Si desidera utilizzare l' opzione -R senza l' utilizzo dell opzione -d. Arresto in corso!\n");
 					return -1;
 				}
 				continue;
