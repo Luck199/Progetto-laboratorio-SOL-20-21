@@ -95,7 +95,7 @@ ssize_t readn(int fdDaElaborare, void *v_ptr, size_t n)
 
 }
 
-int riceviDati(int fdDaElaborare, void *dest, size_t *sizePtr)
+int riceviDati(int fdDaElaborare, char **dest, size_t *sizePtr)
 {
 	size_t size = 0;
 
@@ -107,14 +107,13 @@ int riceviDati(int fdDaElaborare, void *dest, size_t *sizePtr)
 		return -1;
 	}
 	*sizePtr=size;
-	void *dati = dest;
-	char **puntatoreAusiliario = dest;
+
 
 	//alloco lo spazio in cui leggerò il vero e proprio dato
-	*puntatoreAusiliario = malloc(sizeof(**puntatoreAusiliario) * size);
+	*dest = calloc(size+1,sizeof(*dest));
   
-	dati = *puntatoreAusiliario;
-	int b=readn(fdDaElaborare, dati, size);
+//	dati = *puntatoreAusiliario;
+	int b=readn(fdDaElaborare, *dest, size);
 	if(b<0)
 	{
 		printf("Errore funzione leggiNBytes\n");
@@ -127,7 +126,7 @@ int riceviDati(int fdDaElaborare, void *dest, size_t *sizePtr)
 
 
 
-int inviaDati(int fdDaElaborare, const void *data, size_t size)
+int inviaDati(int fdDaElaborare, void *data, size_t size)
 {
 	int writeNBytesReturnValue=writen(fdDaElaborare, (void *)data, size);
 	return writeNBytesReturnValue;

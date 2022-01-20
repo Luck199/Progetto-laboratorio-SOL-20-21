@@ -259,7 +259,18 @@ int parser(struct struttura_coda *comandi)
 			{
 				printf("CLIENT-> Letto dirname: %s\n",dirName);
 			}
-			stringa=dequeue(comandi);
+//			stringa=dequeue(comandi);
+			char* token = strtok(dirName, ",");
+			printf("token:%s\n",token);
+
+			while (token != NULL)
+			{
+//				printf("token:%s\n",token);
+
+//				enqueueString(comandi,token);
+				token = strtok(NULL, ",");
+//				printf("token:%s\n",token);
+			}
 
 			if(stringa != NULL && stringa[0]!='-' )
 			{
@@ -342,9 +353,9 @@ int parser(struct struttura_coda *comandi)
 				{
 					pathRelativo=token;
 				}
-				openFile(pathRelativo,CREATELOCK);
-				writeFile(pathRelativo,dirnameSecondarioScritture);
-				closeFile(pathRelativo);
+//				openFile(pathRelativo,CREATELOCK);
+//				writeFile(pathRelativo,dirnameSecondarioScritture);
+//				closeFile(pathRelativo);
 			}
 
 			ritardo();
@@ -381,8 +392,9 @@ int parser(struct struttura_coda *comandi)
 				size_t *size=0;
 				writeFile(token,"");
 //
-				void * buffer="questi sono byte aggiunti";
-				appendToFile(token,buffer,sizeof(buffer),"");
+//				void * buffer="questi sono byte aggiunti";
+//				printf("strlen:%ld\nsizeof:%ld\n\n\n\n\n",strlen(buffer),sizeof(buffer));
+//				appendToFile(token,buffer,sizeof(buffer),"");
 				int result=readFile(token,&buf,&size);
 
 //				ritardo();

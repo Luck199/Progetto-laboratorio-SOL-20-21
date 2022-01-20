@@ -430,7 +430,7 @@ int readFile(const char* pathname, void** buf, size_t* size)
 	a=0;
 
 	int readReturnValue=riceviDati(fd_socket,&bufferRicezione,&a);
-	printf("buffericezione:%s",bufferRicezione);
+//	printf("buffericezione:%s",bufferRicezione);
 	if(strcmp(bufferRicezione,"errore")==0)
 	{
 		printf("arrivato errore\n");
@@ -447,7 +447,7 @@ int readFile(const char* pathname, void** buf, size_t* size)
 //		if(errno==0)
 		{
 			printf("faccio fopen\n\n\n\n\n");
-			file = fopen(pathname,"w");
+			file = fopen("foto.jpg","w");
 			if( file==NULL )
 			{
 				perror("Client -> Errore in apertura del file");
@@ -455,6 +455,7 @@ int readFile(const char* pathname, void** buf, size_t* size)
 			}
 			else
 			{
+
 				int w = fwrite(bufferRicezione, sizeof(char), a, file);
 				if(w<0)
 				{
@@ -676,7 +677,7 @@ int writeFile(const char* pathname, const char* dirname)
 		}
 		return -1;
 	}
-printf("client-> size file:%ld\nbufFIle:%s",size,buf);
+//printf("client-> size file:%ld\nbufFIle:%s\n",size,buf);
 	size_t op=106;
 	size_t a=0;
 //	size_t a=strlen(daInviare);
@@ -695,8 +696,9 @@ printf("client-> size file:%ld\nbufFIle:%s",size,buf);
 	inviaDati(fd_socket,&b,sizeof(size_t));
 	inviaDati(fd_socket,daInviare,b);
 	size=size+1;
+	printf("Client->size:%ld\n",size);
 //	printf("CLIENT -> buf:%s\n",buf);
-	inviaDati(fd_socket,&size, sizeof(size_t));
+	inviaDati(fd_socket,&size,sizeof(size_t));
 	inviaDati(fd_socket,buf, size);
 
 
@@ -1184,78 +1186,96 @@ int removeFile(const char* pathname)
 
 int recuperaFile(const char *path, void **fileBuffer, size_t *size)
 {
+//	  AIN(path, "invalid path argument for readLocalFile", errno = EINVAL; return -1;)
+//	  AIN(bufPtr, "invalid bufPtr argument for readLocalFile", errno = EINVAL; return -1;)
+//	  AIN(size, "invalid size argument for readLocalFile", errno = EINVAL; return -1;)
 
-	FILE *filePointer = NULL;
-	*fileBuffer = NULL;
+	  FILE *fptr = NULL;
+	  *fileBuffer = NULL;
 
-//	int error = 0;
-	int chiudi = 0;
-	int freeBuf = 0;
+	  // control flow flags
+	  int error = 0;
+	  int closeFile = 0;
+	  int freeBuf = 0;
 
-	//eseguo operazione open
-	filePointer = fopen(path, "r");
-	if(filePointer == NULL)
-	{
-		if(abilitaStampe==1)
-		{
-			perror("CLIENT -> Errore nell' operazione fopen");
-		}
-		return -1;
-	}
+	  // open the file
+	  fptr = fopen(path, "r");
+//	  AIN(fptr, "cannot open the file in readLocalFile", error = 1;)
 
-	fseek(filePointer, 0L, SEEK_END);
+	  // go to the end of the file
+//	  if (!error)
+	  {
+	    fseek(fptr, 0L, SEEK_END);
+	  }
 
+	  // read its size
+//	  if (!error)
+	  {
+	    *size = ftell(fptr);
+//	    AINO(*size, "readLocalFile internal error: ftell", error = 1; closeFile = 1;)
+	  }
 
-	//mi salvo la grandezza del file
-	*size = ftell(filePointer);
+	  // rewind the file pointer
+//	  if (!error)
+	  {
+	    errno = 0;
+	    rewind(fptr);
+	    if (errno)
+	    {
+	      error = 1;
+	      closeFile = 1;
+	      perror("readLocalFile internal error: rewind");
+	    }
+	  }
 
-	//riporto il puntatore del file all' inizio di esso
-	errno = 0;
-	rewind(filePointer);
-	if (errno)
-	{
-		perror("Client -> ERRORE OPERAZIONE REWIND");
-	}
+	  // alloc enough space
+	  if (!error)
+	  {
+	    *fileBuffer = malloc(sizeof(char) * (*size));
+//	    AIN(*bufPtr, "readLocalFile internal error: malloc", error = 1; closeFile = 1;)
+	  }
 
+	  // read the file into the buffer
+//	  if (!error)
+	  {
+	    int readSize = fread(*fileBuffer, sizeof(char), *size, fptr);
+	    if (readSize < *size)
+	    {
+	      perror("readLocalFile internal error: fread");
+	      error = 1;
+	      freeBuf = 1;
+	    }
 
-	//alloco lo spazio necessario
+	    closeFile = 1;
+	  }
 
-	*fileBuffer = malloc(sizeof(char) * (*size));
-	//inserisco il file nel buffer
-	if (errno == 0)
-	{
-		int readSize = fread(*fileBuffer, sizeof(char), *size, filePointer);
-		if (readSize < *size)
-		{
-			perror("readLocalFile internal error: fread");
-			return -1;
-		}
+	  if (closeFile)
+	  {
+	    errno = 0;
+	    fclose(fptr);
+	    if (errno)
+	    {
+	      perror("readLocalFile internal error: fclose");
+	      error = 1;
+	      freeBuf = 1;
+	    }
+	  }
 
-		chiudi = 1;
-	}
+	  if (freeBuf)
+	  {
+	    free(*fileBuffer);
+	    *fileBuffer = NULL;
+	  }
 
-	if (chiudi)
-	{
-		errno = 0;
-		fclose(filePointer);
-		if (errno)
-		{
-			if( abilitaStampe==1)
-			{
-				perror("Client -> ERRORE OPERAZIONE FCLOSE");
-			}
-			return -1;
-		}
-	}
-
-	if (freeBuf)
-	{
-		free(*fileBuffer);
-		*fileBuffer = NULL;
-	}
-
-	return 0;
-
+//	  if (error)
+//	  {
+//	    return -1;
+//	  }
+//	  else
+	  {
+//	    P(printf("successfully read the file %s from disk of size %zd\n", path, *size));
+	    return 0;
+	  }
 }
 
 

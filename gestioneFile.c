@@ -631,13 +631,22 @@ int appendToFileServer(char* path,char* buf, size_t size, int fdDaElaborare)
 //		espelliFile=1;
 		applicaFifo(fdDaElaborare, daSalvare);
 	}
-
-	array_file[indiceFile].dimensione=size+array_file[indiceFile].dimensione+1;
+printf("size in appendServer:%ld\n\n\n\n",size);
 //	memoriaDisponibile=memoriaDisponibile-(size+array_file[indiceFile].dimensione+1);
-	maxMemoriaRaggiunta=maxMemoriaRaggiunta+(size+array_file[indiceFile].dimensione+1);
+	memoriaDisponibile=memoriaDisponibile-size;
+
+	if((maxMemoriaRaggiunta)<(dim_memoria-memoriaDisponibile))
+	{
+		maxMemoriaRaggiunta=maxMemoriaRaggiunta+array_file[indiceFile].dimensione;
+	}
+
+//QUI usare memcpy
+	printf("array_file[indiceFile].dimensione");
+//	memcpy(array_file[indiceFile].byteFile[array_file[indiceFile].dimensione] , buf, size+1);
 
 	fwrite(buf, sizeof(char) , strlen(buf) , array_file[indiceFile].puntatoreFile);
 //	printf("indiceFile:%d\n",indiceFile);
+	array_file[indiceFile].dimensione=size+array_file[indiceFile].dimensione;
 
 
 	closeFileServer(array_file[indiceFile].path,fdDaElaborare);
