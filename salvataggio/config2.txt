@@ -1,5 +1,0 @@
-thread_workers 4
-dim_memoria 1048576
-num_max_file 10
-socket_file ./sockfile
-logfile log.txt
