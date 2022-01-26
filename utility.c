@@ -9,6 +9,7 @@
 #include <sys/un.h>
 #include <errno.h>
 #include <stdarg.h>
+#include <signal.h>
 #include "coda.h"
 #include "utility.h"
 #include "gestioneFile.h"
@@ -37,7 +38,7 @@ int ricevutoSIGINTORQUIT=0;
 FILE *logFile;
 int contatoreCodaFd=0;
 struct codaInteri *codaFileDescriptor;
-int segnaleChiusuraHup = 0;
+int threadInAreaNonSafe=0;
 
 
 int fdInCoda=0;
@@ -48,6 +49,8 @@ pthread_mutex_t lockPipeWorker = PTHREAD_MUTEX_INITIALIZER;//lock per la scrittu
 pthread_mutex_t lockScritturaLog = PTHREAD_MUTEX_INITIALIZER;//lock per la scrittura sul file di log
 
 pthread_cond_t allClientExitCond = PTHREAD_COND_INITIALIZER;//condition variable per chiusura server con segnale SIGHUP
+
+pthread_cond_t areaNonSafe = PTHREAD_COND_INITIALIZER;
 
 pthread_cond_t CVFileDescriptor = PTHREAD_COND_INITIALIZER;//condition VAriable
 pthread_mutex_t lockSegnali=PTHREAD_MUTEX_INITIALIZER;
@@ -130,7 +133,7 @@ void decrementaNumClient()
 	//Verifico se non sono presenti client connessi
 	//e se fosse arrivato segnale sighup; in caso positivo
 	//invio una signal per svegliare il thread main che può terminare
-	if ((clientConnessi == 0) && (segnaleChiusuraHup == 1))
+	if ((clientConnessi == 0) && (getSegnale() == SIGINT || getSegnale() == SIGQUIT || getSegnale() == SIGHUP))
 	{
 		//printf("fatta signal\n");
 		pthread_cond_signal(&allClientExitCond);
@@ -149,7 +152,7 @@ void incrementaNumClient()
 		pthread_exit(&err);
 	}
 
-	clientTotali++;
+//	clientTotali++;
 	clientConnessi++;
 	if(numMaxconnessioniContemporanee<clientConnessi)
 	{
@@ -201,6 +204,8 @@ void scriviSuLog(char * stringa, int count, ...)
 	va_end (ap);
 	pthread_mutex_unlock(&lockScritturaLog);
 }
+
+
 
 
 //Funzione write con un numero di bytes massimo uguale ad n
@@ -271,6 +276,8 @@ int dequeueCodaFileDescriptor(struct codaInteri *codaFileDescriptor, int *stop)
 	{
 		contatoreCodaFd--;
 	}
+//	StampaLista_Interi(codaFileDescriptor);
+	sleep(1);
 	lasciaCodaComandi();
 
 	return fdDaElaborare;

@@ -34,7 +34,7 @@ int closeFileServer(char *path,int fdDaElaborare);
 int lockFileServer(char *path, int fdDaElaborare);
 int unlockFileServer(char *path, int fdDaElaborare);
 int removeFileServer(char * path, int fdDaElaborare);
-int applicaRemove(char *path);
+int applicaRemove(char *path, int fdDaElaborare);
 int appendToFileServer(char* path,char* buf, size_t size,int fdDaElaborare);
 int readFileServer(char* path, char *buffer2,size_t *dimFile,int fdDaElaborare);
 int readNFileServer(int N,  int fdDaElaborare);

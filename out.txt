@@ -1,0 +1,470 @@
+make all
+make[1]: Entering directory '/mnt/c/Users/mrpra/eclipse-workspace/FileStorageServer'
+make server
+make[2]: Entering directory '/mnt/c/Users/mrpra/eclipse-workspace/FileStorageServer'
+gcc  -lm -Wall -pedantic -g  -c server.c 
+gcc  -lm -Wall -pedantic -g  -c utility.c	
+gcc  -lm -Wall -pedantic -g  -c apiServer.c	
+gcc  -lm -Wall -pedantic -g  -c worker.c
+gcc  -lm -Wall -pedantic -g  -c gestioneFile.c
+gcc  -lm -Wall -pedantic -g  -c comunicazioneClientServer.c
+gcc  -pthread -o server server.o utility.o apiServer.o worker.o coda.c gestioneFile.o comunicazioneClientServer.o
+make[2]: Leaving directory '/mnt/c/Users/mrpra/eclipse-workspace/FileStorageServer'
+make client
+make[2]: Entering directory '/mnt/c/Users/mrpra/eclipse-workspace/FileStorageServer'
+gcc  -lm -Wall -pedantic -g  -c client.c
+gcc  -o client client.o utility.o apiServer.o coda.c comunicazioneClientServer.o
+make[2]: Leaving directory '/mnt/c/Users/mrpra/eclipse-workspace/FileStorageServer'
+make[1]: Leaving directory '/mnt/c/Users/mrpra/eclipse-workspace/FileStorageServer'
+./test1.sh
+CLIENT-> stampe abilitate!
+CLIENT-> risposta server: connessione eseguita correttamente!
+
+CLIENT->tempo letto: 1000
+CLIENT-> Letto dirname letture: salvataggio/fileLetti
+Opzioni accettate da client:
+  -h,	stampa tutte le opzioni accettate da client:
+  -f,	Setta il nome socket a quello specificato dal linea di comando ed esegue la openConnection su esso
+  -w,	Esegue una richiesta di scrittura al server di n file (con n passato da linea di comando) presenti nella cartella dirname. Se n=0 li scrive tutti
+  -W,	Esegue una richiesta di scrittura al server dei file specificati
+  -D,	Se si verifica un caso di capacity misses a seguito dell' opzione -w e/o -W, i file esplusi vengono salvati in questa cartella
+  -r,	Esegue una richiesta di lettura al server dei file specificati
+  -R,	Legge n file dal server (se n fosse uguale a zero, legge ogni file)
+  -d,	Salva i file letti con l' opzione -r o -R nella cartella specificata
+  -t,	 Specifica il tempo in millisecondi che deve passare tra l' invio di due richieste successive al server
+  -l,	Esegue il lock sui file specificati, se presenti
+  -u,	Esegue unlock sui file specificati, se presenti ed è stata eseguita precedentemente l' operazione di lock su essi
+  -c,	Rimuove i file specificati dal server, se presenti
+  -p,	Stampa tutte le informazioni su ogni operazione eseguita
+CLIENT-> La connessione è stata chiusa correttamente
+Sto aspettando i segnoaliaaa
+A--- Segnale {Unknown signal 0}
+SELECT ESEGUITA
+SELECT ita bene
+INVIO DATI
+INVIO DATI
+A--- Segnale {Unknown signal 0}
+SELECT ESEGUITA
+SELECT ita bene
+INVIO DATI
+INVIO DATI
+ACCODO RICHIESTA
+A--- Segnale {Unknown signal 0}
+SELECT ESEGUITA
+SELECT ita bene
+BBB
+metto dentro
+
+
+
+
+INVIO DATI
+INVIO DATI
+ACCODO RICHIESTA
+A--- Segnale {Unknown signal 0}
+SELECT ESEGUITA
+SELECT ita bene
+INVIO DATI
+INVIO DATI
+ACCODO RICHIESTA
+A--- Segnale {Unknown signal 0}
+SELECT ESEGUITA
+SELECT ita bene
+INVCLIENT-> stampe abilitate!
+CLIENT-> risposta server: connessione eseguita correttamente!
+
+CLIENT->tempo letto: 1000
+CLIENT-> Letto dirname scritture: salvataggio/fileEspulsi
+Flag Open:2
+CLIENT-> Letto dirname: salvataggio/fileDaLeggere
+token:n=2
+
+CLIENT -> numero:2
+CLIENT: lavoro nella directory:/mnt/c/Users/mrpra/eclipse-workspace/FileStorageServer
+dirName in funzione: salvataggio/fileDaLeggere
+chiusa dir
+NElla directory salvataggio/fileDaLeggere ci sono 2 file 
+dirName in funzione: salvataggio/fileDaLeggeCLIENT-> stampe abilitate!
+CLIENT-> risposta server: connessione eseguita correttamente!
+
+CLIENT->tempo letto: 1000
+CLIENT-> Letto dirname scritture: salvataggio/fileEspulsi
+OPEN_FILE eseguita correttamente
+CLIENT -> dirname:/mnt/c/Users/mrpra/eclipse-workspace/FileStorageServer/salvataggio/fileEspulsi
+BUFFERRICEZIONEWRITE:WRITE_FILE: riscontrato errore
+
+
+
+Esco Con Errore
+fileACuiAppendereBytes:file80.txt
+Punto di arrivo!
+
+
+
+CLIENT-> risposta server: CLOSE_FILE: riscontrato errore
+CLIENT-> La connessione è stata chiusa correttamente
+CLIENT-> stampe abilitate!
+CLIENT-> risposta server: connessione eseguita correttamente!
+
+CLIENT->tempo letto: 1000
+CLIENT-> risposta server per file /mnt/c/Users/mrpra/eclipse-workspace/FileStorageServer/file80.txt: LOCK_FILE eseguita correttamente!
+
+CLIENT-> file correttamente aggiunti alla lista!
+CLIENT-> risposta server per file /mnt/c/Users/mrpra/eclipse-workspace/FileStorageServer/file80.txt: UNLOCK_FILE eseguita correttamente!
+
+CLIENT-> La connessione è stata chiusa correttamente
+IO DATI
+INVIO DATI
+ACCODO RICHIESTA
+A--- Segnale {Unknown signal 0}
+SELECT ESEGUITA
+SELECT ita bene
+INVIO DATI
+INVIO DATI
+ACCODO RICHIESTA
+A--- Segnale {Unknown signal 0}
+SELECT ESEGUITA
+SELECT ita bene
+INVIO DATI
+INVIO DATI
+A--- Segnale {Unknown signal 0}
+SELECT ESEGUITA
+SELECT ita bene
+INVIO DATI
+INVIO DATI
+ACCODO RICHIESTA
+A--- Segnale {Unknown signal 0}
+SELECT ESEGUITA
+SELECT ita bene
+BBB
+metto dentro
+
+
+
+
+INVIO DATI
+INVIO DATI
+ACCODO RICHIESTA
+A--- Segnale {Unknown signal 0}
+SELECT ESEGUITA
+SELECT ita bCLIENT-> stampe abilitate!
+CLIENT-> risposta server: connessione eseguita correttamente!
+
+CLIENT->tempo letto: 1000
+CLIENT-> Letto dirname scritture: salvataggio/fileEspulsi
+Flag Open:2
+OPEN_FILE eseguita correttamente
+CLIENT -> dirname:/mnt/c/Users/mrpra/eclipse-workspace/FileStorageServer/salvataggio/fileEspulsi
+BUFFERRICEZIONEWRITE:WRITE_FILE eseguita correttamente!
+
+
+
+fileACuiAppendereBytes:file10.txt
+Punto di arrivo!
+
+
+
+CLIENT-> risposta server per file /mnt/c/Users/mrpra/eclipse-workspace/FileStorageServer/file10.txt: CLOSE_FILE eseguita correttamente!
+
+CLIENT-> La connessione è stata chiusa correttamente
+CLIENT-> stampe abilitate!
+CLIENT-> risposta server: connessione eseguita correttamente!
+
+CLIENT->tempo letto: 1000
+CLIENT-> Letto dirname scritture: salvataggio/fileEspulsi
+Flag Open:2
+OPEN_FILE eseguita correttamente
+CLIENT -> dirname:/mnt/c/Users/mrpra/eclipse-workspace/FileStorageServer/salvataggio/fileEspulsi
+BUFFERRICEZIONEWRITE:WRITE_FILE eseguita correttamente!
+
+
+
+CLIENT-> risposta server per file /mnt/c/Users/mrpra/eclipse-workspace/FileStorageServer/file3.txt: CLOSE_FILE eseguita correttamente!
+
+CLIENT-> La connessione è stata chiusa correttamente
+re
+chiusa dir
+Lavoro sul file: file15.txt
+
+
+
+
+
+OPEN_FILE eseguita correttamente
+CLIENT -> dirname:/mnt/c/Users/mrpra/eclipse-workspace/FileStorageServer/salvataggio/fileEspulsi
+BUFFERRICEZIONEWRITE:WRITE_FILE eseguita correttamente!
+
+
+
+CLIENT-> risposta server per file /mnt/c/Users/mrpra/eclipse-workspace/FileStorageServer/file15.txt: CLOSE_FILE eseguita correttamente!
+
+Lavoro sul file: file16.txt
+
+
+
+
+
+OPEN_FILE eseguita correttamente
+CLIENT -> dirname:/mnt/c/Users/mrpra/eclipse-workspace/FileStorageServer/salvataggio/fileEspulsi
+BUFFERRICEZIONEWRITE:WRITE_FILE eseguita correttamente!
+
+
+
+CLIENT-> risposta server per file /mnt/c/Users/mrpra/eclipse-workspace/FileStorageServer/file16.txt: CLOSE_FILE eseguita correttamente!
+
+CLIENT-> La connessione è stata chiusa correttamente
+ene
+INVIO DATI
+INVIO DATI
+ACCODO RICHIESTA
+ACCODO RICHIESTA
+A--- Segnale {Unknown signal 0}
+SELECT ESEGUITA
+SELECT ita bene
+INVIO DATI
+INVIO DATI
+ACCODO RICHIESTA
+A--- Segnale {Unknown signal 0}
+SELECT ESEGUITA
+SELECT ita bene
+INVIO DATI
+INVIO DATI
+A--- Segnale {Unknown signal 0}
+SELECT ESEGUITA
+SELECT ita bene
+ACCODO RICHIESTA
+A--- Segnale {Unknown signal 0}
+SELECT ESEGUITA
+SELECT ita bene
+ACCODO RICHIESTA
+A--- Segnale {Unknown signal 0}
+BBB
+metto dentro
+
+
+
+
+BBB
+metto dentro
+
+
+
+
+BBB
+metto dentro
+
+
+
+
+BBB
+meCLIENT-> stampe abilitate!
+CLIENT-> risposta server: connessione eseguita correttamente!
+
+CLIENT->tempo letto: 1000
+CLIENT-> Letto dirname scritture: salvataggio/fileEspulsi
+Flag Open:2
+OPEN_FILE eseguita correttamente
+CLIENT -> dirname:/mnt/c/Users/mrpra/eclipse-workspace/FileStorageServer/salvataggio/fileEspulsi
+BUFFERRICEZIONEWRITE:WRITE_FILE eseguita correttamente!
+
+
+
+CLIENT-> risposta server per file /mnt/c/Users/mrpra/eclipse-workspace/FileStorageServer/ibra3.jpg: CLOSE_FILE eseguita correttamente!
+
+OPEN_FILE eseguita correttamente
+CLIENT -> dirname:/mnt/c/Users/mrpra/eclipse-workspace/FileStorageServer/salvataggio/fileEspulsi
+BUFFERRICEZIONEWRITE:WRITE_FILE eseguita correttamente!
+
+
+
+CLIENT-> risposta server per file /mnt/c/Users/mrpra/eclipse-workspace/FileStorageServer/ibra4.jpg: CLOSE_FILE eseguita correttamente!
+
+OPEN_FILE eseguita correttamente
+CLIENT -> dirname:/mnt/c/Users/mrpra/eclipse-workspace/FileStorageServer/salvataggio/fileEspulsi
+BUFFERRICEZIONEWRITE:WRITE_FILE eseguita correttamente!
+
+
+
+CLIENT-> risposta server per file /mnt/c/Users/mrpra/eclipse-workspace/FileStorageServer/ibra2.jpg: CLOSE_FILE eseguita correttamente!
+
+OPEN_FILE eseguita correttamente
+CLIENT -> dirname:/mnt/c/Users/mrpra/eclipse-workspace/FileStorageServer/salvataggio/fileEspulsi
+BUFFERRICEZIONEWRITE:WRITE_FILE eseguita correttamente!
+
+
+
+CLIENT-> risposta server per file /mnt/c/Users/mrpra/eclipse-workspace/FileStorageServer/ibra14.jpg: CLOSE_FILE eseguita correttamente!
+
+OPEN_FILE eseguita correttamente
+CLIENT -> dirname:/mnt/c/Users/mrpra/eclipse-workspace/FileStorageServer/salvataggio/fileEspulsi
+BUFFERRICEZIONEWRITE:WRITE_FILE eseguita correttamente!
+
+
+
+CLIENT-> risposta server per file /mnt/c/Users/mrpra/eclipse-workspace/FileStorageServer/ibra15.jpg: CLOSE_FILE eseguita correttamente!
+
+CLIENT-> La connessione è stata chiusa correttamente
+CLIENT-> stampe abilitate!
+CLIENT-> risposta server: connessione eseguita correttamente!
+
+CLIENT->tempo letto: 1000
+CLIENT-> Letto dirname letture: salvataggio/fileLetti
+OPEN_FILE eseguita correttamente
+CLIENT-> risposta server: Questo è il file3.txt
+CLIENT-> risposta server per file /mnt/c/Users/mrpra/eclipse-workspace/FileStorageServer/file3.txt: CLOSE_FILE eseguita correttamente!
+
+faccio fopen
+
+
+
+
+CLIENT -> readFile eseguita correttamente
+
+
+
+
+
+
+
+
+CLIENT-> La connessione è stata chiusa correttamente
+CLIENT-> stampe abilitate!
+CLIENT-> risposta server: connessione eseguita correttamente!
+
+CLIENT->tempo letto: 1000
+CLIENT-> Letto dirname letture: salvataggio/fileLetti
+token= 6 
+CLIENT -> numero:6
+CLIENT->numero di file letto: 6
+dirname:/mnt/c/Users/mrpra/eclipse-workspace/FileStorageServer/salvataggio/fileLetti
+FINE READ_N_FILE!
+CLIENT-> La connessione è stata chiusa correttamente
+CLIENT-> stampe abilitate!
+CLIENT-> risposta server: connessione eseguita correttamente!
+
+CLIENT->tempo letto: 1000
+CLIENT-> risposta server per file /mnt/c/Users/mrpra/eclipse-workspace/FileStorageServer/file80.txt: LOCK_FILE eseguita correttamente!
+
+CLIENT-> risposta server per file /mnt/c/Users/mrpra/eclipse-workspace/FileStorageServer/file10.txt: LOCK_FILE eseguita correttamente!
+
+CLIENT-> risposta server per file /mnt/c/Users/mrpra/eclipse-workspace/FileStorageServer/file15.txt: LOCK_FILE eseguita correttamente!
+
+CLIENT-> risposta server per file /mnt/c/Users/mrpra/eclipse-workspace/FileStorageServer/file3.txt: LOCK_FILE eseguita correttamente!
+
+CLIENT-> file correttamente aggiunti alla lista!
+CLIENT-> risposta server per file /mnt/c/Users/mrpra/eclipse-workspace/FileStorageServer/file80.txt: REMOVE_FILE eseguita correttamente!
+
+CLIENT-> risposta server per file /mnt/c/Users/mrpra/eclipse-workspace/FileStorageServer/file10.txt: REMOVE_FILE eseguita correttamente!
+
+CLIENT-> risposta server per file /mnt/c/Users/mrpra/eclipse-workspace/FileStorageServer/file15.txt: REMOVE_FILE eseguita correttamente!
+
+CLIENT-> risposta server per file /mnt/c/Users/mrpra/eclipse-workspace/FileStorageServer/file3.txt: REMOVE_FILE eseguita correttamente!
+
+CLIENT-> La connessione è stata chiusa correttamente
+CLIENT-> stampe abilitate!
+CLIENT-> risposta server: connessione eseguita correttamente!
+
+CLIENT->tempo letto: 1000
+CLIENT-> risposta server per file /mnt/c/Users/mrpra/eclipse-workspace/FileStorageServer/ibra3.jpg: LOCK_FILE eseguita correttamente!
+
+CLIENT-> risposta server per file /mnt/c/Users/mrpra/eclipse-workspace/FileStorageServer/ibra4.jpg: LOCK_FILE eseguita correttamente!
+
+CLIENT-> risposta server per file /mnt/c/Users/mrpra/eclipse-workspace/FileStorageServer/ibra14.jpg: LOCK_FILE eseguita correttamente!
+
+CLIENT-> risposta server per file /mnt/c/Users/mrpra/eclipse-workspace/FileStorageServer/ibra15.jpg: LOCK_FILE eseguita correttamente!
+
+CLIENT-> risposta server per file /mnt/c/Users/mrpra/eclipse-workspace/FileStorageServer/file16.txt: LOCK_FILE eseguita correttamente!
+
+CLIENT-> file correttamente aggiunti alla lista!
+CLIENT-> risposta server per file /mnt/c/Users/mrpra/eclipse-workspace/FileStorageServer/ibra3.jpg: REMOVE_FILE eseguita correttamente!
+
+CLIENT-> risposta server per file /mnt/c/Users/mrpra/eclipse-workspace/FileStorageServer/ibra4.jpg: REMOVE_FILE eseguita correttamente!
+
+CLIENT-> risposta server per file /mnt/c/Users/mrpra/eclipse-workspace/FileStorageServer/ibra14.jpg: REMOVE_FILE eseguita correttamente!
+
+CLIENT-> risposta server per file /mnt/c/Users/mrpra/eclipse-workspace/FileStorageServer/ibra15.jpg: REMOVE_FILE eseguita correttamente!
+
+CLIENT-> risposta server per file /mnt/c/Users/mrpra/eclipse-workspace/FileStorageServer/file16.txt: REMOVE_FILE eseguita correttamente!
+
+CLIENT-> La connessione è stata chiusa correttamente
+CLIENT-> stampe abilitate!
+CLIENT-> risposta server: connessione eseguita correttamente!
+
+CLIENT->tempo letto: 1000
+CLIENT-> risposta server per file /mnt/c/Users/mrpra/eclipse-workspace/FileStorageServer/ibra2.jpg: LOCK_FILE eseguita correttamente!
+
+CLIENT-> file correttamente aggiunti alla lista!
+CLIENT-> risposta server per file /mnt/c/Users/mrpra/eclipse-workspace/FileStorageServer/ibra2.jpg: REMOVE_FILE eseguita correttamente!
+
+CLIENT-> La connessione è stata chiusa correttamente
+tto dentro
+
+
+
+
+BBB
+metto dentro
+
+
+
+
+BBB
+metto dentro
+
+
+
+
+BBB
+metto dentro
+
+
+
+
+BBB
+metto dentro
+
+
+
+
+BBB
+READNFILE ha letto N:6
+arrivato segnale di chiusura {Hangup}
+TERMINOOOOOOOOOOOOOOO
+
+
+
+
+
+Waiting workers {1}
+Waiting creatore workers
+Waiting gestore connessioni
+SELECT ESEGUITA
+Select Timeout Expired
+Stampe finali:
+-> Numero di file massimo memorizzato nel server: 10
+-> Dimensione massima in Mbytes raggiunta dal file storage: 0.701338 735406
+-> Numero di volte in cui l' algoritmo di rimpiazzamento della cache è stato eseguito per selezionare uno o più file "vittima": 0
+-> lista dei file contenuti nello storage al momento della chiusura del server:
+	-> non sono presenti file nella struttura dati
+-------------------------------------------------
+numero di read eseguite:7
+size media delle letture: 4130
+numero write eseguite: 9
+size media write : 81706
+numero lock eseguite: 21
+numero unlock eseguite: 12
+numero open con flag lock eseguite: 10
+numero close file eseguite: 11
+massima memoria raggiunta: 0.701338 
+numero massimo di file memorizzati: 10 
+numero rimpiazzi eseguiti: 0 
+numero operazioni eseguite dal thread 0: 58
+numero operazioni eseguite dal thread 1: 
+numero operazioni eseguite dal thread 2: 
+numero operazioni eseguite dal thread 3: 
+numero operazioni eseguite dal thread 4: 
+numero operazioni eseguite dal thread 5: 
+numero operazioni eseguite dal thread 6: 
+numero operazioni eseguite dal thread 7: 
+numero max connessioni contemporanee: 10 
+-------------------------------------------------

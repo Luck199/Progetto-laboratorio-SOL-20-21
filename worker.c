@@ -40,10 +40,10 @@ void* vitaWorker(void*  idWorker)
 	int primaVolta=0;
 	int chiudiConnessione=0;
 
-	char *bufferRicezione=NULL;
+	//char *bufferRicezione=NULL;
 //	bufferRicezione=malloc(100*sizeof(char));
 //	strcpy(bufferRicezione,"ciaociaociaociaociaociaociaociaociaociao");
-	size_t daLeggere=0;
+	//size_t daLeggere=0;
 	workers[indiceWorker].threadId=pthread_self();
 	char stringaToLog[100]="";
 	int fdDaElaborare=0;
@@ -53,6 +53,7 @@ void* vitaWorker(void*  idWorker)
 		accediCodaComandi();
 		while((contatoreCodaFd == 0) && (broadcast==0))
 		{
+			printf("contatoreCodaFd:%d \nbroadcast:%d\n",contatoreCodaFd,broadcast);
 			if(stoLavorando==1)
 			{
 				//tramite questo if sto verificando se, nel caso stessi elborando delle richieste
@@ -60,14 +61,17 @@ void* vitaWorker(void*  idWorker)
 				//l' elaborazione di tale richiesta
 				break;
 			}
+			printf("attendo\n");
 			pthread_cond_wait(&(CVFileDescriptor), &(lockCodaComandi));
-
+			printf("Svegliato!!\n");
 		}
 		lasciaCodaComandi();
 		if(getSegnale() == 2 || (getSegnale() == 1 && getNumClient()==0))
 		{
 //			Termina la vita del thread
 			printf("TERMINA THREAD!!!\n");
+			pthread_exit(NULL);
+
 			stop=1;
 			break;
 		}
@@ -95,10 +99,10 @@ void* vitaWorker(void*  idWorker)
 
 				size_t readReturnValue=0;
 				size_t operazione=0;
-				size_t ritorno=0;
+				//size_t ritorno=0;
 				readReturnValue=readn(fdDaElaborare,&operazione,sizeof(operazione));
-				printf("Server->operazione:%ld\n",operazione);
-				printf("Server->ritorno:%ld\n",ritorno);
+				//printf("Server->operazione:%ld\n",operazione);
+				//printf("Server->ritorno:%ld\n",ritorno);
 
 				if(readReturnValue == 0 )
 				{
@@ -151,9 +155,9 @@ void* vitaWorker(void*  idWorker)
 
 				if(chiudiConnessione != 1)
 				{
-					const char puntoVirgola[2] = ";";
-					char *token=NULL;
-					char * rest=NULL;
+					//const char puntoVirgola[2] = ";"
+					//char *token=NULL;
+					//char * rest=NULL;
 //					token=strtok_r(bufferRicezione, puntoVirgola, &rest);
 //					if( token != NULL )
 					{
@@ -169,7 +173,7 @@ void* vitaWorker(void*  idWorker)
 							char * path=NULL;
 
 							int readReturnValue2=riceviDati(fdDaElaborare,&path,&dimPath);
-//							printf("path:%s\n",path);
+//							//printf("path:%s\n",path);
 
 							if(readReturnValue2<0)
 							{
@@ -177,7 +181,7 @@ void* vitaWorker(void*  idWorker)
 							}
 //							char *flag_array = NULL;
 
-							size_t dimFlagArray=0;
+							//size_t dimFlagArray=0;
 							readReturnValue2=readn(fdDaElaborare,&flag,sizeof(flag));
 							if(readReturnValue2<0)
 							{
@@ -186,8 +190,9 @@ void* vitaWorker(void*  idWorker)
 
 //							flag=atoi(flag_array);
 
-//							printf("path:%s\nflag:%ld\n",path,flag);
+//							//printf("path:%s\nflag:%ld\n",path,flag);
 							accediStrutturaFile();
+							printf("BBB\n");
 							openFileServerReturnValue=openFileServer(path,flag,fdDaElaborare);
 							lasciaStrutturaFile();
 
@@ -238,7 +243,7 @@ void* vitaWorker(void*  idWorker)
 						int lockFileServerReturnValue=0;
 						char * path=NULL;
 						size_t dimPath=0;
-						size_t operazione=0;
+						//size_t operazione=0;
 //						readn(fdDaElaborare,operazione,sizeof(operazione));
 						riceviDati(fdDaElaborare,&path,&dimPath);
 						accediStrutturaFile();
@@ -251,14 +256,14 @@ void* vitaWorker(void*  idWorker)
 						{
 
 							strncpy(daInviare,"LOCK_FILE: riscontrato errore\n",31);
-							strncpy(stringaToLog,"LOCK_FILE: riscontrato errore",32);
-							scriviSuLog(stringaToLog,0);
+//							strncpy(stringaToLog,"LOCK_FILE: riscontrato errore",32);
+//							scriviSuLog(stringaToLog,0);
 						}
 						else
 						{
 							strncpy(daInviare,"LOCK_FILE eseguita correttamente!\n",35);
-							strncpy(stringaToLog,"LOCK_FILE: eseguita operazione",31);
-							scriviSuLog(stringaToLog,0);
+//							strncpy(stringaToLog,"LOCK_FILE: eseguita operazione",31);
+//							scriviSuLog(stringaToLog,0);
 
 						}
 
@@ -280,11 +285,9 @@ void* vitaWorker(void*  idWorker)
 						size_t dimPath=0;
 						riceviDati(fdDaElaborare,&path,&dimPath);
 
-
 						accediStrutturaFile();
 						unlockFileServerReturnValue=unlockFileServer(path,fdDaElaborare);
 						lasciaStrutturaFile();
-
 						char daInviare[200]="";
 						if(unlockFileServerReturnValue != 1)
 						{
@@ -312,7 +315,7 @@ void* vitaWorker(void*  idWorker)
 						size_t dimPath=0;
 						char * path=NULL;
 						riceviDati(fdDaElaborare,&path,&dimPath);
-						printf("path ricevuto:%s\n",path);
+						//printf("path ricevuto:%s\n",path);
 						accediStrutturaFile();
 						closeFileServerReturnValue=closeFileServer(path,fdDaElaborare);
 						lasciaStrutturaFile();
@@ -323,7 +326,7 @@ void* vitaWorker(void*  idWorker)
 						if(closeFileServerReturnValue != 1)
 						{
 							strncpy(daInviare,"CLOSE_FILE: riscontrato errore",32);
-							strncpy(stringaToLog,"CLOSE_FILE: riscontrato errore",33);
+							strncpy(stringaToLog,"CLOSE_FILE: riscontrato errore",31);
 							scriviSuLog(stringaToLog,0);
 
 						}
@@ -337,7 +340,7 @@ void* vitaWorker(void*  idWorker)
 						inviaDati(fdDaElaborare,&dimStringaDaInviare,sizeof(size_t));
 						inviaDati(fdDaElaborare,&daInviare,dimStringaDaInviare);
 //						//free(bufferRicezione);
-						visualizzaArrayFile();
+//						visualizzaArrayFile();
 						strncpy(stringaToLog,"Richiesta Servita dal thread",32);
 						scriviSuLog(stringaToLog,1,indiceWorker);
 					}
@@ -380,21 +383,26 @@ void* vitaWorker(void*  idWorker)
 						size_t dimPath=0;
 						char * path=NULL;
 						char *buffer=NULL;
-						size_t size=0;
+						//size_t size=0;
 						riceviDati(fdDaElaborare, &path, &dimPath);
-						char *bufferRicezione=NULL;
-						size_t dimBufferRicezione=0;
-						riceviDati(fdDaElaborare, &buffer, &dimBufferRicezione);
-//						printf("\n\n\n\nbuffer:%s\n\n\n\n",buffer);
-						readn(fdDaElaborare,&size,sizeof(size));
+						//char *bufferRicezione=NULL;
+						size_t sizeBytes=0;
+						riceviDati(fdDaElaborare, &buffer, &sizeBytes);
+
+//						//printf("\n\n\n\nbuffer:%s\n\n\n\n",buffer);
+//						readn(fdDaElaborare,&size,sizeof(size));
 //						riceviDati(fdDaElaborare, &bufferRicezione, &dimBufferRicezione);
 //						char * rest3=NULL;
 //						char * buffer=strtok_r(bufferRicezione, puntoVirgola, &rest3);
 //						char * size_array=strtok_r(NULL, puntoVirgola, &rest3);
 //						size_t size = atoi(size_array);
 
+//						accediStrutturaFile();
+//						//printf("Server:\n");
+						//printf("path:%s\nbuffer:%s\nsizeBytes:%ld",path,buffer,sizeBytes);
+//						//printf("buffer:%s\n",buffer);
 						accediStrutturaFile();
-//						appendToFileServerReturnValue=appendToFileServer(path,buffer,size,fdDaElaborare);
+						appendToFileServerReturnValue=appendToFileServer(path,buffer,sizeBytes,fdDaElaborare);
 						lasciaStrutturaFile();
 						char daInviare[200]="";
 						if(appendToFileServerReturnValue != 1)
@@ -420,26 +428,26 @@ void* vitaWorker(void*  idWorker)
 
 					if(operazione == 104)
 					{
-						printf("Arrivata operazione READ_FILE\n");
+						//printf("Arrivata operazione READ_FILE\n");
 						char * buffer2=NULL;
 						char * path=NULL;
 						size_t dimPath=0;
 						riceviDati(fdDaElaborare,&path,&dimPath);
 						size_t dimFile=0;
 						char result[200]="";
-						accediStrutturaFile();
 						int indice=-1;
+						accediStrutturaFile();
 						indice=readFileServer(path,buffer2,&dimFile,fdDaElaborare);
+						lasciaStrutturaFile();
 						if(indice!=-1)
 						{
 							buffer2=malloc(sizeof(char)*array_file[indice].dimensione);
 							memcpy(buffer2,array_file[indice].byteFile,array_file[indice].dimensione);
 						}
-						lasciaStrutturaFile();
 						if(indice==-1)
 						{
-							printf("mando errore");
-							strncpy(result,"errore",6);
+							//printf("mando errore");
+							strncpy(result,"errore",7);
 							size_t a=strlen(result)+1;
 							inviaDati(fdDaElaborare,&a,sizeof(size_t));
 							inviaDati(fdDaElaborare,&result,a);
@@ -463,8 +471,8 @@ void* vitaWorker(void*  idWorker)
 					if(operazione == 105)
 					{
 						int N=0;
-						size_t a=0;
-						char * bufferRicevi=NULL;
+						//size_t a=0;
+						//char * bufferRicevi=NULL;
 //						riceviDati(fdDaElaborare, &bufferRicevi, &a);
 						readn(fdDaElaborare,&N,sizeof(N));
 //						N=atoi(bufferRicevi);
@@ -485,11 +493,14 @@ void* vitaWorker(void*  idWorker)
 //						//invierò i primi N della struttura contenente i file
 						for(i=0;i<N;i++)
 						{
-
 //							if(array_file[i].identificatoreClient!=fdDaElaborare && array_file[i].O_LOCK!=1)
 //							{
 //								continue;
 //							}
+							if(array_file[i].O_CREATE!=1)
+							{
+								continue;
+							}
 							buffer2=malloc(sizeof(char)*array_file[i].dimensione);
 							memcpy(buffer2,array_file[i].byteFile,array_file[i].dimensione);
 							path=malloc(sizeof(char)*(strlen(array_file[i].path)+1));
@@ -509,9 +520,9 @@ void* vitaWorker(void*  idWorker)
 						}
 						lasciaStrutturaFile();
 						strncpy(stringa,"READ_N_FILE: eseguita operazione",34);
-						size_t c=strlen(stringa);
+						size_t c=strlen(stringa)+1;
 						inviaDati(fdDaElaborare,&c,sizeof(size_t));
-						inviaDati(fdDaElaborare,&stringa,c);
+						inviaDati(fdDaElaborare,stringa,c);
 
 
 
@@ -540,7 +551,7 @@ void* vitaWorker(void*  idWorker)
 						size_t sizeFile=0;
 						char * dati= NULL;
 						riceviDati(fdDaElaborare, &dati, &sizeFile);
-//						printf("SERVER-> dati:%s\n",dati);
+//						//printf("SERVER-> dati:%s\n",dati);
 						accediStrutturaFile();
 						writeFileServerReturnValue=writeFileServer(path,dati,sizeFile,fdDaElaborare);
 						lasciaStrutturaFile();
@@ -582,18 +593,18 @@ void* vitaWorker(void*  idWorker)
 					close(fdDaElaborare);
 					strncpy(stringaToLog,"CLOSE: eseguita operazione",27);
 					scriviSuLog(stringaToLog, 0);
+					decrementaNumClient();
+
 					strncpy(stringaToLog,"Un client si è disconnesso, adesso il totale ammonta a",150);
 					scriviSuLog(stringaToLog,1,getNumClient());
-					decrementaNumClient();
 				}
 
 				//operazioneEseguita=0;
 				stoLavorando=0;
-				continue;
+//				continue;
 				//free(bufferRicezione);
 			}
 		}
 	}
-//	printf("thread concluso!\n");
-	pthread_exit(NULL);
+	printf("thread concluso!\n");
 }

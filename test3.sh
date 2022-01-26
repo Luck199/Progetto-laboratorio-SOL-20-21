@@ -5,7 +5,7 @@ SERVER_PID=$!
 
 
 
-sleep 3
+sleep 2
 
 CLIENTS_PID=$!
 
@@ -16,18 +16,23 @@ for i in {1..10}; do
     ID=${i}
     export ID
     ./creazioneClient.sh &
+   # sleep 1
     CLS+=($!)
 done
-
-sleep 10
-
+echo ${CLS[@]}
+sleep 15
+echo "STOPPING SERVER"
 kill -SIGINT $SERVER_PID
-#wait $CLIENTS_PID
+#wait $SERVER_PID
 
 for i in "${CLS[@]}"; do
     kill -9 ${i}
     wait ${i}
 done
-./statistiche.sh log.txt
+
+echo "-------------------------------------------------"
+./statistiche.sh log.txt 
+echo "-------------------------------------------------"
+
 exit 0
 

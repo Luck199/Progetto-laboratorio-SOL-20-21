@@ -1,6 +1,7 @@
 #ifndef _utility_
 #define _utility_
 
+extern int threadInAreaNonSafe;
 extern int clientTotali;
 extern int contatoreCodaFd;
 extern int thread_workers;
@@ -15,7 +16,6 @@ extern int threadInAttesa;
 extern FILE *logFile;
 extern struct codaInteri *codaFileDescriptor;
 extern int pipeGestioneWorkers[2];
-extern int segnaleChiusuraHup;
 extern int segnale_globale;
 extern int broadcast;
 extern int numMaxconnessioniContemporanee;
@@ -69,6 +69,8 @@ extern struct info_file *array_file;
 extern pthread_mutex_t lockCodaComandi;
 extern pthread_mutex_t lockClientConnessi;
 extern pthread_mutex_t lockSegnali;
+extern pthread_mutex_t lockScritturaLog;
 extern pthread_cond_t allClientExitCond;
+extern pthread_cond_t areaNonSafe;
 extern pthread_cond_t CVFileDescriptor ;
 #endif
