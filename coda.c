@@ -267,7 +267,7 @@ int enqueue_Interi(struct codaInteri* head, int fileDescriptor)
 	if (!is_valid_list_Interi(head))
 	{
 		perror("Errore, testa della lista uguale a null");
-		return -5;
+		return -1;
 	}
 
 	if(is_empty_list_Interi(head))
@@ -354,7 +354,7 @@ int rimuovi_Interi(struct codaInteri* head, int idCliente)
 {
 	struct codaInteri* temp;
 	struct codaInteri* nodo_da_rimuovere = NULL;
-int prova=0;
+	int prova=0;
 	if (!is_valid_list_Interi(head))
 	{
 		perror("Errore! head == NULL");
