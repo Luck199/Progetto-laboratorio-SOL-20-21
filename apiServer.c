@@ -301,20 +301,32 @@ int closeConnection(const char* sockname)
 	closeReturnValue=close(fd_socket);
 	if ((closeReturnValue == -1) && (errno == EBADF))
 	{
-		perror("CLIENT-> Errore: file descriptor aperto non valido\n");
+		if(abilitaStampe==1)
+		{
+			perror("CLIENT-> Errore: file descriptor aperto non valido\n");
+		}
 	}
 
 	if ((closeReturnValue == -1) && (errno == EINTR))
 	{
-		perror("CLIENT-> Errore: close interrotta da un segnale\n");
+		if(abilitaStampe==1)
+		{
+			perror("CLIENT-> Errore: close interrotta da un segnale\n");
+		}
 	}
 	if ((closeReturnValue == -1) && (errno == EIO))
 	{
-		perror("CLIENT-> Errore input/output");
+		if(abilitaStampe==1)
+		{
+			perror("CLIENT-> Errore input/output");
+		}
 	}
 	if ((closeReturnValue == -1) && ((errno == ENOSPC) || (errno ==EDQUOT)))
 	{
-		perror("CLIENT-> Errore: scrittura in spazio di archiviazione non disponibile!\n");
+		if(abilitaStampe==1)
+		{
+			perror("CLIENT-> Errore: scrittura in spazio di archiviazione non disponibile!\n");
+		}
 	}
 	fd_socket = -1;
 	if(abilitaStampe == 1 )
@@ -643,6 +655,7 @@ int readNFiles(int N, const char* dirname)
 
 int writeFile(const char* pathname, const char* dirname)
 {
+	errno=0;
 	char daInviare[200]="WRITE_FILE;";
 	char *bufferRicezione=NULL;
 	char * dirNameSalvato=NULL;
@@ -707,7 +720,7 @@ int writeFile(const char* pathname, const char* dirname)
 	inviaDati(fd_socket,&b,sizeof(size_t));
 	inviaDati(fd_socket,daInviare,b);
 
-	/*invio il contenuto dle file che voglio scrivere*/
+	/*invio il contenuto del file che voglio scrivere*/
 	inviaDati(fd_socket,&size,sizeof(size_t));
 	inviaDati(fd_socket,buf, size);
 
@@ -748,8 +761,56 @@ int writeFile(const char* pathname, const char* dirname)
 				{
 					dimEspulsi=a;
 					datiEspulsi=malloc(sizeof(char)*(a+1));
-					memcpy(datiEspulsi, bufferRicezione, (a+1));
+					memcpy(datiEspulsi, bufferRicezione, (a));
+					if(/*errno==0 &&*/ datiEspulsi != NULL && pathEspulso != NULL && dirname!=NULL)
+					{
+						printf("quiquoqua\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
+						chdirReturnValue=chdir(dirNameSalvato);
+						if(chdirReturnValue != 0)
+						{
+							/*è stato settato errno*/
+							if(abilitaStampe==1)
+							{
+								perror("Errore nell' utilizzo di chdir\n");
+							}
+							return -1;
+						}
+						rest = pathEspulso;
+
+						while ((token = strtok_r(rest, "/", &rest))!=NULL)
+						{
+							pathRelativo=token;
+						}
+
+						file = fopen(pathRelativo,"w");
+						if( file==NULL )
+						{
+							perror("Errore in apertura del file");
+							return -1;
+						}
+						else
+						{
+							int w = fwrite(datiEspulsi, sizeof(char), dimEspulsi, file);
+							if(w<0)
+							{
+								perror("CLIENT -> ERRORE fwrite\n");
+							}
+						}
+						fclose(file);
+						chdirReturnValue=chdir(directoryCorrente);
+						if(chdirReturnValue != 0)
+						{
+							/*è stato settato errno*/
+							if(abilitaStampe==1)
+							{
+								perror("Errore nell' utilizzo di chdir\n");
+							}
+							return -1;
+						}
+					}
 					free(bufferRicezione);
+					free(datiEspulsi);
+					free(pathEspulso);
 				}
 			}
 		}
@@ -763,51 +824,7 @@ int writeFile(const char* pathname, const char* dirname)
 		}
 	}
 
-	if(errno==0 && datiEspulsi != NULL && pathEspulso != NULL && dirname!=NULL)
-	{
-		chdirReturnValue=chdir(dirNameSalvato);
-		if(chdirReturnValue != 0)
-		{
-			/*è stato settato errno*/
-			if(abilitaStampe==1)
-			{
-				perror("Errore nell' utilizzo di chdir\n");
-			}
-			return -1;
-		}
-		rest = pathEspulso;
 
-		while ((token = strtok_r(rest, "/", &rest))!=NULL)
-		{
-			pathRelativo=token;
-		}
-
-		file = fopen(pathRelativo,"w");
-		if( file==NULL )
-		{
-			perror("Errore in apertura del file");
-			return -1;
-		}
-		else
-		{
-			int w = fwrite(datiEspulsi, sizeof(char), dimEspulsi, file);
-			if(w<0)
-			{
-				perror("CLIENT -> ERRORE fwrite\n");
-			}
-		}
-		fclose(file);
-		chdirReturnValue=chdir(directoryCorrente);
-		if(chdirReturnValue != 0)
-		{
-			/*è stato settato errno*/
-			if(abilitaStampe==1)
-			{
-				perror("Errore nell' utilizzo di chdir\n");
-			}
-			return -1;
-		}
-	}
 	return 0;
 }
 
@@ -909,6 +926,51 @@ int appendToFile(const char* pathname, void* buf, size_t size, const char* dirna
 					datiEspulsi=malloc(sizeof(char)*dimBufferRicezione+1);
 					memcpy(datiEspulsi, bufferRicezione, dimBufferRicezione);
 					dimEspulsi=dimBufferRicezione;
+					if(errno==0 && datiEspulsi != NULL && pathEspulso != NULL)
+					{
+						chdirReturnValue=chdir(dirNameSalvato);
+						if(chdirReturnValue != 0)
+						{
+							/*è stato settato errno*/
+							perror("Errore nell' utilizzo di chdir\n");
+							return -1;
+						}
+						rest = pathEspulso;
+
+						while ((token = strtok_r(rest, "/", &rest))!=NULL)
+						{
+							pathRelativo=token;
+						}
+
+						file = fopen(pathRelativo,"w");
+						if( file==NULL )
+						{
+							perror("Errore in apertura del file");
+							return -1;
+						}
+						else
+						{
+							int w = fwrite(datiEspulsi, sizeof(char), dimEspulsi, file);
+							if(w<0)
+							{
+								if(abilitaStampe == 1)
+								{
+									printf("CLIENT -> ERRORE fwrite\n");
+								}
+							}
+						}
+						fclose(file);
+						chdirReturnValue=chdir(directoryCorrente);
+						if(chdirReturnValue != 0)
+						{
+							/*è stato settato errno*/
+							if(abilitaStampe==1)
+							{
+								perror("Errore nell' utilizzo di chdir\n");
+							}
+							return -1;
+						}
+					}
 					free(bufferRicezione);
 				}
 			}
@@ -924,51 +986,7 @@ int appendToFile(const char* pathname, void* buf, size_t size, const char* dirna
 		}
 	}
 
-	if(errno==0 && datiEspulsi != NULL && pathEspulso != NULL)
-	{
-		chdirReturnValue=chdir(dirNameSalvato);
-		if(chdirReturnValue != 0)
-		{
-			/*è stato settato errno*/
-			perror("Errore nell' utilizzo di chdir\n");
-			return -1;
-		}
-		rest = pathEspulso;
 
-		while ((token = strtok_r(rest, "/", &rest))!=NULL)
-		{
-			pathRelativo=token;
-		}
-
-		file = fopen(pathRelativo,"w");
-		if( file==NULL )
-		{
-			perror("Errore in apertura del file");
-			return -1;
-		}
-		else
-		{
-			int w = fwrite(datiEspulsi, sizeof(char), dimEspulsi, file);
-			if(w<0)
-			{
-				if(abilitaStampe == 1)
-				{
-					printf("CLIENT -> ERRORE fwrite\n");
-				}
-			}
-		}
-		fclose(file);
-		chdirReturnValue=chdir(directoryCorrente);
-		if(chdirReturnValue != 0)
-		{
-			/*è stato settato errno*/
-			if(abilitaStampe==1)
-			{
-				perror("Errore nell' utilizzo di chdir\n");
-			}
-			return -1;
-		}
-	}
 	return 1;
 }
 
@@ -1067,10 +1085,11 @@ int unlockFile(const char* pathname)
 
 int closeFile(const char* pathname)
 {
+	printf("client chiede CloseFile\n");
 	char daInviare[200]="CLOSE_FILE";
 	char * bufferRicezione= NULL;
 	size_t op=0;
-	op=CLOSEFILE;
+	op=101;
 	int	readReturnValue=0;
 	statoFd=statoFileDescriptor();
 	if(statoFd < 0)
@@ -1174,6 +1193,7 @@ int closeFile(const char* pathname)
 
 int removeFile(const char* pathname)
 {
+	printf("client richiede remove\n");
 	int readReturnValue=0;
 	char *bufferRicezione=NULL;
 	char daInviare[200]="REMOVE_FILE;";

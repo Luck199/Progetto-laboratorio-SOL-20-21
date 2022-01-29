@@ -96,7 +96,10 @@ int main(int argc, char **argv)
 	b=parser(comandi);
 	if(b==-1)
 	{
-		perror("Errore!");
+		if(abilitaStampe==1)
+		{
+			perror("Errore parser!");
+		}
 	}
 
 	free(stringa);
@@ -104,6 +107,7 @@ int main(int argc, char **argv)
 	//free(nomesocket);
 	return 0;
 }
+
 void ritardo()
 {
 /*	se con il comando -t è stato specificato un tempo diverso da zero,
@@ -153,6 +157,7 @@ int parser(struct struttura_coda *comandi)
 	char * dirnameSecondarioScritture=NULL;
 	int i=0;
 	char **arrayPath;
+	int numeroFileLettiReali=0;
 	/*questa variabile se a zero indica che non è stato specificato il numero di file che
 	è necessario leggere dalla directory, quindi viene eseguita una lettura iniziale di tutti
 	i file per sapere quanti essi siano, in modo da poter allocare una struttura dati adeguata
@@ -173,8 +178,12 @@ int parser(struct struttura_coda *comandi)
 	FILE *file;
 	int w=0;
 	void * buffer=NULL;
+	size_t size=0;
 	size_t lunghezzaDirnameLettura=0;
 	size_t lunghezzaDirnameScrittura=0;
+	int lockFileReturnValue=0;
+	int unlockFileReturnValue=0;
+	int removeFileReturnValue=0;
 	char * stringa=(char*)malloc(80*sizeof(char));
 	struct struttura_coda *files = malloc(sizeof(struct struttura_coda));
 
@@ -249,8 +258,11 @@ int parser(struct struttura_coda *comandi)
 			openConnectionReturnValue=openConnection(nomesocket,100,abstime);
 			if(openConnectionReturnValue == -1)
 			{
+				if(abilitaStampe==1)
+				{
 					perror("CLIENT-> Errore nell' apertura della connessione\n");
-					return -1;
+				}
+				return -1;
 			}
 
 			ritardo();
@@ -274,32 +286,16 @@ int parser(struct struttura_coda *comandi)
 				continue;
 			}
 
-/*			if((strncmp(dirnameSecondarioScritture,"",1)==0) && opzioneD==0)
-			{
-				if(abilitaStampe==1)
-				{
-					printf("CLIENT-> Si desidera utilizzare l' opzione -w senza l' utilizzo dell opzione -D. Arresto in corso!\n");
-					return -1;
-				}
-				continue;
-			}
- */
+
 			lunghezzaStringa= strlen(stringa)+1;
 			strncpy(dirName,stringa,lunghezzaStringa);
-/*			printf("dirName:%s\n",dirName);
-			stringa=dequeue(comandi);*/
 			token = strtok(dirName, ",");
-/*			printf("token:%s\n",token);
-			strncpy(dirName,token,strlen(token)+1);*/
 			if(abilitaStampe==1)
 			{
 				printf("CLIENT-> Letto dirname: %s\n",dirName);
 			}
 			while (token != NULL || presenteErrore==0)
 			{
-/*				printf("token:%s\n",token);
-
-				enqueueString(comandi,token);*/
 				token = strtok(NULL, ",");
 				if(token == NULL)
 				{
@@ -317,7 +313,6 @@ int parser(struct struttura_coda *comandi)
 						break;
 					}
 					numFile2=atoi(token2);
-					printf("CLIENT -> numero:%d\n",numFile2);
 					if(errno!=0)
 					{
 						printf("errno:%d\n",errno);
@@ -379,12 +374,11 @@ int parser(struct struttura_coda *comandi)
 
 			letturaDirectoryReturnValue=leggiNFileDaDirectory(&numFile2,dirName,arrayPath,i,bitConteggio,&numFileLetti);
 
-			printf("NElla directory %s ci sono %d file \n",dirName,numFileLetti);
 
-/*			if(letturaDirectoryReturnValue != 0)
+			if(letturaDirectoryReturnValue != 0)
 			{
 				perror("Errore nella lettura dei file dalla directory\n");
-			}*/
+			}
 
 			if(numFile2<=0 || numFile2>numFileLetti)
 			{
@@ -402,7 +396,7 @@ int parser(struct struttura_coda *comandi)
 			}
 
 			i=0;
-//
+
 			salvaNumFile=numFile2;
 
 
@@ -412,21 +406,20 @@ int parser(struct struttura_coda *comandi)
 			chdirReturnValue=chdir(directoryPartenza);
 			if(chdirReturnValue != 0)
 			{
-				//è stato settato errno
+				/*è stato settato errno*/
 				perror("Errore nell' utilizzo di chdir\n");
 				return -1;
 			}
 
 
-//			printf("dirname prima della seconda %s\n",dirName);
 			letturaDirectoryReturnValue=leggiNFileDaDirectory(&numFile2,dirName,arrayPath,i,bitConteggio,&numFileLetti);
 
-//
+
 			chdirReturnValue=0;
 			chdirReturnValue=chdir(directoryPartenza);
 			if(chdirReturnValue != 0)
 			{
-				//è stato settato errno
+				/*è stato settato errno*/
 				perror("Errore nell' utilizzo di chdir\n");
 				return -1;
 			}
@@ -443,7 +436,7 @@ int parser(struct struttura_coda *comandi)
 				{
 					pathRelativo=token;
 				}
-				printf("Lavoro sul file: %s\n\n\n\n\n\n",pathRelativo);
+				printf("Lavoro sul file: %s",pathRelativo);
 				openFile(pathRelativo,flagOpen);
 				ritardo();
 				writeFile(pathRelativo,dirnameSecondarioScritture);
@@ -451,8 +444,6 @@ int parser(struct struttura_coda *comandi)
 				closeFile(pathRelativo);
 				ritardo();
 			}
-
-
 			continue;
 		}
 		if(strcmp(stringa,"-W")==0)
@@ -492,7 +483,7 @@ int parser(struct struttura_coda *comandi)
 			}
 			continue;
 		}
-		//Questa opzione apre i file passati con il flag O_LOCK
+		/*Questa opzione apre i file passati con il flag O_LOCK*/
 		if(strcmp(stringa,"-L")==0)
 		{
 			flagOpen=1;
@@ -519,7 +510,6 @@ int parser(struct struttura_coda *comandi)
 			token = strtok(NULL,",");
 			while (token != NULL)
 			{
-				size_t size=0;
 				recuperaFile(token, &buffer, &size);
 				appendToFile(fileACuiAppendereBytes,buffer,size,dirnameSecondarioScritture);
 				ritardo();
@@ -652,7 +642,11 @@ int parser(struct struttura_coda *comandi)
 					printf("CLIENT->numeroFileLetto: %d\n",numeroFileDaLeggere);
 				}
 			}
-			readNFiles(numeroFileDaLeggere, dirnameSecondarioLetture);
+			numeroFileLettiReali=readNFiles(numeroFileDaLeggere, dirnameSecondarioLetture);
+			if(abilitaStampe==1)
+			{
+				printf("CLIENT-> numero di file letti realmente:%d\n",numeroFileLettiReali);
+			}
 			ritardo();
 			continue;
 		}
@@ -699,7 +693,7 @@ int parser(struct struttura_coda *comandi)
 			{
 				lettopiuuno=1;
 				tempo = 0;
-				/*ritardoFraRichieste=0;*/
+				ritardoFraRichieste = tempo;
 				if(abilitaStampe==1)
 				{
 					printf("CLIENT->tempo letto: %d\n",tempo);
@@ -714,14 +708,14 @@ int parser(struct struttura_coda *comandi)
 
 			while (token != NULL)
 			{
-				lockFile(token);
+				lockFileReturnValue=lockFile(token);
+				if(lockFileReturnValue==0 && abilitaStampe==1)
+				{
+						printf("CLIENT-> lock acquisita correttamente\n");
+				}
 				ritardo();
 				enqueueString(files,token);
 				token = strtok(NULL, ",");
-			}
-			if(abilitaStampe==1)
-			{
-				printf("CLIENT-> file correttamente aggiunti alla lista!\n");
 			}
 			continue;
 		}
@@ -731,7 +725,12 @@ int parser(struct struttura_coda *comandi)
 			char* token = strtok(stringa, ",");
 			while (token != NULL)
 			{
-				unlockFile(token);
+				unlockFileReturnValue=unlockFile(token);
+				if(unlockFileReturnValue==0 && abilitaStampe==1)
+				{
+					printf("CLIENT-> lock rilasciata correttamente\n");
+				}
+				ritardo();
 				enqueueString(files,token);
 				token = strtok(NULL, ",");
 			}
@@ -739,7 +738,6 @@ int parser(struct struttura_coda *comandi)
 			{
 				/*printf("CLIENT-> file correttamente aggiunti alla lista!\n");*/
 			}
-			/*ritardo();*/
 			continue;
 		}
 
@@ -749,7 +747,11 @@ int parser(struct struttura_coda *comandi)
 			char* token = strtok(stringa, ",");
 			while (token != NULL)
 			{
-				removeFile(token);
+				removeFileReturnValue=removeFile(token);
+				if(removeFileReturnValue==0 && abilitaStampe==1)
+				{
+					printf("CLIENT-> file correttamente rimosso\n");
+				}
 				ritardo();
 				enqueueString(files,token);
 				token = strtok(NULL, ",");

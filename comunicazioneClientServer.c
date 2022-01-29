@@ -103,7 +103,7 @@ int riceviDati(int fdDaElaborare, char **dest, size_t *sizePtr)
 	int a=readn(fdDaElaborare, &size, sizeof(size));
 	if(a<0)
 	{
-		printf("Errore funzione leggiNBytes\n");
+		//printf("Errore funzione leggiNBytes\n");
 		return -1;
 	}
 	*sizePtr=size;
@@ -116,7 +116,7 @@ int riceviDati(int fdDaElaborare, char **dest, size_t *sizePtr)
 	int b=readn(fdDaElaborare, *dest, size);
 	if(b<0)
 	{
-		printf("Errore funzione leggiNBytes\n");
+//		printf("Errore funzione leggiNBytes\n");
 		return -1;
 	}	
 
