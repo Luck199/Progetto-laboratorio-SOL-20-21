@@ -50,7 +50,7 @@ pthread_mutex_t lockScritturaLog = PTHREAD_MUTEX_INITIALIZER;//lock per la scrit
 
 pthread_cond_t allClientExitCond = PTHREAD_COND_INITIALIZER;//condition variable per chiusura server con segnale SIGHUP
 
-pthread_cond_t areaNonSafe = PTHREAD_COND_INITIALIZER;
+pthread_cond_t fifoConsentita = PTHREAD_COND_INITIALIZER;
 
 pthread_cond_t CVFileDescriptor = PTHREAD_COND_INITIALIZER;//condition VAriable
 pthread_mutex_t lockSegnali=PTHREAD_MUTEX_INITIALIZER;
@@ -270,6 +270,7 @@ int dequeueCodaFileDescriptor(struct codaInteri *codaFileDescriptor, int *stop)
 	fdDaElaborare=dequeue_Interi(codaFileDescriptor, &errore);
 	if(errore==1)
 	{
+//		printf("errore\n");
 		*stop=1;
 	}
 	if(fdDaElaborare!=-1)
@@ -277,7 +278,7 @@ int dequeueCodaFileDescriptor(struct codaInteri *codaFileDescriptor, int *stop)
 		contatoreCodaFd--;
 	}
 //	StampaLista_Interi(codaFileDescriptor);
-	sleep(1);
+//	sleep(1);
 	lasciaCodaComandi();
 
 	return fdDaElaborare;
@@ -289,6 +290,7 @@ void accediSegnali()
 	int err;
 	if 	( ( err=pthread_mutex_lock(&lockSegnali)) != 0 )
 	{
+		errno=err;
 		perror("lock coda comandi\n");
 		pthread_exit(&err);
 	}
@@ -300,6 +302,7 @@ void lasciaSegnali()
 	int err;
 	if 	( ( err=pthread_mutex_unlock(&lockSegnali)) != 0 )
 	{
+		errno=err;
 		perror("lock coda comandi\n");
 		pthread_exit(&err);
 	}

@@ -27,7 +27,7 @@ int verificaInserimento(int dimFile, int fdDaElaborare);//funzione che verifica 
 void applicaFifo(int fdDaElaborare, int daSalvare, size_t sizeFileCheInserisco);//funzione che applica l' algoritmo di rimpiazzo fifo nell' array dei file
 void assumiLockFileLettura(int indiceFile);
 void lasciaLockFileLettura(int indiceFile);
-void assumiLockFileScrittura(int indiceFile, int fdDaElaborare);
+int assumiLockFileScrittura(int indiceFile, int fdDaElaborare);
 int lasciaLockFileScrittura(int indiceFile,int fdDaElaborare);
 int openFileServer(char *path, int flag, int fdDaElaborare);//funzione open file lato server, implementa la reale funzione di aprire un file,superati i vari controlli
 int closeFileServer(char *path,int fdDaElaborare);

@@ -206,12 +206,19 @@ int main(int argc, char **argv)
 
 	if(getSegnale() == SIGQUIT || getSegnale() == SIGINT)
 	{
+		int esci=0;
 		//Se entro qui dentro significa che è arrivato il segnale  SIGINT o SIGQUIT
-		while(getNumClient()>0)
+		while(getNumClient()>0 && esci==0)
 		{
-			printf("C'e' sempre qualche client\n");
+			accediCodaComandi();
+			if(contatoreCodaFd<=1)
+			{
+				esci=1;
+			}
+			lasciaCodaComandi();
+//			printf("C'e' sempre qualche client: getNumClient():%d\n",getNumClient());
 			fdNew=dequeueCodaFileDescriptor(codaFileDescriptor,&guasto);
-			printf("dequeueFileDescriptor {%d}\n", fdNew);
+//			printf("dequeueFileDescriptor {%d}\n", fdNew);
 			if(fdNew != -1)
 			{
 				int closeReturnValue = close(fdNew);
@@ -235,11 +242,11 @@ int main(int argc, char **argv)
 
 				decrementaNumClient();
 				strncpy(stringaToLog,"Un client si è disconnesso, adesso il totale ammonta a",MAXLUNGHEZZA);
-				scriviSuLog(stringaToLog,1,clientConnessi);
+				scriviSuLog(stringaToLog,1,getNumClient());
 			}
 
 		}
-		printf("clienti finit\n");
+		printf("client finiti\n");
 	}
 
 	printf("Waiting workers {%d}\n", thread_workers);
@@ -445,11 +452,16 @@ void *gestoreSegnali()
 	{
 		////printf("SERVER-> Arrivato SIGQUIT o SIGINT\n");
 		strncpy(stringaToLog,"Arrivato segnale di terminazione",MAXLUNGHEZZA);
-		printf("arrivato segnale di chiusura {%s}\n", strsignal(numeroSegnale));
-		scriviSuLog(stringaToLog,1,strsignal(numeroSegnale));
+		printf("arrivato segnale di chiusura %d\n", numeroSegnale);
+		scriviSuLog(stringaToLog,1,numeroSegnale);
 		accediSegnali();
 		segnale_globale=numeroSegnale;
 		lasciaSegnali();
+		accediCodaComandi();
+			pthread_cond_broadcast(&(CVFileDescriptor));
+			broadcast=1;
+			lasciaCodaComandi();
+
 	}
 	else
 	{
@@ -596,7 +608,8 @@ void creaThreadGestioneConnessioni(){
 	}
 }
 
-void* gestioneConnessioni(){
+void* gestioneConnessioni()
+{
 	//ciclo dove verranno gestite le connessioni con i vari client.
 	//Verrà interrotto solo all' arrivo di un segnale
 	char stringaToLog[MAXLUNGHEZZA];
@@ -609,7 +622,7 @@ void* gestioneConnessioni(){
 		printf("A--- Segnale {%s}\n", strsignal(getSegnale()));
 		read_set = fd_set_connessioni;
 		struct timeval tv;
-		tv.tv_sec = 15;
+		tv.tv_sec = 30;
 		tv.tv_usec = 0;
 		selectReturnValue = select(fd_hwm + 1, &read_set, NULL, NULL, &tv);
 		printf("SELECT ESEGUITA\n");
@@ -623,18 +636,19 @@ void* gestioneConnessioni(){
 		}
 		else if (selectReturnValue == -1)
 		{
-			printf("SELECT ita male\n");
+
 			perror("SERVER-> un errore è stato riscontrato dalla funzione select\n");
 			strncpy(stringaToLog,"La funzione select ha riscontrato un errore.",MAXLUNGHEZZA);
 			scriviSuLog(stringaToLog, 0);
 			pthread_exit(NULL);
 		}
-		else if (selectReturnValue == 0){
+		else if (selectReturnValue == 0)
+		{
 			printf("Select Timeout Expired\n");
 		}
 		else
 		{
-			printf("SELECT ita bene\n");
+
 			strncpy(stringaToLog,"Funzione select eseguita in maniera corretta",MAXLUNGHEZZA);
 			scriviSuLog(stringaToLog, 0);
 			for (fd_connessioni = 0; fd_connessioni <= fd_hwm && !serverDeveTerminare(); fd_connessioni++)
@@ -730,7 +744,8 @@ void* gestioneConnessioni(){
 	pthread_exit(NULL);
 }
 
-int serverDeveTerminare(){
+int serverDeveTerminare()
+{
 	int serverDeveTerminare = 0;
 	if (getSegnale() == SIGQUIT || getSegnale() == SIGINT || (getSegnale() == SIGHUP && getNumClient() == 0)){
 		serverDeveTerminare = 1;

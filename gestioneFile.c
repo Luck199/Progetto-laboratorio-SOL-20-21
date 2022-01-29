@@ -92,6 +92,7 @@ void deallocaStrutturaFile()
 
 void accediStrutturaFile()
 {
+
 	int errore=0;
 /*	while(threadInAreaNonSafe!=0)
 	{
@@ -109,7 +110,8 @@ void accediStrutturaFile()
 		perror("lock struttura file\n");
 		pthread_exit(&errore);
 	}
-	/*assunto lock totale*/
+	printf("assunto lock totale\n\n\n\n\n\n\n\n\n");
+
 }
 
 
@@ -122,7 +124,8 @@ void lasciaStrutturaFile()
 		perror("unlock struttura file\n");
 		pthread_exit(&errore);
 	}
-	/*lasciato lock totale*/
+	printf("lasciato lock totale\n\n\n\n\n\n");
+
 }
 void visualizzaArrayFile()
 {
@@ -146,6 +149,7 @@ void visualizzaArrayFile()
 
 int aggiungiFile(char * path, char * buf, size_t sizeFile, int fdDaElaborare)
 {
+	printf("inizio aggiungiFile\n");
 	int posDiRitorno=0;
 	int verificaInserimentoReturnValue=-1;
 	if(sizeFile>dim_memoria)
@@ -163,7 +167,7 @@ int aggiungiFile(char * path, char * buf, size_t sizeFile, int fdDaElaborare)
 		}
 		/*se arrivo qui vuol dire che l' inserimento del file può essere fatto*/
 
-		while(array_file[posizioneLibera].O_CREATE != 0 && array_file[posizioneLibera].O_LOCK==0 && array_file[posizioneLibera].fileAperto==0)
+		while(array_file[posizioneLibera].O_CREATE != 0 && array_file[posizioneLibera].O_LOCK!=0 && array_file[posizioneLibera].fileAperto!=0)
 		{
 			posizioneLibera=(posizioneLibera+1) % num_max_file;
 		}
@@ -200,7 +204,7 @@ int aggiungiFile(char * path, char * buf, size_t sizeFile, int fdDaElaborare)
 		/*ho aggiunto correttamente un file alla struttura, modifico le variabili necessarie*/
 		posDiRitorno=posizioneLibera;
 		posizioneLibera=(posizioneLibera+1) % num_max_file;
-		numFileDisponibili-=1;
+		numFileDisponibili--;
 /*		memoriaDisponibile=memoriaDisponibile-sizeFile;*/
 /*		maxMemoriaRaggiunta=maxMemoriaRaggiunta+sizeFile;*/
 		if((num_max_file-numFileDisponibili)>numMaxFilePresenti)
@@ -208,6 +212,8 @@ int aggiungiFile(char * path, char * buf, size_t sizeFile, int fdDaElaborare)
 			numMaxFilePresenti=(num_max_file-numFileDisponibili);
 		}
 /*		visualizzaArrayFile();*/
+		printf("fine aggiungiFile\n");
+
 		return posDiRitorno;
 
 	}
@@ -229,7 +235,7 @@ int verificaInserimento(int dimFile, int fdDaElaborare)
 		/*dalla struttura dati, quinid come secondo argomento passo -1.*/
 		while(/*memoriaDisponibile < dimFile ||*/ numFileDisponibili==0)
 		{
-			applicaFifo(fdDaElaborare,-1,0);
+			applicaFifo(fdDaElaborare,-1,dimFile);
 		}
 		/*visualizzaArrayFile();*/
 		return 1;
@@ -248,7 +254,7 @@ void applicaFifo(int fdDaElaborare, int daSalvare, size_t sizeFileCheInserisco)
 	char *espelliPath=NULL;
 	char *espelliDati=NULL;
 
-	long dimEspulso=0;
+	size_t dimEspulso=0;
 	while(trovato != 1 )
 	{
 		/*La variabile daSalvare indica quale file non deve essere eliminato, perchè si vuole liberare*/
@@ -260,17 +266,18 @@ void applicaFifo(int fdDaElaborare, int daSalvare, size_t sizeFileCheInserisco)
 		{
 			printf("ciclo2\n");
 			/*printf("(%ld+%ld)>=(%ld+%ld)\n",memoriaDisponibile,array_file[i].dimensione,memoriaDisponibile,sizeFileCheInserisco);*/
-			if((memoriaDisponibile+array_file[i].dimensione)>=(memoriaDisponibile+sizeFileCheInserisco))
-			{
+//			if((memoriaDisponibile+array_file[i].dimensione)>=(memoriaDisponibile+sizeFileCheInserisco))
+//			{
 				espelliPath=malloc(sizeof(char)*(strlen(array_file[i].path)+1));
 				espelliDati=malloc(sizeof(char)*(array_file[i].dimensione));
+				printf("qui arrivo!!\n\n\n\n\n\n");
+
 				strncpy(espelliPath,array_file[i].path,(strlen(array_file[i].path)+1));
 				memcpy(espelliDati,array_file[i].byteFile,array_file[i].dimensione);
 				/*elimino il file in questa posizione, perchè è quello che è da più tempo nell' array e in questo momento non è in stato di lock*/
 
 				dimEspulso=array_file[i].dimensione;
 				strncpy(array_file[i].path,"",1);
-
 				/*daLiberare=array_file[i].dimensione;*/
 
 				array_file[i].dimensione=0;
@@ -282,15 +289,15 @@ void applicaFifo(int fdDaElaborare, int daSalvare, size_t sizeFileCheInserisco)
 
 				if(i==filePiuVecchio)
 				{
-					filePiuVecchio=(filePiuVecchio+1)%num_max_file;
+					filePiuVecchio=(filePiuVecchio-1)%num_max_file;
 				}
 				numFilePresenti--;
 				posizioneLibera= i;
-			}
-			else
-			{
-				i=(i+1)%num_max_file;
-			}
+//			}
+//			else
+//			{
+//				i=(i+1)%num_max_file;
+//			}
 		}
 		else
 		{
@@ -302,12 +309,13 @@ void applicaFifo(int fdDaElaborare, int daSalvare, size_t sizeFileCheInserisco)
 	inviaDati(fdDaElaborare,espelliPath,dimPath);
 
 /*	size_t b=strlen(espelliDati)+1;*/
-	inviaDati(fdDaElaborare,&dimEspulso,sizeof(long));
+	inviaDati(fdDaElaborare,&dimEspulso,sizeof(size_t));
 	inviaDati(fdDaElaborare,espelliDati,dimEspulso);
 /*	printf("elimino il file %s\n",espelliDati);*/
 	/*printf("lunghezzadatiLatoServer:%ld\n",dimEspulso);*/
 
 	numFileDisponibili+=1;
+
 	memoriaDisponibile=memoriaDisponibile+dimEspulso;
 	numVolteAlgoritmoRimpiazzo++;
 	free(espelliPath);
@@ -386,18 +394,18 @@ void lasciaLockFileLettura(int indiceFile)
 //	}
 }
 
-void assumiLockFileScrittura(int indiceFile,int fdDaElaborare)
+int assumiLockFileScrittura(int indiceFile,int fdDaElaborare)
 {
 	int errore=0,entrato=0;
 	char stringaToLog[150]="";
-	while((array_file[indiceFile].O_LOCK == 1) && (array_file[indiceFile].identificatoreClient!=0) && (array_file[indiceFile].identificatoreClient != fdDaElaborare) && (array_file[indiceFile].scrittoriAttivi != 0) && array_file[indiceFile].lettoriAttivi != 0  )
+	while((array_file[indiceFile].O_LOCK == 1) && (array_file[indiceFile].identificatoreClient!=0) && (array_file[indiceFile].identificatoreClient != fdDaElaborare)/* && (array_file[indiceFile].scrittoriAttivi != 0) && array_file[indiceFile].lettoriAttivi != 0 */ )
 	{
 		entrato=1;
-/*		printf("vorrei scrivere sul file, ma mi metto in attesa della lock, buonanotte!\n");*/
+		printf("vorrei scrivere sul file, ma mi metto in attesa della lock, buonanotte!\n");
 /*		enqueue_Interi(array_file[indiceFile].codaLock,fdDaElaborare);*/
 		pthread_cond_wait(&(array_file[indiceFile].fileConditionVariable), &(lockStrutturaFile));
 
-/*		printf("Sono stato svegliato, buongiorno!\n");*/
+		printf("Sono stato svegliato, buongiorno!\n");
 	}
 	if(entrato==1)
 	{
@@ -406,7 +414,7 @@ void assumiLockFileScrittura(int indiceFile,int fdDaElaborare)
 	if(strncmp(array_file[indiceFile].path,"",1)==0)
 	{
 		/*si vuole assumere il lock di un file che non esiste più*/
-		return;
+		return -1;
 	}
 	if((errore=pthread_mutex_lock(&array_file[indiceFile].lockFile))!=0)
 	{
@@ -428,7 +436,7 @@ void assumiLockFileScrittura(int indiceFile,int fdDaElaborare)
 	array_file[indiceFile].O_LOCK =1;
 	array_file[indiceFile].scrittoriAttivi++;
 	array_file[indiceFile].identificatoreClient =fdDaElaborare;
-	return;
+	return 1;
 }
 
 int lasciaLockFileScrittura(int indiceFile,int fdDaElaborare)
@@ -466,26 +474,33 @@ int lasciaLockFileScrittura(int indiceFile,int fdDaElaborare)
 
 int cercaFile(char* pathname)
 {
+	printf("Inizio cercaFile\n");
 	int i=0;
 	for(i=0; i<num_max_file; i++)
 	{
 		if(strcmp(array_file[i].path,pathname) == 0 )
 		{
+			printf("fine cercaFile\n");
+
 			return i;
 		}
 	}
+	printf("fine cercaFile\n");
 
 	return -1;
 }
 
 int openFileServer(char *path, int flag, int fdDaElaborare)
 {
+	printf("Inizio openFile\n");
 	char * bufNuovoFile=NULL;
 /*	verifico se il flag ricevuto ha un valore uguale a 0 oppure a 1*/
 	if (flag < 0 || flag > 2)
 	{
 		printf("flag diverso\n");
 		errno = EINVAL;
+		printf("fine openFile\n");
+
 		return -1;
 	}
 /*	se il file richiesto è presente nell' array e il flag risulta 0 ( ovvero O_CREATE) ritorno errore*/
@@ -494,12 +509,16 @@ int openFileServer(char *path, int flag, int fdDaElaborare)
 	if(((flag == 0)||(flag==2)) && (indiceFile>=0))
 	{
 		printf("si vuole creare un file già presente, errore!\n");
+		printf("fine openFile\n");
+
 		return -1;
 	}
 /*	se il file richiesto non è presente nell' array e il flag risulta 1 ( ovvero O_LOCK) ritorno errore*/
 	if((flag == 1) && (indiceFile == -1))
 	{
 		printf("si vuole lockare un file non presente, errore!\n");
+		printf("fine openFile\n");
+
 		return -1;
 	}
 
@@ -508,22 +527,26 @@ int openFileServer(char *path, int flag, int fdDaElaborare)
 	{
 		size_t sizeNewFile=0;
 
-		bufNuovoFile=malloc(sizeof(char)*sizeNewFile);
+		bufNuovoFile=malloc(sizeof(char)*(sizeNewFile+1));
 
-		strncpy(bufNuovoFile,"",sizeNewFile);/*il buffer del nuovo file sarà chiaramente vuoto*/
+		strncpy(bufNuovoFile,"",(sizeNewFile+1));/*il buffer del nuovo file sarà chiaramente vuoto*/
 		indiceFile=aggiungiFile(path,bufNuovoFile,sizeNewFile, fdDaElaborare);
 
 		free(bufNuovoFile);
 	}
-
 	/*Se sono arrivato qui vuol dire che posso procedere ad eseguire l' operazione di openFile*/
 
-
+printf("assumola lock\n");
 	if(flag != 0)
 	{
-		assumiLockFileScrittura(indiceFile,fdDaElaborare);
+		int lockReturnValue=0;
+		lockReturnValue=assumiLockFileScrittura(indiceFile,fdDaElaborare);
+		if(lockReturnValue==0)
+		{
+			return -1;
+		}
 	}
-
+printf("lascio la lock\n");
 /*	printf("file %s acquisito dal client %d\n",array_file[indiceFile].path,array_file[indiceFile].identificatoreClient);*/
 	array_file[indiceFile].puntatoreFile=fopen(array_file[indiceFile].path, "a");
 
@@ -533,15 +556,21 @@ int openFileServer(char *path, int flag, int fdDaElaborare)
 		perror("SERVER -> Error fopen");
 /*		strncpy(stringaToLog,"La funzione fopen per file di log ha riscontrato un errore.",MAXLUNGHEZZA);*/
 /*		scriviSuLog(stringaToLog,0);*/
+		printf("fine openFile\n");
+
 		return -1;
 	}
 	array_file[indiceFile].fileAperto=1;
 /*visualizzaArrayFile();*/
+	printf("fineOpenFile\n");
+
 	return 1;
 }
 
 int closeFileServer(char *path,int fdDaElaborare)
 {
+	printf("Inizio closefile\n");
+
 	int indiceFile=cercaFile(path);
 	int uvalue=0;
 
@@ -564,7 +593,7 @@ int closeFileServer(char *path,int fdDaElaborare)
 	}
 	fclose(array_file[indiceFile].puntatoreFile);
 	array_file[indiceFile].fileAperto=0;
-	pthread_cond_signal(&(array_file[indiceFile].fileConditionVariable));
+/*	pthread_cond_signal(&(array_file[indiceFile].fileConditionVariable));*/
 /*	printf("Chudo il file e unlocko\n");*/
 	uvalue= lasciaLockFileScrittura(indiceFile,fdDaElaborare);
 	if(uvalue==-1)
@@ -575,26 +604,40 @@ int closeFileServer(char *path,int fdDaElaborare)
 		/*printf("UNLOCK_CLOSE: errore\n");*/
 		return -1;
 	}
+	printf("FineCLoseFile\n");
+
 	return 1;
 }
 
 
 int lockFileServer(char *path, int fdDaElaborare)
 {
+	printf("Inizio lockFileserver\n");
+
 	int indiceFile=cercaFile(path);
 	if( (indiceFile == -1))
 	{
 		/*printf("si vuole effettuare l' operazione di lock su  un file non presente, errore!\n");*/
+		printf("fine lockFileserver\n");
 
 		return -1;
 	}
-	assumiLockFileScrittura(indiceFile, fdDaElaborare);
+	int lockReturnValue=0;
+	lockReturnValue=assumiLockFileScrittura(indiceFile, fdDaElaborare);
+	if(lockReturnValue==0)
+	{
+		return -1;
+	}
+	printf("fine lockFileserver\n");
+
 	return 1;
 }
 
 
 int unlockFileServer(char *path, int fdDaElaborare)
 {
+	printf("Inizio unlockFileserver\n");
+
 	int indiceFile=cercaFile(path);
 	int unlockReturnValue=0;
 	if((indiceFile == -1))
@@ -607,6 +650,8 @@ int unlockFileServer(char *path, int fdDaElaborare)
 	{
 		return -1;
 	}
+	printf("fine unlockFileserver\n");
+
 	return 1;
 }
 
@@ -626,9 +671,9 @@ int applicaRemove(char *path, int fdDaElaborare)
 			array_file[i].dimensione=0;
 			if(array_file[i].fileAperto == 1)
 			{
-				closeFileServer(path,fdDaElaborare);
+				fclose(array_file[i].puntatoreFile);
+				array_file[i].fileAperto = 0;
 			}
-			array_file[i].O_LOCK = 0;
 			array_file[i].O_CREATE = 0;
 			array_file[i].lettoriAttivi=0;
 			array_file[i].scrittoriAttivi=0;
@@ -739,7 +784,7 @@ int appendToFileServer(char* path,char* buf, size_t size, int fdDaElaborare)
 		return -1;
 	}
 
-	if(memoriaDisponibile<size )
+	while(memoriaDisponibile<size )
 	{
 		applicaFifo(fdDaElaborare, daSalvare, size);
 	}
@@ -753,7 +798,7 @@ int appendToFileServer(char* path,char* buf, size_t size, int fdDaElaborare)
 	memoriaDisponibile=memoriaDisponibile-size;
 	if((maxMemoriaRaggiunta)<(dim_memoria-memoriaDisponibile))
 	{
-		maxMemoriaRaggiunta=maxMemoriaRaggiunta+size;
+		maxMemoriaRaggiunta=dim_memoria-memoriaDisponibile;
 	}
     memcpy(array_file[indiceFile].byteFile + (array_file[indiceFile].dimensione), buf, size);
     /*printf("fattamemcpy\n");*/
@@ -767,7 +812,6 @@ int appendToFileServer(char* path,char* buf, size_t size, int fdDaElaborare)
 int readFileServer(char* path, char * buffer2,size_t *dimFile,int fdDaElaborare)
 {
 	int indiceFile=0;
-/*	accediStrutturaFile();*/
 	indiceFile=cercaFile(path);
 	/**
 	 * per leggere un file, verifico che:
@@ -781,15 +825,15 @@ int readFileServer(char* path, char * buffer2,size_t *dimFile,int fdDaElaborare)
 /*		return "errore";*/
 		return -1;
 	}
-/*	if(array_file[indiceFile].O_LOCK == 0 || array_file[indiceFile].identificatoreClient != fdDaElaborare)*/
-/*	{*/
-/*		printf("non puoi leggere un file che non hai lockato! \n");*/
-/*		return -1;*/
-/*	}*/
+	if(array_file[indiceFile].O_LOCK == 0 || array_file[indiceFile].identificatoreClient != fdDaElaborare)
+	{
+		return -1;
+//		lockFileServer(array_file[indiceFile].path,fdDaElaborare);
+	}
 /*	lasciaStrutturaFile();*/
 	if(array_file[indiceFile].fileAperto!=1)
 	{
-		printf("non puoi leggere un file che non hai aperto! \n");
+//		openFile()
 		return -1;
 	}
 
@@ -811,6 +855,8 @@ int readNFileServer(int N,  int fdDaElaborare)
 
 int writeFileServer(char* path, char  * dati, size_t sizeFile, int fdDaElaborare)
 {
+	printf("Inizio writeFIle\n");
+
 	int indiceFile=0;
 	int daSalvare=-1;
 	indiceFile=cercaFile(path);
@@ -869,12 +915,12 @@ int writeFileServer(char* path, char  * dati, size_t sizeFile, int fdDaElaborare
 
 	if((maxMemoriaRaggiunta)<(dim_memoria-memoriaDisponibile))
 	{
-		maxMemoriaRaggiunta=maxMemoriaRaggiunta-array_file[indiceFile].dimensione+sizeFile;
+		maxMemoriaRaggiunta=dim_memoria-memoriaDisponibile;
 	}
 	array_file[indiceFile].dimensione=sizeFile;
 
 /*	visualizzaArrayFile();*/
+	printf("fine writeFileserver\n");
 
 	return 1;
 }
-

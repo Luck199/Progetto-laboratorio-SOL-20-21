@@ -71,6 +71,6 @@ extern pthread_mutex_t lockClientConnessi;
 extern pthread_mutex_t lockSegnali;
 extern pthread_mutex_t lockScritturaLog;
 extern pthread_cond_t allClientExitCond;
-extern pthread_cond_t areaNonSafe;
+extern pthread_cond_t fifoConsentita;
 extern pthread_cond_t CVFileDescriptor ;
 #endif

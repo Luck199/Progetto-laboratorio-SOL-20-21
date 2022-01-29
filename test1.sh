@@ -17,7 +17,7 @@ sleep 2
 
 ./client "-p -f sockfile -t 200 -D salvataggio/fileEspulsi -OL -W file3.txt" &
 
-./client " -p -f sockfile -t 200 -D salvataggio/fileEspulsi -OL -w salvataggio/fileDaLeggere,n=3" &
+
 ./client " -p -f sockfile -t 200 -D salvataggio/fileEspulsi -OL -W paesaggio.jpeg,paesaggio1.jpeg,paesaggio2.jpeg" &
 ./client " -p -f sockfile -t 200 -D salvataggio/fileEspulsi -OL -W paesaggio3.jpeg,paesaggio4.jpeg" &
 ./client " -p -f sockfile -t 200 -D salvataggio/fileEspulsi -OL -W breve5.mp3" &
@@ -26,9 +26,9 @@ sleep 2
 
 ./client "-p -f sockfile -t 200 -l file3.txt -u file3.txt" &
 
-./client "-p -f sockfile -t 200 -d salvataggio/fileLetti -R n=10" &
+./client "-p -f sockfile -t 200 -d salvataggio/fileLetti -OL -R n=10000" &
 
-
+./client " -p -f sockfile -t 200 -D salvataggio/fileEspulsi -OL -w salvataggio/fileDaLeggere,n=3" &
 ./client "-p -f sockfile -t 200 -l file80.txt,file10.txt -c file80.txt,file10.txt" &
 
 
